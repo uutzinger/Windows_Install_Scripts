@@ -163,10 +163,10 @@ Rerun configure and generate in cmake-gui.
 ```
 
 Python will need all gstreamer dlls from ```C:\gstreamer\1.0\x86_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
-Python will need all qt dlls from ```C:\Qt\Qt5.14.1\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
+Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 ### ENv Variable
-QT_PLUGIN_PATH = C:\Qt\Qt5.14.1\5.14.1\msvc2017_64\plugins
+QT_PLUGIN_PATH = C:\Qt\5.14.1\msvc2017_64\plugins
 
 If this worked ok, we can try to include CUDA support. CUDA compiled opencv will not run if there is no NVIDIA GPU on the system.
 
