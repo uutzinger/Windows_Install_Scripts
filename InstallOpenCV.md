@@ -99,13 +99,6 @@ PATH
 * C:\ffmpeg\bin
 * C:\gstreamer\1.0\x86_64\bin
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt;
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin;
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin;
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin;
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin;
 
 ## Prepare Shell Environment
 
@@ -124,17 +117,18 @@ set "buildType=Release"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 set "generator=Ninja"
 ```
+
 ## Build 1
 
 ### Let's start light (defaults, with gstreamer)
 
 ```
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" -DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" -DOPENCV_ENABLE_NONFREE=ON
+"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" -DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" -DOPENCV_ENABLE_NONFREE=ON -DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python3=ON -DBUILD_EXAMPLES=OFF -DINSTALL_PYTHON_EXAMPLES=OFF -DINSTALL_C_EXAMPLES=OFF -DINSTALL_TESTS=OFF
 ```
 
 ### Update Build Variables
 
-Run configure with GUI or use the cmake command at end of paragraph.
+Run configure with GUI cmake to verify setup.
 
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
@@ -144,33 +138,28 @@ and then make sure the following variables are set:
 * BUILD_SHARED_LIBS=ON
 * BUILD_opencv_python3=ON 
 
-Save some time
+This saves some time:
 
 * BUILD_EXAMPLES=OFF **
 * INSTALL_PYTHON_EXAMPLES=OFF **
 * INSTALL_C_EXAMPLES=OFF **
 * INSTALL_TESTS=OFF**
 
-Not for light build, use only default windows components.
-
-* BUILD_opencv_world=OFF
-* WITH_GSTREAMER=OFF **
-* WITH_MFX=OFF
-
-or run this instead of GUI cmake:
-
-```
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" -DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" -DOPENCV_ENABLE_NONFREE=ON
--DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python3=ON -DBUILD_EXAMPLES=OFF -DINSTALL_PYTHON_EXAMPLES=OFF -DINSTALL_C_EXAMPLES=OFF -DINSTALL_TESTS=OFF -DBUILD_opencv_world=OFF -DWITH_GSTREAMER=OFF -DWITH_MFX=OFF
-```
-
 ### Build
+
 And finally do first build using Ninja:
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
 
 ### Test
+
+Since this build included gstreamer we shiould copy the dlls to our search path
+```
+cp "C:\gstreamer\1.0\x86_64\bin\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+```
+
+Run some tests:
 ```
 C:\opencv\build\install\setup_vars_opencv4.cmd
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
@@ -180,7 +169,7 @@ py -3 -c "import cv2; cap = cv2.VideoCapture('rtsp://localhost:8554/camera', api
 ```
 
 ## Build 2
-Now lets enable intel optimizations.
+Now lets enable Intel optimizations.
 
 ### Modify build
 ```
@@ -203,6 +192,8 @@ set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
 set "generator=Ninja"
 ```
 
@@ -246,6 +237,8 @@ set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
 set "generator=Ninja"
 ```
 
@@ -277,6 +270,14 @@ gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
 py -3 -c "import cv2; cap = cv2.VideoCapture('rtsp://localhost:8554/camera', apiPreference=cv2.CAP_FFMPEG)"
 ```
 
+
+
+
+
+
+
+
+
 ## Build 4
 Inlucde CUDA and Intel Realsense.
 
@@ -307,7 +308,6 @@ Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
 
 
-Python will need all gstreamer dlls from ```C:\gstreamer\1.0\x86_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 ### Env Variable
