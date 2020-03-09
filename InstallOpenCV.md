@@ -86,6 +86,12 @@ Unzip and install in ffmpeg folder
 
 FFMPEG is autodownloaded with opencv and it builds a wrapper and does not directly include the FFMPPEG includes.
 
+## Unistall old opencv version
+```
+pip3 uninstall opencv-python
+pip3 uninstall opencv-contrib-python
+```
+
 ### Environment Variables
 You might want to update your path and environment variables
 
@@ -127,12 +133,7 @@ set "generator=Ninja"
 ```
 
 ### Update Build Variables
-
 Run configure with GUI cmake to verify setup.
-```
-"C:\Program Files\CMake\bin\cmake-gui.exe"
-```
-
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
 ```
@@ -156,20 +157,27 @@ And finally do first build using Ninja:
 ```
 
 ### Test
+#### Run some camera tests
+```
+gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
 
+gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+```
+
+#### Now test with opencv
 Since this build included gstreamer we should copy the dlls to our search path
 ```
-coppy "C:\gstreamer\1.0\x86_64\bin\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
+xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
 ```
 
-Run some tests:
 ```
 C:\opencv\build\install\setup_vars_opencv4.cmd
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
-gst-launch-1.0 playbin uri=rtsp://10.41.83.100:554/camera
-py -3 -c "import cv2; cap = cv2.VideoCapture('rtsp://10.41.83.100:554/camera', apiPreference=cv2.CAP_GSTREAMER)"
 ```
+
+Now check with test_rtsp_simplegstramer.py
 
 ## Build 2
 Now lets enable Intel optimizations, Intel Media SDK and Intel Realsense.
@@ -216,20 +224,17 @@ set "generator=Ninja"
 ### Test
 Make sure dlls are in the search path:
 ```
+C:\opencv\build\install\setup_vars_opencv4.cmd
+copy "C:\gstreamer\1.0\x86_64\bin\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
-
 copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
-
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-
 ```
 Jeezz 200 dlls ...
 
-## Build 4
+## Build 3
 Inlucde CUDA
 
 ### CUDA
@@ -237,21 +242,18 @@ Inlucde CUDA
 * WITH_CUDA=ON
 * CUDA_FAST_MATH=ON 
 * WITH_CUBLAS=ON 
-* WITH_MKL=ON 
-* MKL_USE_MULTITHREAD=ON 
-* MKL_WITH_TBB=ON 
-* WITH_TBB=ON 
 * CUDA_ARCH_PTX=7.5
 * CUDA_ARCH_PTX=7.5 
 * CUDA_TOOLKIT_ROOT_DIR="C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"
 * CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2
 * OPENCV_DNN_CUDA=ON
 * CUDA_BUILD_EMULATION=OFF
-* BUILD_opencv_gapi=OFF // need to verify
-
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
+
+
+
 
 
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
