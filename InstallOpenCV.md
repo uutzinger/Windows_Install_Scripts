@@ -19,28 +19,33 @@ git clone https://github.com/opencv/opencv_contrib.git --branch 4.2.0
 ```
 
 ### CMake
-Install CMake that comes with CMake GUI. Install release version.
-https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-win64-x64.msi
+Install CMake with latest release version.
+https://github.com/Kitware/CMake/releases/
 
 ### CUDA
 Install CUDA Tookit from NVIDIA. 
+https://developer.nvidia.com/cuda-downloads
 Useful only if you have NVIDA GPU.
 
 ### NVIDIA video codec SDK
-Optional: Download the Video Codec SDK, extract and copy include and lib directories to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
+Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
+https://developer.nvidia.com/nvidia-video-codec-sdk/download
 
 ### Intel Media SDK
 Optional: To accelerate video decoding on Intel CPU’s register and download and install Intel Media SDK
+https://software.intel.com/en-us/media-sdk
 
 ### Windows SDK 
-Windows SDK includes DirectX SDK. When you rerun the installer you  might want to add options to Windows SDK that are not yet installed.
+Select Windows 10 SDK (10.0.18362.0) in the Visual Studio 2019 Installer.
+Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to Windows SDK that are not yet installed. Information is here: https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/
 
 ### Intel TBB, MKL, MPI, IPP, DAAL
-To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. 
+To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. https://software.seek.intel.com/performance-libraries Use Microsoft Edge to download as website has issues with Chrome.
 
 ### Intel RealSense
 If you want to use an Intel Realsense camera you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/)
-Add realsense2.dll to path its in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
+Add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
 
 ### Ninja
 Install Chocolatey https://chocolatey.org/
@@ -51,6 +56,7 @@ choco install ninja
 
 ### Python
 Python 2.7 is no longer supported and when both 3.x and 2.x are installed the compilation might fail at the final stages of the build. Either make sure both versions of Python are 64bit or remove references to 2.7 in cmake-gui and remove python2.7 from your computer.
+Install python from https://www.python.org/downloads/
 
 Download get-pip.py from https://bootstrap.pypa.io/
 Open command shell and cd to location of get-pip.py and execute following
@@ -71,10 +77,11 @@ Login with QT account
 
 ## Gstreamer
 https://gstreamer.freedesktop.org/download/
-https://gstreamer.freedesktop.org/data/pkg/windows/1.16.2/
+or
+https://gstreamer.freedesktop.org/data/pkg/windows/
+Install both
 * msvc
 * devel msvc
-
 The gst-python bindings are not available on Windows unfortunately.
 
 ## FFMPEG
