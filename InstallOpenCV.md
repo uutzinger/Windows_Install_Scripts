@@ -43,6 +43,10 @@ Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you
 ### Intel TBB, MKL, MPI, IPP, DAAL
 To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. https://software.seek.intel.com/performance-libraries Use Microsoft Edge to download as website has issues with Chrome.
 
+### LAPACK BLAS
+BLAS is part of the Intel Performance libraries. 
+You can also download the source from http://www.netlib.org/lapack/ and build them but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
+
 ### Intel RealSense
 If you want to use an Intel Realsense camera you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/)
 Add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
