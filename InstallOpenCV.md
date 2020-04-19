@@ -1,6 +1,8 @@
 # Compiling OpenCV on Windows 10
 This guide is adapted from [James Bowley] (https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
 
+The two main issues you will need to solve is to a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs b) and to make sure the dll s that those packages need are in the search path when cv2 is loaded. Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
+
 ## Pre Requisits
 
 ### Install Python
@@ -27,6 +29,10 @@ Install CUDA Tookit from NVIDIA.
 https://developer.nvidia.com/cuda-downloads
 Useful only if you have NVIDA GPU.
 
+### cuDNN
+Login to your NVIDIA account and download cudnn https://developer.nvidia.com/rdp/cudnn-download
+Open archive and copy to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
+
 ### NVIDIA video codec SDK
 Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
@@ -44,22 +50,23 @@ Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you
 To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. https://software.seek.intel.com/performance-libraries Use Microsoft Edge to download as website has issues with Chrome.
 
 ### LAPACK BLAS
-BLAS is part of the Intel Performance libraries. 
-You can also download the source from http://www.netlib.org/lapack/ and build them but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
+BLAS is part of the Intel Performance libraries. You dont need to build it.
+If you want to build it you can download the source from http://www.netlib.org/lapack/ and build them but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
 
 ### Intel RealSense
-If you want to use an Intel Realsense camera you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/)
-Add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
+If you want to use an Intel Realsense cameras (3D and Tracking) you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/). Add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
 
 ### Ninja
+To speed up the build, NINJA is preferred tool over Visual Studio as it speeds up the build significantly. You will still use the microsoft compiler from Visual Studio but ninja ill call it.
+
 Install Chocolatey https://chocolatey.org/
-Then install Ninka with
+Then install Ninja with
 ```
 choco install ninja
 ```
 
 ### Python
-Python 2.7 is no longer supported and when both 3.x and 2.x are installed the compilation might fail at the final stages of the build. Either make sure both versions of Python are 64bit or remove references to 2.7 in cmake-gui and remove python2.7 from your computer.
+Python 2.7 is no longer supported and when both 3.x and 2.x are installed the compilation might fail at the final stages of the build. Either make sure both versions of Python are 64bit or remove references to 2.7 in cmake-gui (see below) and remove python2.7 from your computer.
 Install python from https://www.python.org/downloads/
 
 Download get-pip.py from https://bootstrap.pypa.io/
@@ -74,12 +81,10 @@ py -3 -m pip install flake8 --upgrade
 ```
 
 ## QT
-Not recommended on Windows
-Download QT from https://www.qt.io/download-open-source
-At the bottom is installer link in green
-Login with QT account
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
 
 ## Gstreamer
+OpenCV can use gstreamer and comes with wrapper for FFMPEG. If you use Jetson single board computers you will need to get familiar with gstreamer as NVIDIA does not provide support for FFMPEG. You need those tools for creating, receiving and modifing video streams. For example the rtsp web cam streams.
 https://gstreamer.freedesktop.org/download/
 or
 https://gstreamer.freedesktop.org/data/pkg/windows/
@@ -89,22 +94,28 @@ Install both
 The gst-python bindings are not available on Windows unfortunately.
 
 ## FFMPEG
+FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPPEG includes. There is suggestion below how to bypass the wrapper. If you want to test FFMPEG you can get the packages as following:
 From https://ffmpeg.zeranoe.com/builds/ download
 Version:latest stable
 Architecture: Windows 64 bit
 Linking: Shared and Dev
-Unzip and install in ffmpeg folder 
+Unzip and install in your ffmpeg folder 
 
-FFMPEG is autodownloaded with opencv and it builds a wrapper and does not directly include the FFMPPEG includes.
+## HDF5
+If you are intersted in large datasets you might want to install the HDF library from HDF group.
+https://www.hdfgroup.org/downloads/hdf5/
+Make an account and obtain the vs14.zip version.
+lib and include folders are in C:/Program Files/HDF_Group/HDF5/x.yy.z/lib/ and include folders.
 
 ## Unistall old opencv version
+To make sure python finds your build you will want to remove any other installations of opencv.
 ```
 pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
 ```
 
 ### Environment Variables
-You might want to update your path and environment variables
+You might want to update your path and environment variables:
 
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
 * GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
@@ -117,7 +128,7 @@ PATH
 * C:\gstreamer\1.0\x86_64\bin
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 
-## Prepare Shell Environment
+## Prepare your Shell Build Environment
 
 Open command prompt and enter the following commands with directories pointing to your installations
 ```
@@ -134,6 +145,10 @@ set "buildType=Release"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 set "generator=Ninja"
 ```
+When you execute the vcvars script twice in a row, it will throw error the second time. You can ignore that.
+
+## Build
+Here it have 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with smaller build and then expand.
 
 ## Build 1
 
@@ -246,7 +261,11 @@ copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist
 Jeezz 200 dlls ...
 
 ## Build 3
-Inlucde CUDA
+Inlucde CUDA. This builds upon previous two builds and enable most features
+
+```
+"C:\Program Files\CMake\bin\cmake-gui.exe"
+```
 
 ### CUDA
 * WITH_NVCUVID=OFF 
@@ -263,24 +282,55 @@ Inlucde CUDA
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
 
-
-
-
-
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 ### Env Variable
-QT_PLUGIN_PATH = C:\Qt\5.14.1\msvc2017_64\plugins
+QT_PLUGIN_PATH = C:\Qt\5.x.y\msvc2017_64\plugins
 
 If this worked ok, we can try to include CUDA support. CUDA compiled opencv will not run if there is no NVIDIA GPU on the system.
-
-
 
 ### Create single library to include all features
 * BUILD_opencv_world=ON
 
+## GSTREAMER
+* WITH_GSTREAMER=ON
 
-### Build against FFMPEG and not the opencv FFMPEG wrapper
+### HDF
+* BUILD_opencv_HDF=ON
+* HDF5_C_LIBRARY = C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib
+* HDF5_INCLUDE_DIRS = C:/Program Files/HDF_Group/HDF5/1.12.0/include/static
+Not tested yet.
+
+### Graphics Libraries
+* WITH_OPENGL=ON
+* WITH_QT=ON
+* Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5
+With x.y the QT version you downloaded.
+Rerun configure and generate in cmake-gui.
+
+You will need to disable rgbd as it does not compile with rgbd. [Issue] (https://github.com/opencv/opencv_contrib/issues/2307)
+
+* BUILD_opencv_rgbd=OFF
+
+If you have previous builds you might want to rename build/install to build/install_noCUDA so you can preserve non_cuda version.
+
+### Build
+```
+"C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
+```
+
+This will create many DLL interface warnings. Ignore them. It might take 3 hours to complete.
+Now that we have dll and CUDA suport where does library need to go? Check variable script in install folder.
+
+```
+dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
+```
+make sure each dll is found with
+```
+where dllname
+```
+
+### Optional: Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
 modules/videoio/cmake/detect_ffmpeg.cmake
 
@@ -316,45 +366,3 @@ endif()
 '''
 
 * FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
-
-## GSTREAMER
-* WITH_GSTREAMER=ON
-
-### Graphics Libraries
-* WITH_OPENGL=ON
-* WITH_QT=ON
-* Qt5_DIR = C:/Qt/Qt5.14.1/5.14.1/msvc2017_64/lib/cmake/Qt5
-
-Rerun configure and generate in cmake-gui.
-
-* BUILD_opencv_rgbd=OFF, does not compile
-
-
-Include CUDA support in build scripts:
-```
-"C:\Program Files\CMake\bin\cmake-gui.exe"
-```
-
-There are issues with rgbd and nonfree modules. [Issue] (https://github.com/opencv/opencv_contrib/issues/2307)
-
-Still working on that.
-
-You might want to rename build/install to build/install_noCUDA so you can compare or install on other computers without rebuilding.
-
-```
-"C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
-```
-
-Wiil have many DLL interface warnings. Ignore them. It might take 3 hours to complete.
-
-Now that we have dll and CUDA suport where does library need to go? Check variable script in install folder.
-
-
-```
-dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
-```
-make sure each dll is found with
-```
-where dllname
-```
-
