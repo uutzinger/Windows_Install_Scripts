@@ -334,7 +334,7 @@ where dllname
 You need to add the text below to beginning of
 modules/videoio/cmake/detect_ffmpeg.cmake
 
-'''
+```
 if(FFMPEG_ROOT_DIR AND WIN32 AND NOT ARM)
   find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h PATHS ${FFMPEG_ROOT_DIR}/include/)
   find_library(AVCODEC_LIBRARY lib/avcodec.lib PATHS ${FFMPEG_ROOT_DIR})
@@ -363,13 +363,14 @@ if(FFMPEG_ROOT_DIR AND WIN32 AND NOT ARM)
 
   set(HAVE_FFMPEG TRUE)
 endif()
-'''
+```
 
 * FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
 
 
 # Complete Build Script
-'''
+
+```
 set "openCvSource=C:\opencv"
 set "openCVExtraModules=C:\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
@@ -433,4 +434,4 @@ copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist
 copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-'''
+```
