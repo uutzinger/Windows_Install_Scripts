@@ -366,3 +366,71 @@ endif()
 '''
 
 * FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
+
+
+# Complete Build Script
+'''
+set "openCvSource=C:\opencv"
+set "openCVExtraModules=C:\opencv_contrib\modules"
+set "openCvBuild=%openCvSource%\build"
+set "buildType=Release"
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+set "generator=Ninja"
+
+cd C:/opencv
+mkdir build
+cd build
+
+"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
+-DCMAKE_BUILD_TYPE=%buildType% ^
+-DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
+-DOPENCV_ENABLE_NONFREE=ON ^
+-DBUILD_SHARED_LIBS=ON ^
+-DBUILD_opencv_python3=ON ^ 
+-DBUILD_EXAMPLES=OFF ^
+-DINSTALL_PYTHON_EXAMPLES=OFF ^
+-DINSTALL_C_EXAMPLES=OFF ^
+-DINSTALL_TESTS=OFF ^
+-DBUILD_opencv_world=ON ^
+-DWITH_GSTREAMER=ON ^
+-DWITH_MFX=ON ^
+-DWITH_MKL=ON ^
+-DMKL_USE_MULTITHREAD=ON ^
+-DMKL_WITH_TBB=ON ^
+-DWITH_TBB=ON ^
+-DWITH_LIBREALSENSE=ON ^
+-DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
+-DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
+-DWITH_NVCUVID=OFF ^
+-DWITH_CUDA=ON ^
+-DCUDA_FAST_MATH=ON ^
+-DWITH_CUBLAS=ON ^
+-DCUDA_ARCH_PTX=7.5 ^
+-DCUDA_ARCH_PTX=7.5 ^
+-DCUDA_TOOLKIT_ROOT_DIR="C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2" ^
+-DCUDA_SDK_ROOT_DIR="C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2" ^
+-DOPENCV_DNN_CUDA=ON ^
+-DCUDA_BUILD_EMULATION=OFF ^
+-DBUILD_opencv_HDF=ON ^
+-DHDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib" ^
+-DHDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include" ^
+-DWITH_OPENGL=ON ^
+-DBUILD_opencv_rgbd=OFF ^
+-DWITH_QT=ON ^
+-DQt5_DIR="C:/Qt/5.14.2/msvc2017_64/lib/cmake/Qt5" ^
+-DQT_PLUGIN_PATH="C:\Qt\5.14.2\msvc2017_64\plugins" ^
+
+"C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
+
+C:\opencv\build\install\setup_vars_opencv4.cmd
+copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
+xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+'''
