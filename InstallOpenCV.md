@@ -422,7 +422,7 @@ cd build
 -DBUILD_opencv_rgbd=OFF ^
 -DWITH_QT=ON ^
 -DQt5_DIR="C:/Qt/5.14.2/msvc2017_64/lib/cmake/Qt5" ^
--DQT_PLUGIN_PATH="C:\Qt\5.14.2\msvc2017_64\plugins" ^
+-DQT_PLUGIN_PATH="C:\Qt\5.14.2\msvc2017_64\plugins"
 
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 
