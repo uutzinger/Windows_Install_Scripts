@@ -7,6 +7,7 @@ The two main issues you will need to solve is to a) find appropriate binaries an
 
 ### Install Python
 Install [python](https://www.python.org/downloads/windows/) Choose 64bit version if you run 64bit OS.
+OpenCV still supports python 2.7 but compilation fails at the final stages of the build if one version is 32bit and the other 64bit. 
 
 ### Install Visual Studio
 Install Visual Studio Community from [Microsoft] (https://visualstudio.microsoft.com/downloads/) and install the the option for develoment for desktop application in C.
@@ -21,56 +22,47 @@ git clone https://github.com/opencv/opencv_contrib.git --branch 4.2.0
 ```
 
 ### CMake
-Install CMake with latest release version.
-https://github.com/Kitware/CMake/releases/
+Install CMake with latest release version. [Kitware] (https://github.com/Kitware/CMake/releases/)
 
 ### CUDA
-Install CUDA Tookit from NVIDIA. 
-https://developer.nvidia.com/cuda-downloads
-Useful only if you have NVIDA GPU.
+Install CUDA Tookit from [NVIDIA] (https://developer.nvidia.com/cuda-downloads)
+This is only useful if you have an NVIDA GPU.
 
 ### cuDNN
-Login to your NVIDIA account and download cudnn https://developer.nvidia.com/rdp/cudnn-download
-Open archive and copy to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
+Login to your NVIDIA account and download [cudnn] (https://developer.nvidia.com/rdp/cudnn-download)
+Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
 
 ### NVIDIA video codec SDK
 Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
-https://developer.nvidia.com/nvidia-video-codec-sdk/download
+[VideoSDK] (https://developer.nvidia.com/nvidia-video-codec-sdk/download)
 
 ### Intel Media SDK
-Optional: To accelerate video decoding on Intel CPU’s register and download and install Intel Media SDK
-https://software.intel.com/en-us/media-sdk
+Optional: To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK] (https://software.intel.com/en-us/media-sdk)
 
 ### Windows SDK 
-Select Windows 10 SDK (10.0.18362.0) in the Visual Studio 2019 Installer.
-Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to Windows SDK that are not yet installed. Information is here: https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/
+When you install Visual Studio Compiler you can select Windows 10 SDK (10.0.18362.0) in the Installer. Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to Windows SDK that are not yet installed. [SDK] (https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
 
 ### Intel TBB, MKL, MPI, IPP, DAAL
-To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. https://software.seek.intel.com/performance-libraries Use Microsoft Edge to download as website has issues with Chrome.
+To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. [Intel libraries] (https://software.seek.intel.com/performance-libraries). Use Microsoft Edge to download as website has issues with Chrome.
 
 ### LAPACK BLAS
-BLAS is part of the Intel Performance libraries. You dont need to build it.
-If you want to build it you can download the source from http://www.netlib.org/lapack/ and build them but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
+BLAS is part of the Intel Performance libraries. You dont need to build it. If you want to build it you can download the source [LAPACK] (http://www.netlib.org/lapack/) and build it but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
 
 ### Intel RealSense
-If you want to use an Intel Realsense cameras (3D and Tracking) you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/). Add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
+If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/). You need to add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
 
 ### Ninja
-To speed up the build, NINJA is preferred tool over Visual Studio as it speeds up the build significantly. You will still use the microsoft compiler from Visual Studio but ninja ill call it.
+To speed up the build, NINJA is preferred tool over Visual Studio as it speeds up the build significantly. You will still use the microsoft compiler from Visual Studio but ninja will call it.
 
-Install Chocolatey https://chocolatey.org/
-Then install Ninja with
+Install [Chocolatey] (https://chocolatey.org/) then install Ninja with
 ```
 choco install ninja
 ```
 
-### Python
-Python 2.7 is no longer supported. OpenCV still suppors 2.7 but compilation might fail at the final stages of the build if one version is 32bit and the other 64. Install python from https://www.python.org/downloads/
-
+### Python Packages
 Download get-pip.py from https://bootstrap.pypa.io/
 Open command shell and cd to location of get-pip.py and execute following
-
 ```
 py -3 get-pip.py
 py -3 -m pip install pip --upgrade
@@ -128,6 +120,16 @@ and set
 WITH_EIGEN=ON
 EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
 
+### Building Dependencies from Source
+It should not be necessary to build these dependencies
+git clone https://gitlab.com/libeigen/eigen.git
+git clone https://github.com/oneapi-src/oneTBB.git
+git clone https://github.com/AcademySoftwareFoundation/openexr.git
+git clone git://code.qt.io/qt/qt5.git
+cd qt5
+git checkout 5.15.0
+https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
+https://structure.io/openni
 
 ## Unistall old opencv version
 To make sure python finds your build you will want to remove any other installations of opencv.
@@ -136,7 +138,7 @@ pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
 ```
 
-### Environment Variables
+## Environment Variables
 You might want to update your path and environment variables:
 
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
