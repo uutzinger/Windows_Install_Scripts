@@ -187,7 +187,7 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 -DBUILD_DOCS=OFF ^
 -DBUILD_TESTS=OFF ^
 -DBUILD_PERF_TESTS=OFF ^
--DBUILD_opencv_hdf=OFF
+-DBUILD_opencv_hdf=OFF ^
 -DINSTALL_PYTHON_EXAMPLES=OFF ^
 -DINSTALL_C_EXAMPLES=OFF ^
 -DINSTALL_TESTS=OFF^
@@ -196,7 +196,7 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 -DWITH_MKL=OFF ^
 -DWITH_TBB=OFF ^
 -DWITH_EIGEN=OFF ^
--DWITH_LIBREALSENSE=OFF ^
+-DWITH_LIBREALSENSE=OFF
 ```
 
 ### Update Build Variables
