@@ -168,9 +168,16 @@ set "openCvSource=C:\opencv"
 set "openCVExtraModules=C:\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 set "generator=Ninja"
 ```
+
+```
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+```
+
 When you execute the vcvars script twice in a row, it will throw error the second time. You can ignore that.
 
 ## Build
@@ -178,14 +185,13 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 
 ## Build 1
 
-### Let's Start Light (defaults)
+### Let's Start Light (minimal)
 ```
 "C:\Program Files\CMake\bin\cmake.exe" ^
 -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
 -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
 -DOPENCV_ENABLE_NONFREE=ON ^
--DBUILD_opencv_python3=ON ^
 -DBUILD_SHARED_LIBS=ON ^
 -DBUILD_EXAMPLES=OFF ^
 -DBUILD_DOCS=OFF ^
@@ -212,6 +218,9 @@ For a light build, following options should be off:
 * WITH_LIBREALSENSE
 * BUILD_opencv_hdf
 If gstreamer is ON, you need to copy its dlls as shown in Build Example 2.
+
+Make sure this is on:
+* BUILD_opencv_python3
 
 ### Build
 And finally do first build using Ninja:
