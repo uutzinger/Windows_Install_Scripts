@@ -11,11 +11,13 @@ dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMP
 ```
 Make sure each dll listed is found in you CMD windows with:
 ```
-where dllname from previous output
+where dllname_from_previous_output
 ```
+There is issue that pyd file can fail to complete loading of dll because dlls outside of it fail to load.
+
 ### procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
-I start python and stop procmon minitoring and cleart the output. Then I start activity monitoring and type import cv2 in python and stop monitoring as soon as the error appears. The I use filter and find tool in procmon.
+I start python and stop procmon minitoring and cleart the output. Then I start activity monitoring and type import cv2 in python and stop monitoring as soon as the error appears. The I use filter and find tool in procmon [Filter Result is not SUCCESS]. Find python.exe, step backwards.
 
 ## Pre Requisits
 
