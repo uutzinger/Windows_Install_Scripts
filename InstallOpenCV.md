@@ -209,7 +209,7 @@ Run configure with GUI cmake to verify setup.
 ```
 There might be entries in RED, meaning cmake-gui would like you to reconfigure them. If you start this process you need to complete it as it will overwrite your previous cmake call.
 
-For a light build, following options should be off:
+For a light build, following options are usually off:
 * WITH_GSTREAMER
 * WITH_MFX
 * WITH_MKL
@@ -218,8 +218,6 @@ For a light build, following options should be off:
 * WITH_LIBREALSENSE
 * BUILD_opencv_hdf
 
-If gstreamer is ON, you need to copy its dlls as shown in Build Example 2.
-
 Make sure this is on:
 * BUILD_opencv_python3
 
@@ -227,6 +225,28 @@ Make sure this is on:
 And finally do first build using Ninja:
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
+```
+
+### Test
+
+#### DLLs
+Copy all necessary dlls into the installation path in the opencv build directory.
+
+It is likely cmake picked up the intel libraries:
+```
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+```
+It is also possible that gstreamer was picked up without you enabeling it. This will copy a lot of files:
+```
+copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
+xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
+```
+Likely the realsense camera was not automatically includes but you might want to copy dlls anyway:
+```
+copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 ```
 
 #### Test opencv
