@@ -217,6 +217,7 @@ For a light build, following options should be off:
 * WITH_EIGEN
 * WITH_LIBREALSENSE
 * BUILD_opencv_hdf
+
 If gstreamer is ON, you need to copy its dlls as shown in Build Example 2.
 
 Make sure this is on:
