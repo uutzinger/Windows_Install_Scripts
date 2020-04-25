@@ -199,14 +199,15 @@ Run configure with GUI cmake to verify setup.
 ```
 There might be entries in RED, meaning cmake-gui would like you to reconfigure them. If you start this process you need to complete it as it will overwrite your previous cmake call.
 
-For light build, following options should be off:
+For a light build, following options should be off:
 * WITH_GSTREAMER
 * WITH_MFX
 * WITH_MKL
 * WITH_TBB
 * WITH_EIGEN
-* DWITH_LIBREALSENSE
+* WITH_LIBREALSENSE
 * BUILD_opencv_hdf
+If gstreamer is ON, you need to copy its dlls as shown in Build Example 2.
 
 ### Build
 And finally do first build using Ninja:
