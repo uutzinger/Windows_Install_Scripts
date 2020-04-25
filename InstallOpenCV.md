@@ -180,8 +180,10 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 
 ### Let's Start Light (defaults)
 ```
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
--DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
+"C:\Program Files\CMake\bin\cmake.exe" ^
+-B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
+-DCMAKE_BUILD_TYPE=%buildType% ^
+-DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
 -DOPENCV_ENABLE_NONFREE=ON ^
 -DBUILD_opencv_python3=ON ^
 -DBUILD_SHARED_LIBS=ON ^
