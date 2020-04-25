@@ -176,10 +176,20 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 
 ## Build 1
 
-### Let's start light (defaults, with gstreamer)
-
+### Let's Start Light (defaults)
 ```
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" -DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" -DOPENCV_ENABLE_NONFREE=ON -DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python3=ON -DBUILD_EXAMPLES=OFF -DINSTALL_PYTHON_EXAMPLES=OFF -DINSTALL_C_EXAMPLES=OFF -DINSTALL_TESTS=OFF
+"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
+-DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
+-DOPENCV_ENABLE_NONFREE=ON ^
+-DBUILD_opencv_python3=ON ^
+-DBUILD_SHARED_LIBS=ON ^
+-DBUILD_EXAMPLES=OFF ^
+-DBUILD_DOCS=OFF ^
+-DBUILD_TESTS=OFF ^
+-DBUILD_PERF_TESTS=OFF ^
+-DINSTALL_PYTHON_EXAMPLES=OFF ^
+-DINSTALL_C_EXAMPLES=OFF ^
+-DINSTALL_TESTS=OFF
 ```
 
 ### Update Build Variables
@@ -187,51 +197,70 @@ Run configure with GUI cmake to verify setup.
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
 ```
-and then make sure the following variables are set:
-
-* BUILD_SHARED_LIBS=ON
-* BUILD_opencv_python3=ON 
-
-This saves some time:
-
-* BUILD_EXAMPLES=OFF **
-* INSTALL_PYTHON_EXAMPLES=OFF **
-* INSTALL_C_EXAMPLES=OFF **
-* INSTALL_TESTS=OFF**
+There might be entries in RED, meaning cmake-gui would like you to reconfigure them. If you start this process you need to complete it as it will overwrite your previous cmake call.
 
 ### Build
-
 And finally do first build using Ninja:
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
 
-### Test
-#### Run some camera tests
-```
-gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
-
-gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
-```
-
-#### Now test with opencv
-Since this build included gstreamer we should copy the dlls to our search path
-```
-copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
-xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
-```
-
+#### Test opencv
 ```
 C:\opencv\build\install\setup_vars_opencv4.cmd
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
-Now check with test_rtsp_simplegstramer.py
-
 ## Build 2
-Now lets enable Intel optimizations, Intel Media SDK and Intel Realsense.
+Now lets enable Intel optimizations, Intel Media SDK and Intel Realsense and Eigen.
 
+### Setup Shell
+```
+set "openCvSource=C:\opencv"
+set "openCVExtraModules=C:\opencv_contrib\modules"
+set "openCvBuild=%openCvSource%\build"
+set "buildType=Release"
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+set "generator=Ninja"
+```
+### Configure Build
+```
+^
+-DWITH_GSTREAMER=ON
+
+"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
+-DCMAKE_BUILD_TYPE=%buildType% ^
+-DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
+-DOPENCV_ENABLE_NONFREE=ON ^
+-DBUILD_SHARED_LIBS=ON ^
+-DBUILD_opencv_python3=ON ^
+-DBUILD_EXAMPLES=OFF ^
+-DBUILD_DOCS=OFF ^
+-DBUILD_TESTS=OFF ^
+-DBUILD_PERF_TESTS=OFF ^
+-DINSTALL_PYTHON_EXAMPLES=OFF ^
+-DINSTALL_C_EXAMPLES=OFF ^
+-DINSTALL_TESTS=OFF ^
+-DBUILD_opencv_world=OFF ^
+-DWITH_GSTREAMER=ON ^
+-DWITH_MFX=ON ^
+-DWITH_MKL=ON ^
+-DMKL_USE_MULTITHREAD=ON ^
+-DMKL_WITH_TBB=ON ^
+-DWITH_TBB=ON ^
+-DWITH_EIGEN=ON ^
+-DEIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen" ^
+-DWITH_LIBREALSENSE=ON ^
+-DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
+-DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
+-DBUILD_opencv_hdf=ON ^
+-DHDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib" ^
+-DHDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include"
+```
 ### Intel Optimization Thread Building Blocks
 * WITH_TBB=ON
 
@@ -248,44 +277,42 @@ Now lets enable Intel optimizations, Intel Media SDK and Intel Realsense.
 * LIBREALSENSE_INCLUDE_DIR C:/Program Files (x86)/Intel RealSense SDK 2.0/include
 * LIBREALSENSE_LIBRARIES C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib
 
-### Setup Shell
-```
-set "openCvSource=C:\opencv"
-set "openCVExtraModules=C:\opencv_contrib\modules"
-set "openCvBuild=%openCvSource%\build"
-set "buildType=Release"
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
-set "generator=Ninja"
-```
-
-### Configure Build
-```
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" -DCMAKE_BUILD_TYPE=%buildType% -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" -DOPENCV_ENABLE_NONFREE=ON -DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python3=ON -DBUILD_EXAMPLES=OFF -DINSTALL_PYTHON_EXAMPLES=OFF -DINSTALL_C_EXAMPLES=OFF -DINSTALL_TESTS=OFF -DBUILD_opencv_world=OFF -DWITH_GSTREAMER=ON -DWITH_MFX=ON -DWITH_MKL=ON -DMKL_USE_MULTITHREAD=ON -DMKL_WITH_TBB=ON -DWITH_TBB=ON -DWITH_LIBREALSENSE=ON -DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" -DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
-```
-
 ### Build
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
-
 ### Test
 Make sure dlls are in the search path:
 ```
-C:\opencv\build\install\setup_vars_opencv4.cmd
-copy "C:\gstreamer\1.0\x86_64\bin\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
+xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
+copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 ```
 Jeezz 200 dlls ...
 
+### Test
+#### Camera
+```
+gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+```
+
+#### OpenCV
+```
+C:\opencv\build\install\setup_vars_opencv4.cmd
+py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
+py -3 -c "import cv2; print(cv2.getBuildInformation())"
+```
+
+Now check with test_rtsp_simplegstramer.py
+
 ## Build 3
-Inlucde CUDA. This builds upon previous two builds and enable most features
+Inlucde CUDA. This builds upon previous two builds and enables most features
 
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
