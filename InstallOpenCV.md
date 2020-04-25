@@ -1,7 +1,7 @@
 # Compiling OpenCV on Windows 10
 This guide is adapted from [James Bowley] (https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
 
-The two main issues you will need to solve is to a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs b) and to make sure the dll s that those packages need are in the search path when cv2 is loaded. Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
+The two main issues you will need to solve is to a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs b) and to make sure the dlls that those packages need are in the search path when cv2 is loaded. Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
 
 ## Pre Requisits
 
@@ -66,8 +66,7 @@ choco install ninja
 ```
 
 ### Python
-Python 2.7 is no longer supported and when both 3.x and 2.x are installed the compilation might fail at the final stages of the build. Either make sure both versions of Python are 64bit or remove references to 2.7 in cmake-gui (see below) and remove python2.7 from your computer.
-Install python from https://www.python.org/downloads/
+Python 2.7 is no longer supported. OpenCV still suppors 2.7 but compilation might fail at the final stages of the build if one version is 32bit and the other 64. Install python from https://www.python.org/downloads/
 
 Download get-pip.py from https://bootstrap.pypa.io/
 Open command shell and cd to location of get-pip.py and execute following
@@ -80,10 +79,10 @@ py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
 ```
 
-## QT
-Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
+### QT
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first build. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
 
-## Gstreamer
+### Gstreamer
 OpenCV can use gstreamer and comes with wrapper for FFMPEG. If you use Jetson single board computers you will need to get familiar with gstreamer as NVIDIA does not provide support for FFMPEG. You need those tools for creating, receiving and modifing video streams. For example the rtsp web cam streams.
 https://gstreamer.freedesktop.org/download/
 or
@@ -93,7 +92,7 @@ Install both
 * devel msvc
 The gst-python bindings are not available on Windows unfortunately.
 
-## FFMPEG
+### FFMPEG
 FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPPEG includes. There is suggestion below how to bypass the wrapper. If you want to test FFMPEG you can get the packages as following:
 From https://ffmpeg.zeranoe.com/builds/ download
 Version:latest stable
@@ -101,11 +100,34 @@ Architecture: Windows 64 bit
 Linking: Shared and Dev
 Unzip and install in your ffmpeg folder 
 
-## HDF5
+### HDF5
 If you are intersted in large datasets you might want to install the HDF library from HDF group.
 https://www.hdfgroup.org/downloads/hdf5/
 Make an account and obtain the vs14.zip version.
 lib and include folders are in C:/Program Files/HDF_Group/HDF5/x.yy.z/lib/ and include folders.
+
+### js
+BUILD_opencv_js=ON requires EMscripten.
+```
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+emsdk install latest
+emsdk activate latest
+emsdk_env.bat
+```
+You will need to run emsdk_env.bat in each shell/cmd window to activate the components.
+
+### Matlab
+WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
+This is not yet working in my setup as Matlab interface is not built.
+
+### EIGEN
+To active the EIGEN library you need to download it
+git clone https://gitlab.com/libeigen/eigen.git
+and set 
+WITH_EIGEN=ON
+EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
+
 
 ## Unistall old opencv version
 To make sure python finds your build you will want to remove any other installations of opencv.
