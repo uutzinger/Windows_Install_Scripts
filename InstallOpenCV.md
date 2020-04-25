@@ -1,7 +1,21 @@
 # Compiling OpenCV on Windows 10
 This guide is adapted from [James Bowley] (https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
 
+## Debug
 The two main issues you will need to solve is to a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs b) and to make sure the dlls that those packages need are in the search path when cv2 is loaded. Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
+
+There are two ways to find missing dlls:
+### Dumpbin
+```
+dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
+```
+Make sure each dll listed is found in you CMD windows with:
+```
+where dllname from previous output
+```
+### procmon
+[Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
+I start python and stop procmon minitoring and cleart the output. Then I start activity monitoring and type import cv2 in python and stop monitoring as soon as the error appears. The I use filter and find tool in procmon.
 
 ## Pre Requisits
 
@@ -230,7 +244,7 @@ And finally do first build using Ninja:
 ### Test
 
 #### DLLs
-Copy all necessary dlls into the installation path in the opencv build directory.
+Copy all necessary dlls into the installation path in the opencv build directory. This is in the range of 1GB.
 
 It is likely cmake picked up the intel libraries:
 ```
@@ -248,6 +262,17 @@ Likely the realsense camera was not automatically includes but you might want to
 ```
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 ```
+
+HDF has bin in path but not lib
+C:/Program Files/HDF_Group/HDF5/1.12.0/lib/
+
+Intel Media SDK is not on path
+CUDA bin is on path bot not lib
+
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+C:/Program Files/AdoptOpenJDK/jdk-11.0.6.10-hotspot/include
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
 
 #### Test opencv
 ```
