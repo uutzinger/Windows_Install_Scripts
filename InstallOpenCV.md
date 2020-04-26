@@ -164,10 +164,28 @@ You might want to update your path and environment variables:
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
 
 PATH
+Programming
 * C:\Python38
 * C:\Python38\Scripts
-* C:\ffmpeg\bin
+* C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin
+
+Streamers
 * C:\gstreamer\1.0\x86_64\bin
+* C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
+* C:\gstreamer\1.0\x86_64\lib
+* C:\ffmpeg\bin
+
+Intel
+* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
+* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
+
+CUDA
+* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
+* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
+
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 
 ## Prepare your Shell Build Environment
