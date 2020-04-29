@@ -228,6 +228,7 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 -DOPENCV_ENABLE_NONFREE=ON ^
 -DBUILD_SHARED_LIBS=ON ^
 -DOPENCV_PYTHON3_VERSION=ON ^
+-DPYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
 -DBUILD_EXAMPLES=OFF ^
 -DBUILD_DOCS=OFF ^
 -DBUILD_TESTS=OFF ^
