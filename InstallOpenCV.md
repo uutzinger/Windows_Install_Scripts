@@ -233,7 +233,7 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 -DBUILD_PERF_TESTS=OFF ^
 -DINSTALL_PYTHON_EXAMPLES=OFF ^
 -DINSTALL_C_EXAMPLES=OFF ^
--DINSTALL_TESTS=OFF^
+-DINSTALL_TESTS=OFF
 ```
 
 ### Update Build Variables
