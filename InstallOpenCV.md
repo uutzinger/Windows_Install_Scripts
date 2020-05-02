@@ -269,8 +269,18 @@ emsdk install latest
 emsdk activate latest
 ```
 You will need to run 
-```C:/opencv/oppencv_dep/emsdk/emsdk_env.bat``` 
+
+```
+C:/opencv/oppencv_dep/emsdk/emsdk_env.bat
+``` 
+
 in each shell/cmd window to activate the components.
+This script set JAVA_HOME to a new location.
+You can set it back with:
+
+```
+set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
+```
 
 ### Matlab
 WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
@@ -283,22 +293,25 @@ git clone https://gitlab.com/libeigen/eigen.git
 ### Environment Variables
 Your path and environment variables should include:
 
+Environent Variables
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
-* GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
 
-Streamers
+PATH Environment Variable
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
+* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
+* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
+
+NOT YET SET 
+* GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
+Path
 * C:\gstreamer\1.0\x86_64\bin
 * C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
 * C:\gstreamer\1.0\x86_64\lib
 * C:\ffmpeg\bin
 
-Intel
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
-* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
 
 
 ### Setup Shell
@@ -318,7 +331,26 @@ set "generator=Ninja"
 #### cmake-gui
 Features to be turned on and variables to be set
 * WITH_EIGEN=ON
-* EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
+* EIGEN_INCLUDE_PATH "path_to_eigen/eigen/Eigen"
+* OPENCV_EXTRA_MODULES_PATH "C:/opencv/opencv_contrib/modules"
+* OPENCV_ENABLE_NONFREE
+* BUILD_SHARED_LIBS
+* BUILD_opencv_python3
+* BUILD_opencv_python2
+* WITH_GSTREAMER
+* WITH_MFX
+* WITH_MKL
+* MKL_USE_MULTITHREAD
+* MKL_WITH_TBB
+* WITH_TBB
+* WITH_EIGEN
+* EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
+* WITH_LIBREALSENSE
+* LIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
+* LIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
+* BUILD_opencv_hdf
+* HDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib"
+* HDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include"
 
 #### CMD Shell Version
 ```
