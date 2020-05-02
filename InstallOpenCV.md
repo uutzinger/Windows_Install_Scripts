@@ -201,14 +201,14 @@ STATUS: Completed Successfully.
 ## Build 2
 Now lets enable more features:
 * Intel optimizations
-** Math Kernel Library
-** Thread Building Blocks
-** IPP
+  * Math Kernel Library
+  * Thread Building Blocks
+  * IPP
 * Eigen
 * Video features
-** gstreamer 
-** Intel Media SDK
-** Intel Realsense
+  * gstreamer 
+  * Intel Media SDK
+  * Intel Realsense
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact configurtions on individual computers. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
