@@ -32,9 +32,10 @@ Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.
 Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/ but they can go anywhere. 
 
 ```
-cd C:/
-git clone https://github.com/opencv/opencv.git --branch 4.2.0
-git clone https://github.com/opencv/opencv_contrib.git --branch 4.2.0
+mkdir C:/opencv
+cd C:/opencv
+git clone https://github.com/opencv/opencv.git --branch 4.3.0
+git clone https://github.com/opencv/opencv_contrib.git --branch 4.3.0
 ```
 
 ### CMake
@@ -192,14 +193,14 @@ CUDA
 
 Open command prompt and enter the following commands with directories pointing to your installations
 ```
-cd C:/opencv
+cd C:/opencv/opencv
 mkdir build
 cd build
 ```
 
 ```
-set "openCvSource=C:\opencv"
-set "openCVExtraModules=C:\opencv_contrib\modules"
+set "openCvSource=C:\opencv\opencv"
+set "openCVExtraModules=C:\opencv\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 set "generator=Ninja"
