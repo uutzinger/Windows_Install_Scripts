@@ -156,7 +156,8 @@ Run the Generate fucntion. Hopefully there will be no errors or the errors and w
 ### CMD Shell Equivalent
 The equivalent command in the CMD window is listed below. 
 However for this first step, using the GUI version appears to be more reliable.
-OPTIONAL:
+
+Optional:
 
 ```
 "C:\Program Files\CMake\bin\cmake.exe" ^
@@ -195,14 +196,14 @@ py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ## Build 2
 Now lets enable more features:
 * Intel optimizations
-** Math Kernel Library
-** Thread Building Blocks
-** IPP
+* * Math Kernel Library
+* * Thread Building Blocks
+* * IPP
 * Eigen
 * Video features
-** gstreamer 
-** Intel Media SDK
-** Intel Realsense
+* * gstreamer 
+* * Intel Media SDK
+* * Intel Realsense
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact configurtions on individual computers. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
@@ -238,6 +239,8 @@ Install both
 * msvc
 * devel msvc
 The gst-python bindings are not available on Windows unfortunately.
+
+WARNING: Including gstreamer creates most issues with oppencv as there are numerous dlls that need to be accessible.
 
 #### FFMPEG
 FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPPEG includes. 
@@ -276,9 +279,6 @@ This is not yet working in my setup as Matlab interface is not getting built. I 
 ### EIGEN
 To active the EIGEN library you need to download it
 git clone https://gitlab.com/libeigen/eigen.git
-and set 
-WITH_EIGEN=ON
-EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
 
 ### Environment Variables
 Your path and environment variables should include:
@@ -314,6 +314,13 @@ set "buildType=Release"
 set "generator=Ninja"
 ```
 ### Configure Build
+
+#### cmake-gui
+Features to be turned on and variables to be set
+* WITH_EIGEN=ON
+* EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
+
+#### CMD Shell Version
 ```
 "C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
