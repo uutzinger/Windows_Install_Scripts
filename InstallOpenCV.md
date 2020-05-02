@@ -29,6 +29,9 @@ This approach can take significant time.
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
 I start python and procmon and stop it from monitoring.  I clear the output. Then I start activity monitoring and type ```import cv2```  in python and stop monitoring as soon as the error appears. The I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused loading of cv2 to fail. I am also not certain if the one that breaks your installation is actually listed under python.exe as it could be an other component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
 
+## Todo
+https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
+
 ## Pre Requisits
 
 ### Install Python
@@ -198,14 +201,14 @@ STATUS: Completed Successfully.
 ## Build 2
 Now lets enable more features:
 * Intel optimizations
- * Math Kernel Library
- * Thread Building Blocks
- * IPP
+** Math Kernel Library
+** Thread Building Blocks
+** IPP
 * Eigen
 * Video features
- * gstreamer 
- * Intel Media SDK
- * Intel Realsense
+** gstreamer 
+** Intel Media SDK
+** Intel Realsense
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact configurtions on individual computers. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
