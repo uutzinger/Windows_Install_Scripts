@@ -256,7 +256,8 @@ Unzip and install in your ffmpeg folder
 If you are intersted in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
 https://www.hdfgroup.org/downloads/hdf5/
 Make an account and obtain the vs14.zip version.
-lib and include folders are in C:/Program Files/HDF_Group/HDF5/x.yy.z/lib/ and include folders.
+I installed into C:/HDF5.
+lib and include folders are in C:/HDF5/x.yy.z/lib/ and include folders.
 OpenCV provides a wrapper for the libhdf5 library.
 
 ### JavaScript
@@ -296,6 +297,7 @@ Your path and environment variables should include:
 Environent Variables
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
+* HDF5_DIR = C:\HDF5\1.12.0\cmake
 
 PATH Environment Variable
 * C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
@@ -313,7 +315,6 @@ Path
 * C:\ffmpeg\bin
 
 
-
 ### Setup Shell
 ```
 set "openCvSource=C:\opencv"
@@ -329,28 +330,70 @@ set "generator=Ninja"
 ### Configure Build
 
 #### cmake-gui
+Start cmake-gui in the CMD shell that has the bat files from above setup shell executed.
+
+```
+cmake-gui ..\
+```
+
 Features to be turned on and variables to be set
+* OPENCV_EXTRA_MODULES_PATH="C:/opencv/opencv_contrib/modules"
+* OPENCV_ENABLE_NONFREE=ON
+* BUILD_SHARED_LIBS=ON
+* BUILD_opencv_python3=ON
+* BUILD_opencv_python2=ON
+
+Add Entry
+* PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
+
+EIGEN
 * WITH_EIGEN=ON
-* EIGEN_INCLUDE_PATH "path_to_eigen/eigen/Eigen"
-* OPENCV_EXTRA_MODULES_PATH "C:/opencv/opencv_contrib/modules"
-* OPENCV_ENABLE_NONFREE
-* BUILD_SHARED_LIBS
-* BUILD_opencv_python3
-* BUILD_opencv_python2
+* EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
+* Eigen3_DIR = not found
+
+Intel RealSense
+* WITH_LIBREALSENSE=ON
+* LIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
+* LIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
+* realsense2_DIR  not found
+
+GSTREAMER
 * WITH_GSTREAMER
+It should automatically set the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library.
+
+TBB, Parallel framework should list TBB (ver...)
+* BUILD_TBB=OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
+* WITH_TBB=ON
+THe following TBB folders should be set automatically:
+* TBB_DIR 
+* TBB_ENV_INCLUDE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
+* TBB_ENV_LIB  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
+* TBB_ENV_LIB_DEBUG  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
+* TBB_VER_FILE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
+
+MKL 
 * WITH_MFX
 * WITH_MKL
 * MKL_USE_MULTITHREAD
 * MKL_WITH_TBB
-* WITH_TBB
-* WITH_EIGEN
-* EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
-* WITH_LIBREALSENSE
-* LIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
-* LIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
-* BUILD_opencv_hdf
-* HDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib"
-* HDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include"
+When setting executing the setup script it should find the following:
+* MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+* MKL_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_sequential.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
+* MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
+
+HDF
+
+When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
+* BUILD_opencv_hdf=ON
+* HDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib"
+* HDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
+
+OPENCL
+* WITH_OPENCL=ON
+* WITH_OPENCLAMDBLAS=ON
+* WITH_OPENCLEMDFFT=ON
+* WITH_OPENCL_D3D11_NV=ON
+* WITH_OPENCL_SVM=ON support vector machine classified
 
 #### CMD Shell Version
 ```
@@ -383,31 +426,14 @@ Features to be turned on and variables to be set
 -DHDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib" ^
 -DHDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include"
 ```
-### Intel Optimization Thread Building Blocks
-* WITH_TBB=ON
-
-### Intel Optimization Math Kernel Library
-* WITH_MKL=ON **
-* MKL_WITH_TBB=ON 
-* MKL_USE_MULTITHREAD=ON
-
-### MFX
-* WITH_MFX=ON
-
-### RealSense
-* WITH_LIBREALSENSE=ON
-* LIBREALSENSE_INCLUDE_DIR C:/Program Files (x86)/Intel RealSense SDK 2.0/include
-* LIBREALSENSE_LIBRARIES C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib
-
-### EIGEN
-WITH_EIGEN=ON
-EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
-
 
 ### Build
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
+
+
+
 ### Test
 Make sure dlls are in the search path:
 ```
