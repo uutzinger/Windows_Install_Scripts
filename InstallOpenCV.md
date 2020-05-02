@@ -193,17 +193,19 @@ py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
+STATUS: Completed Successfully.
+
 ## Build 2
 Now lets enable more features:
 * Intel optimizations
-* * Math Kernel Library
-* * Thread Building Blocks
-* * IPP
+ * Math Kernel Library
+ * Thread Building Blocks
+ * IPP
 * Eigen
 * Video features
-* * gstreamer 
-* * Intel Media SDK
-* * Intel Realsense
+ * gstreamer 
+ * Intel Media SDK
+ * Intel Realsense
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact configurtions on individual computers. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
@@ -258,7 +260,7 @@ https://www.hdfgroup.org/downloads/hdf5/
 Make an account and obtain the vs14.zip version.
 I installed into C:/HDF5.
 lib and include folders are in C:/HDF5/x.yy.z/lib/ and include folders.
-OpenCV provides a wrapper for the libhdf5 library.
+OpenCV provides a wrapper for the libhdf5 library. If HDF5_DIR is set as environment variable it will find cmake files.
 
 ### JavaScript
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
@@ -285,7 +287,8 @@ set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 
 ### Matlab
 WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
-This is not yet working in my setup as Matlab interface is not getting built. I assume I will need to actiate additional components.
+This is not yet working in my setup as Matlab interface is not getting built. I assume I will need to activate additional components.
+STATUS: In progress
 
 ### EIGEN
 To active the EIGEN library you need to download it
@@ -306,14 +309,13 @@ PATH Environment Variable
 * C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
 * C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
 
-NOT YET SET 
+STATUS: not yet set and verified.
 * GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
 Path
 * C:\gstreamer\1.0\x86_64\bin
 * C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
 * C:\gstreamer\1.0\x86_64\lib
 * C:\ffmpeg\bin
-
 
 ### Setup Shell
 ```
@@ -330,7 +332,7 @@ set "generator=Ninja"
 ### Configure Build
 
 #### cmake-gui
-Start cmake-gui in the CMD shell that has the bat files from above setup shell executed.
+Start cmake-gui in the CMD shell that has the bat files from above executed.
 
 ```
 cmake-gui ..\
@@ -349,23 +351,23 @@ Add Entry
 EIGEN
 * WITH_EIGEN=ON
 * EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
-* Eigen3_DIR = not found
+* Eigen3_DIR is not found
 
 Intel RealSense
 * WITH_LIBREALSENSE=ON
 * LIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
 * LIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
-* realsense2_DIR  not found
+* realsense2_DIR is not found
 
 GSTREAMER
-* WITH_GSTREAMER
+* WITH_GSTREAMER=ON
 It should automatically set the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library.
 
 TBB, Parallel framework should list TBB (ver...)
 * BUILD_TBB=OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
 * WITH_TBB=ON
-THe following TBB folders should be set automatically:
-* TBB_DIR 
+The following TBB folders should be set automatically:
+* TBB_DIR is not found
 * TBB_ENV_INCLUDE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
 * TBB_ENV_LIB  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
 * TBB_ENV_LIB_DEBUG  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
@@ -376,7 +378,7 @@ MKL
 * WITH_MKL
 * MKL_USE_MULTITHREAD
 * MKL_WITH_TBB
-When setting executing the setup script it should find the following:
+When setting executing the setup script it should configure automatically:
 * MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
 * MKL_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_sequential.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
 * MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
@@ -389,13 +391,19 @@ When the HDF5_DIR is set as environment variable it should find the directories 
 * HDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 
 OPENCL
+
+This should be set automatically.
 * WITH_OPENCL=ON
 * WITH_OPENCLAMDBLAS=ON
 * WITH_OPENCLEMDFFT=ON
 * WITH_OPENCL_D3D11_NV=ON
 * WITH_OPENCL_SVM=ON support vector machine classified
 
+Turn Following Features OFF
+* USE_WIN32_FILEIO, this likely disables bigTIFF
+
 #### CMD Shell Version
+STATUS: Not verified
 ```
 "C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
@@ -418,20 +426,20 @@ OPENCL
 -DMKL_WITH_TBB=ON ^
 -DWITH_TBB=ON ^
 -DWITH_EIGEN=ON ^
--DEIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen" ^
+-DEIGEN_INCLUDE_PATH="C:/opencv/opencv_dep/eigen/Eigen" ^
 -DWITH_LIBREALSENSE=ON ^
 -DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
 -DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
 -DBUILD_opencv_hdf=ON ^
--DHDF5_C_LIBRARY="C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib" ^
--DHDF5_INCLUDE_DIRS="C:/Program Files/HDF_Group/HDF5/1.12.0/include"
+-DHDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib" ^
+-DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 ```
 
 ### Build
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
-
+STATUS: In progress
 
 
 ### Test
@@ -465,8 +473,7 @@ py -3 -c "import cv2; print(cv2.getBuildInformation())"
 Now check with test_rtsp_simplegstramer.py
 
 ## Build 3
-Inlucde CUDA and QT. This builds upon previous two builds and enables most features
-
+Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. OpenCV built with CUDA support will not run on a computer without CUDA GPU. The QT build replaces GUI option.
 
 ### CUDA
 Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
@@ -482,7 +489,10 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
 [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
 
 ### QT
-Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first build. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
+Installing QT takes a very long time. In addition it might interfere with your current ninja and cmake setup.
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first time build. 
+
+To install QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage. I filter for LTS version.
 
 ### Environment Variables
 You might want to update your path and environment variables:
@@ -491,9 +501,8 @@ CUDA
 * C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 * C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 
-
 ```
-"C:\Program Files\CMake\bin\cmake-gui.exe"
+cmake-gui ..\
 ```
 
 ### CUDA
@@ -518,28 +527,11 @@ QT_PLUGIN_PATH = C:\Qt\5.x.y\msvc2017_64\plugins
 
 If this worked ok, we can try to include CUDA support. CUDA compiled opencv will not run if there is no NVIDIA GPU on the system.
 
-### Create single library to include all features
-* BUILD_opencv_world=ON
-
-## GSTREAMER
-* WITH_GSTREAMER=ON
-
-### HDF
-* BUILD_opencv_HDF=ON
-* HDF5_C_LIBRARY = C:/Program Files/HDF_Group/HDF5/1.12.0/lib/libhdf5.lib
-* HDF5_INCLUDE_DIRS = C:/Program Files/HDF_Group/HDF5/1.12.0/include/static
-Not tested yet.
-
 ### Graphics Libraries
-* WITH_OPENGL=ON
 * WITH_QT=ON
 * Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5
 With x.y the QT version you downloaded.
 Rerun configure and generate in cmake-gui.
-
-You will need to disable rgbd as it does not compile with rgbd. [Issue] (https://github.com/opencv/opencv_contrib/issues/2307)
-
-* BUILD_opencv_rgbd=OFF
 
 If you have previous builds you might want to rename build/install to build/install_noCUDA so you can preserve non_cuda version.
 
@@ -551,13 +543,6 @@ If you have previous builds you might want to rename build/install to build/inst
 This will create many DLL interface warnings. Ignore them. It might take 3 hours to complete.
 Now that we have dll and CUDA suport where does library need to go? Check variable script in install folder.
 
-```
-dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
-```
-make sure each dll is found with
-```
-where dllname
-```
 
 ### Optional: Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
@@ -708,3 +693,6 @@ git checkout 5.15.0
 https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 ```
+
+### Create single library to include all features
+* BUILD_opencv_world=ON
