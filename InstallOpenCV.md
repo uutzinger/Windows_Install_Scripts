@@ -1,23 +1,33 @@
 # Compiling OpenCV on Windows 10
-This guide is adapted from [James Bowley] (https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
+This guide's purppose is to build openCV in several steps and with increasing complexity.
+It is common that the actication of one component creates a set of issues that need to be solved.
+Also the activation of one component (e.g. gstreamer) can not be reverted even when attempting to turn off the component in the build script.
+It is also common that the cmake and cmake-gui do not create the same build configuration. Also often there is more than one cmake version installed on your computer.
+I prefer building with Ninja because opencv build times are very long and Ninja reduces them significantly. 
+Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
 
 ## Debug
-The two main issues you will need to solve is to a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs b) and to make sure the dlls that those packages need are in the search path when cv2 is loaded. Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
+Once you start more complex builds, the two main issues you will need to solve is to 
+* a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs 
+* b) to make sure the dlls that those packages are in the search path when cv2 is loaded. 
+Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
 
-There are two ways to find missing dlls:
+I enable opencv builds both for python 2 and python 3. I have builds that open in python 2 without errors and dont open in python 3. At this time I dont have recipe that simply identfies the component that failed. However the following is my approach:
+
+There are two ways to find missing dlls but the method below is not a guarantee to find the missing dll that breaks your install:
 ### Dumpbin
 ```
 dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
 ```
-Make sure each dll listed is found in you CMD windows with:
+This lists all dlls your build is attempting to open. Make sure each dll listed is found in you CMD windows with:
 ```
 where dllname_from_previous_output
 ```
-There is issue that pyd file can fail to complete loading of dll because dlls outside of it fail to load.
+This approach can take significant time.
 
 ### procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
-I start python and stop procmon minitoring and cleart the output. Then I start activity monitoring and type import cv2 in python and stop monitoring as soon as the error appears. The I use filter and find tool in procmon [Filter Result is not SUCCESS]. Find python.exe, step backwards.
+I start python and procmon and stop it from monitoring.  I clear the output. Then I start activity monitoring and type ```import cv2```  in python and stop monitoring as soon as the error appears. The I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused loading of cv2 to fail. I am also not certain if the one that breaks your installation is actually listed under python.exe as it could be an other component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
 
 ## Pre Requisits
 
@@ -29,45 +39,22 @@ OpenCV still supports python 2.7 but compilation fails at the final stages of th
 Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.com/downloads/) and install the the option for develoment for desktop application in C.
 
 ### Open CV Source
-Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/ but they can go anywhere. 
+Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times in can be confusing in GitHub to identify the latest release. You can check openCV [Documentation](https://docs.opencv.org/) when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
 
 ```
 mkdir C:/opencv
 cd C:/opencv
 git clone https://github.com/opencv/opencv.git --branch 4.3.0
 git clone https://github.com/opencv/opencv_contrib.git --branch 4.3.0
+cd C:/opencv/opencv
+mkdir build
 ```
 
 ### CMake
 Install CMake with latest release version. [Kitware](https://github.com/Kitware/CMake/releases/)
 
-### CUDA
-Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
-This is only useful if you have an NVIDA GPU.
-
-### cuDNN
-Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
-Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
-
-### NVIDIA video codec SDK
-Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
-[VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
-
-### Intel Media SDK
-Optional: To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/en-us/media-sdk)
-
 ### Windows SDK 
 When you install Visual Studio Compiler you can select Windows 10 SDK (10.0.18362.0) in the Installer. Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to Windows SDK that are not yet installed. [SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
-
-### Intel TBB, MKL, MPI, IPP, DAAL
-To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. [Intel libraries](https://software.seek.intel.com/performance-libraries). Use Microsoft Edge to download as website has issues with Chrome.
-
-### LAPACK BLAS
-BLAS is part of the Intel Performance libraries. You dont need to build it. If you want to build it you can download the source [LAPACK] (http://www.netlib.org/lapack/) and build it but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
-
-### Intel RealSense
-If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense] (https://www.intelrealsense.com/developers/). You need to add realsense2.dll to system path. It is location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
 
 ### Ninja
 To speed up the build, NINJA is preferred tool over Visual Studio as it speeds up the build significantly. You will still use the microsoft compiler from Visual Studio but ninja will call it.
@@ -88,68 +75,6 @@ py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
 ```
 
-### QT
-Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first build. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
-
-### Gstreamer
-OpenCV can use gstreamer and comes with wrapper for FFMPEG. If you use Jetson single board computers you will need to get familiar with gstreamer as NVIDIA does not provide support for FFMPEG. You need those tools for creating, receiving and modifing video streams. For example the rtsp web cam streams.
-https://gstreamer.freedesktop.org/download/
-or
-https://gstreamer.freedesktop.org/data/pkg/windows/
-Install both
-* msvc
-* devel msvc
-The gst-python bindings are not available on Windows unfortunately.
-
-### FFMPEG
-FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPPEG includes. There is suggestion below how to bypass the wrapper. If you want to test FFMPEG you can get the packages as following:
-From https://ffmpeg.zeranoe.com/builds/ download
-Version:latest stable
-Architecture: Windows 64 bit
-Linking: Shared and Dev
-Unzip and install in your ffmpeg folder 
-
-### HDF5
-If you are intersted in large datasets you might want to install the HDF library from HDF group.
-https://www.hdfgroup.org/downloads/hdf5/
-Make an account and obtain the vs14.zip version.
-lib and include folders are in C:/Program Files/HDF_Group/HDF5/x.yy.z/lib/ and include folders.
-
-### js
-BUILD_opencv_js=ON requires EMscripten.
-```
-git clone https://github.com/emscripten-core/emsdk.git
-cd emsdk
-emsdk install latest
-emsdk activate latest
-emsdk_env.bat
-```
-You will need to run emsdk_env.bat in each shell/cmd window to activate the components.
-
-### Matlab
-WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
-This is not yet working in my setup as Matlab interface is not built.
-
-### EIGEN
-To active the EIGEN library you need to download it
-git clone https://gitlab.com/libeigen/eigen.git
-and set 
-WITH_EIGEN=ON
-EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
-
-### Building Dependencies from Source
-It should not be necessary to build these dependencies
-```
-git clone https://gitlab.com/libeigen/eigen.git
-git clone https://github.com/oneapi-src/oneTBB.git
-git clone https://github.com/AcademySoftwareFoundation/openexr.git
-git clone git://code.qt.io/qt/qt5.git
-cd qt5
-git checkout 5.15.0
-https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
-https://structure.io/openni
-```
-
 ## Unistall old opencv version
 To make sure python finds your build you will want to remove any other installations of opencv.
 ```
@@ -158,59 +83,25 @@ pip3 uninstall opencv-contrib-python
 ```
 
 ## Environment Variables
-You might want to update your path and environment variables:
-
-* INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
-* GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
-* GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
+You might want to update your path and environment variables. If you dont know how to do that Rapid Environment Editor is a tool that finds errors and can also help you deal with the PATH when it exceeds the size limit. There are two PATH variables. THe global one and the one associated with your account. The one for your account is an addition to the global one.
 
 PATH
-Programming
 * C:\Python38
 * C:\Python38\Scripts
 * C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin
-
-Streamers
-* C:\gstreamer\1.0\x86_64\bin
-* C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
-* C:\gstreamer\1.0\x86_64\lib
-* C:\ffmpeg\bin
-
-Intel
-* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
-* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-
-CUDA
-* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
-* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
-
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 
 ## Prepare your Shell Build Environment
 
 Open command prompt and enter the following commands with directories pointing to your installations
 ```
-cd C:/opencv/opencv
-mkdir build
-cd build
-```
-
-```
+cd C:/opencv/opencv/build
 set "openCvSource=C:\opencv\opencv"
 set "openCVExtraModules=C:\opencv\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 set "generator=Ninja"
-```
-
-```
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
 ```
 
 When you execute the vcvars script twice in a row, it will throw error the second time. You can ignore that.
@@ -219,8 +110,54 @@ When you execute the vcvars script twice in a row, it will throw error the secon
 Here it have 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with smaller build and then expand.
 
 ## Build 1
+With this first build, I will not use the command line option. We will start directly with cmake-gui.
+You should not need to worry about dlls. It is a light build with just the default settings, extra and non free modules and python.
 
 ### Let's Start Light (minimal)
+```
+"C:\Program Files\CMake\bin\cmake-gui.exe"
+```
+* Clear Build Cache. This will remove any revious configuration options.
+* Run configure. Select Ninja as your compiler environment. Select native compilers.
+
+### Verify Build Variables
+There will entries in RED, meaning cmake-gui would like you to take a look at them. 
+Please verify:
+
+For a light build, following options are usually off:
+* WITH_GSTREAMER
+* WITH_MFX
+* WITH_MKL
+* WITH_TBB
+* WITH_EIGEN
+* WITH_LIBREALSENSE
+* BUILD_opencv_hdf
+* D-DBUILD_EXAMPLES
+* BUILD_DOCS
+* BUILD_TESTS
+* BUILD_PERF_TESTS
+* INSTALL_PYTHON_EXAMPLES
+* INSTALL_C_EXAMPLES
+* INSTALL_TESTS
+
+Make sure this is ON or set:
+* BUILD_opencv_python3
+* OPENCV_EXTRA_MODULES_PATH "C:/opencv/opencv_contrib/modules"
+* OPENCV_ENABLE_NONFREE
+* BUILD_SHARED_LIBS
+* OPENCV_PYTHON3_VERSION
+* PYTHON_DEFAULT_EXECUTABLE "C:\Python38\python.exe"
+
+### Configure and Generate
+After successful configuratin, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake gui as shown above. Dont delete the cache. Just rerun configure in gui.
+
+Run the Generate fucntion. Hopefully there will be no errors or the errors and warning allow you to still build opencv.
+
+### CMD Shell Equivalent
+The equivalent command in the CMD window is listed below. 
+However for this first step, using the GUI version appears to be more reliable.
+OPTIONAL:
+
 ```
 "C:\Program Files\CMake\bin\cmake.exe" ^
 -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
@@ -240,25 +177,6 @@ Here it have 3 builds with increasing complexity. Its not a good idea to enable 
 -DWITH_GSTREAMER=OFF
 ```
 
-### Update Build Variables
-Run configure with GUI cmake to verify setup.
-```
-"C:\Program Files\CMake\bin\cmake-gui.exe"
-```
-There might be entries in RED, meaning cmake-gui would like you to reconfigure them. If you start this process you need to complete it as it will overwrite your previous cmake call.
-
-For a light build, following options are usually off:
-* WITH_GSTREAMER
-* WITH_MFX
-* WITH_MKL
-* WITH_TBB
-* WITH_EIGEN
-* WITH_LIBREALSENSE
-* BUILD_opencv_hdf
-
-Make sure this is on:
-* BUILD_opencv_python3
-
 ### Build
 And finally do first build using Ninja:
 ```
@@ -266,47 +184,122 @@ And finally do first build using Ninja:
 ```
 
 ### Test
-
-#### DLLs
-Copy all necessary dlls into the installation path in the opencv build directory. This is in the range of 1GB.
-
-It is likely cmake picked up the intel libraries:
 ```
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-```
-It is also possible that gstreamer was picked up without you enabeling it. This will copy a lot of files:
-```
-copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
-xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
-```
-Likely the realsense camera was not automatically includes but you might want to copy dlls anyway:
-```
-copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-```
-
-HDF has bin in path but not lib
-C:/Program Files/HDF_Group/HDF5/1.12.0/lib/
-
-Intel Media SDK is not on path
-CUDA bin is on path bot not lib
-
-C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
-C:/Program Files/AdoptOpenJDK/jdk-11.0.6.10-hotspot/include
-C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
-C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
-
-#### Test opencv
-```
-C:\opencv\build\install\setup_vars_opencv4.cmd
+C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
+py -2 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
+py -2 -c "import cv2; print(cv2.getBuildInformation())"
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
 ## Build 2
-Now lets enable Intel optimizations, Intel Media SDK and Intel Realsense and Eigen.
+Now lets enable more features:
+* Intel optimizations
+** Math Kernel Library
+** Thread Building Blocks
+** IPP
+* Eigen
+* Video features
+** gstreamer 
+** Intel Media SDK
+** Intel Realsense
+
+This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact configurtions on individual computers. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
+
+First we will want to install additional components. Some of them I wilke to install outside of the opencv and opencv-contrib folder.
+```
+cd C:/opencv
+mkdir opencv_dep
+```
+
+### Intel TBB, MKL, MPI, IPP, DAAL
+To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. [Intel libraries](https://software.seek.intel.com/performance-libraries). The chrome browser seems to have have issues with selecting the downloads unfortunately.
+
+### LAPACK BLAS
+BLAS is part of the Intel Performance libraries which we installed above.
+You dont need to build it. 
+LA stands for linear algebra and is the backbone of computer vision and scientific computing.
+If you want to build it you can download the source [LAPACK] (http://www.netlib.org/lapack/) and build it but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
+
+### Intel Media SDK
+Optional: To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/en-us/media-sdk)
+
+### Intel RealSense
+Optional: If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense](https://www.intelrealsense.com/developers/). You need to add realsense2.dll to system path. It is usully location in C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
+
+### Gstreamer & FFMPEG
+FFMPEG or gstreamer are needed to receive, decode and encode compressed video streams. For example the rtsp web cam streams.
+OpenCV comes with a wrapper for FFMPEG and distributes the necessary libraries.
+If you use a Jetson single board computers you will need to get familiar with gstreamer as NVIDIA does not provide GPU support for FFMPEG. 
+
+#### Gstreamer
+For Windows: https://gstreamer.freedesktop.org/download/ or https://gstreamer.freedesktop.org/data/pkg/windows/
+Install both
+* msvc
+* devel msvc
+The gst-python bindings are not available on Windows unfortunately.
+
+#### FFMPEG
+FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPPEG includes. 
+There is suggestion further below how to bypass the wrapper. I have not completed the bypass approach and can not recommend it at thist time.
+You can obtain your ffmpeg binary and development files here:
+From https://ffmpeg.zeranoe.com/builds/ download
+Version:latest stable
+Architecture: Windows 64 bit
+Linking: Shared and Dev
+Unzip and install in your ffmpeg folder 
+
+### HDF5
+If you are intersted in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
+https://www.hdfgroup.org/downloads/hdf5/
+Make an account and obtain the vs14.zip version.
+lib and include folders are in C:/Program Files/HDF_Group/HDF5/x.yy.z/lib/ and include folders.
+OpenCV provides a wrapper for the libhdf5 library.
+
+### JavaScript
+OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
+```
+cd C:/opencv/oppencv_dep
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+emsdk install latest
+emsdk activate latest
+```
+You will need to run 
+```C:/opencv/oppencv_dep/emsdk/emsdk_env.bat``` 
+in each shell/cmd window to activate the components.
+
+### Matlab
+WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
+This is not yet working in my setup as Matlab interface is not getting built. I assume I will need to actiate additional components.
+
+### EIGEN
+To active the EIGEN library you need to download it
+git clone https://gitlab.com/libeigen/eigen.git
+and set 
+WITH_EIGEN=ON
+EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
+
+### Environment Variables
+Your path and environment variables should include:
+
+* INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
+* GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
+* GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
+
+Streamers
+* C:\gstreamer\1.0\x86_64\bin
+* C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
+* C:\gstreamer\1.0\x86_64\lib
+* C:\ffmpeg\bin
+
+Intel
+* C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
+* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
+
 
 ### Setup Shell
 ```
@@ -362,10 +355,15 @@ set "generator=Ninja"
 ### MFX
 * WITH_MFX=ON
 
-### Real
+### RealSense
 * WITH_LIBREALSENSE=ON
 * LIBREALSENSE_INCLUDE_DIR C:/Program Files (x86)/Intel RealSense SDK 2.0/include
 * LIBREALSENSE_LIBRARIES C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib
+
+### EIGEN
+WITH_EIGEN=ON
+EIGEN_INCLUDE_PATH="path_to_eigen/eigen/Eigen"
+
 
 ### Build
 ```
@@ -402,7 +400,32 @@ py -3 -c "import cv2; print(cv2.getBuildInformation())"
 Now check with test_rtsp_simplegstramer.py
 
 ## Build 3
-Inlucde CUDA. This builds upon previous two builds and enables most features
+Inlucde CUDA and QT. This builds upon previous two builds and enables most features
+
+
+### CUDA
+Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
+This is only useful if you have an NVIDA GPU.
+
+### cuDNN
+Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
+Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
+
+### NVIDIA video codec SDK
+Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
+[VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
+
+### QT
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first build. To insgtall QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage.
+
+### Environment Variables
+You might want to update your path and environment variables:
+
+CUDA
+* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
+* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
+
 
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
@@ -575,4 +598,48 @@ copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist
 copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+```
+
+
+#### DLLs
+Copy all necessary dlls into the installation path in the opencv build directory. This is in the range of 1GB.
+
+It is likely cmake picked up the intel libraries:
+```
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
+copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+```
+It is also possible that gstreamer was picked up without you enabeling it. This will copy a lot of files:
+```
+copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
+xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
+```
+Likely the realsense camera was not automatically includes but you might want to copy dlls anyway:
+```
+copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+```
+
+HDF has bin in path but not lib
+C:/Program Files/HDF_Group/HDF5/1.12.0/lib/
+
+Intel Media SDK is not on path
+CUDA bin is on path bot not lib
+
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+C:/Program Files/AdoptOpenJDK/jdk-11.0.6.10-hotspot/include
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
+
+### Building Dependencies from Source
+It should not be necessary to build these dependencies
+```
+git clone https://github.com/oneapi-src/oneTBB.git
+git clone https://github.com/AcademySoftwareFoundation/openexr.git
+git clone git://code.qt.io/qt/qt5.git
+cd qt5
+git checkout 5.15.0
+https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
+https://structure.io/openni
 ```
