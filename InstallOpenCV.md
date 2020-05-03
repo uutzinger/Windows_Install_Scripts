@@ -114,8 +114,8 @@ py -2 -m pip install numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
 py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
 py -3 -m pip install yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
-py -2 -m pip install yappi --upgrade
 ```
+I usually also have scikit-image, pylint, cython, scipy, pillow, matplotlib, pandas, wave, imutils in my python installation.
 
 ## Unistalling of Previous opencv Installtions
 To make sure python finds your build you will want to remove any other installations of opencv.
