@@ -42,6 +42,18 @@ I start python and procmon and stop procmon from monitoring. I clear its output.
 ### Cleaning of Previous Build
 You can clean the build configurtion in cmake-gui by clearing the cache. You can also clean previous builds by deleting the content of the build directory. If you modify the build with cmake or cmake-gui, it appears that only the necessary modules are rebuilt. If you can not complete an incremental build, start disabling features and when that does not help, you might need to clear the cache or start from scratch by deleting the build folder.
 
+When you use
+```
+"C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
+```
+the --target options of interest are 
+```
+install
+uninstall
+clean
+help
+```
+
 ### Fun
 This explains algorithm optimizationsby Intel for opencv.
 https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
