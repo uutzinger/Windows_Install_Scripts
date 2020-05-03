@@ -342,8 +342,8 @@ Optional and needed for Build 3:
 
 ### Setup Shell
 ```
-set "openCvSource=C:\opencv"
-set "openCVExtraModules=C:\opencv_contrib\modules"
+set "openCvSource=C:\opencv\opencv"
+set "openCVExtraModules=C:\opencv\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -358,6 +358,7 @@ set "generator=Ninja"
 Start cmake-gui in the CMD shell that has the bat files from above executed.
 
 ```
+cd C:\opencv\opencv\build
 cmake-gui ..\
 ```
 
