@@ -1,20 +1,30 @@
 # Compiling OpenCV on Windows 10
-This guide's purppose is to build openCV in several steps and with increasing complexity.
-It is common that the actication of one component creates a set of issues that need to be solved.
-Also the activation of one component (e.g. gstreamer) can not be reverted even when attempting to turn off the component in the build script.
-It is also common that the cmake and cmake-gui do not create the same build configuration. Also often there is more than one cmake version installed on your computer.
+## Motivation
+There are many reasons to build your own openCV binaries. The issue with building your own binaries are the many temptations of enabling components that you dont really need.
+
+I want to enable gstreamer and processor specific accelerations. In particular Intel optimized libraries and CUDA support.
+I need to eanble gstreamer because I want to develop code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceeration on Jetson architecture. I would like to be able to read rtsp camera streams because I have bandwidth caps on my applications. I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel Realsense platform. I need architeture optimization because I will attempt using high frame rate cameras in my research.
+
+The temptations I encountered are: Enabling Eigen, Matlab, JavaScript, Java, HDF5. Intel TBB,IPP,MKL and CUDA are complex enough for architecture opimization. I dont program in Java nor JavaScript. I have over many years used Matlab for scientific computing but I dont need to build an opencv interface for Matlab, as I can obtain that through Mathworks when the need arises. If I have issue of needing to save and read very large files >2Gb, I can check into packages other than openCV that provide that functionality.
+
+## Apparoach
+This guide's purpose is to build openCV in several steps and with increasing complexity.
+
+It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted even when attempting to turn off the component in the build script.
+It is also common that the cmake and cmake-gui do not create the same build configuration. Often there is more than one cmake version installed on your computer.
+
 I prefer building with Ninja because opencv build times are very long and Ninja reduces them significantly. 
+
 Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
 
 ## Debug
 Once you start more complex builds, the two main issues you will need to solve is to 
-* a) find appropriate binaries and packages to include into your build and reference the appropraite directories and libs 
-* b) to make sure the dlls that those packages are in the search path when cv2 is loaded. 
+* a) find appropriate binaries and packages to include into your build and reference the appropraite directories and lib(s) 
+* b) to make sure the dlls that those packages need are in the search path when cv2 is loaded 
 Although you can enable world build which creates a single dll for opencv, the support packages still have their own dlls. I counted about 200 additional dll if you make a large build.
 
-I enable opencv builds both for python 2 and python 3. I have builds that open in python 2 without errors and dont open in python 3. At this time I dont have recipe that simply identfies the component that failed. However the following is my approach:
+I enable opencv builds both for python 2 and python 3. I had builds that open in python 2 without errors and don't open in python 3. At this time I dont have a recipe that simply identfies the component that failed to load. However the following is my approach:
 
-There are two ways to find missing dlls but the method below is not a guarantee to find the missing dll that breaks your install:
 ### Dumpbin
 ```
 dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
@@ -23,14 +33,19 @@ This lists all dlls your build is attempting to open. Make sure each dll listed 
 ```
 where dllname_from_previous_output
 ```
-This approach can take significant time.
+This approach can take significant time, and is not guaranteed to find the culprit.
 
 ### procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
-I start python and procmon and stop it from monitoring.  I clear the output. Then I start activity monitoring and type ```import cv2```  in python and stop monitoring as soon as the error appears. The I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused loading of cv2 to fail. I am also not certain if the one that breaks your installation is actually listed under python.exe as it could be an other component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
+I start python and procmon and stop it from monitoring.  I clear the output. Then I start activity monitoring and type ```import cv2```  in python and stop monitoring as soon as the error appears. The I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused cv2 to fail. The one that breaks your installation can be listed under an other task than python.exe as it could be an other component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
 
-## Todo
+### Cleaning of previous build
+You can clean the build configurtion in cmake-gui by clearing the cache. You can also clean previous builds by deleting the content of the build directory. If you modif the build with cmake or cmake-gui, it appears that only the necessary modules are rebuilt. If you can not complete an incremental build, start disabling features and when that does not help, you might need to clear the cache or start from scratch by deleting the build folder.
+
+### Fun
+This explains algorithm optimizations.
 https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
+https://halide-lang.org/
 
 ## Pre Requisits
 
@@ -264,6 +279,7 @@ Make an account and obtain the vs14.zip version.
 I installed into C:/HDF5.
 lib and include folders are in C:/HDF5/x.yy.z/lib/ and include folders.
 OpenCV provides a wrapper for the libhdf5 library. If HDF5_DIR is set as environment variable it will find cmake files.
+STATUS: Disabled, does not comppile
 
 ### JavaScript
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
@@ -287,15 +303,19 @@ You can set it back with:
 ```
 set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 ```
+STATUS: Disabled, does not compile
 
 ### Matlab
-WITH_MATLAB=ON requires mex and some libraries to be found. In matlab command prompt: mex -setup
+WITH_MATLAB=ON requires mex builder and some libraries to be found. In matlab command prompt: mex -setup
 This is not yet working in my setup as Matlab interface is not getting built. I assume I will need to activate additional components.
 STATUS: In progress
 
 ### EIGEN
 To active the EIGEN library you need to download it
+```
 git clone https://gitlab.com/libeigen/eigen.git
+```
+STATUS: Disabled, does not compile.
 
 ### Environment Variables
 Your path and environment variables should include:
@@ -303,22 +323,23 @@ Your path and environment variables should include:
 Environent Variables
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
+* GSTREAMER_DIR=C:\gstreamer\1.0\x86_64\bin
+
 * HDF5_DIR = C:\HDF5\1.12.0\cmake
 
 PATH Environment Variable
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries_2020.0.166\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt
+* C:\opencv\opencv\build\install\x64\vc16\bin"
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal
+* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler
 * C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
 * C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-
-STATUS: not yet set and verified.
-* GSTREAMER_DIR = C:\gstreamer\1.0\x86_64
-Path
-* C:\gstreamer\1.0\x86_64\bin
-* C:\gstreamer\1.0\x86_64\lib\gstreamer-1.0
-* C:\gstreamer\1.0\x86_64\lib
-* C:\ffmpeg\bin
+Optional, needed for Build 2 and Build 3:
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
+* C:\gstreamer\1.0\x86_64\bin"
 
 ### Setup Shell
 ```
@@ -352,7 +373,7 @@ Add Entry
 * PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
 
 EIGEN
-* WITH_EIGEN=ON
+* WITH_EIGEN=OFF
 * EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
 * Eigen3_DIR is not found
 
@@ -389,7 +410,7 @@ When setting executing the setup script it should configure automatically:
 HDF
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
-* BUILD_opencv_hdf=ON
+* BUILD_opencv_hdf=OFF
 * HDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib"
 * HDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 
@@ -402,8 +423,13 @@ This should be set automatically.
 * WITH_OPENCL_D3D11_NV=ON
 * WITH_OPENCL_SVM=ON support vector machine classified
 
+JavaScript
+* BUILD_opencv_js=OFF
+
 Turn Following Features OFF
-* USE_WIN32_FILEIO, this likely disables bigTIFF
+* USE_WIN32_FILEIO=OFF, this might enable bigTIFF or file acceess for >2GB.
+* WITH_CUDA=OFF
+* OPENCV_DNN_CUDA=OFF
 
 #### CMD Shell Version
 STATUS: Not verified
@@ -428,12 +454,12 @@ STATUS: Not verified
 -DMKL_USE_MULTITHREAD=ON ^
 -DMKL_WITH_TBB=ON ^
 -DWITH_TBB=ON ^
--DWITH_EIGEN=ON ^
+-DWITH_EIGEN=OFF ^
 -DEIGEN_INCLUDE_PATH="C:/opencv/opencv_dep/eigen/Eigen" ^
 -DWITH_LIBREALSENSE=ON ^
 -DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
 -DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
--DBUILD_opencv_hdf=ON ^
+-DBUILD_opencv_hdf=OFF ^
 -DHDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib" ^
 -DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 ```
@@ -442,21 +468,39 @@ STATUS: Not verified
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
-STATUS: In progress
-
 
 ### Test
-Make sure dlls are in the search path:
+STATUS: In progress
+
+We need to add the following directories to the search path so opencv can find the necessary dlls:
 ```
-copy "C:\gstreamer\1.0\x86_64\bin\*" "C:\opencv\build\install\x64\vc16\bin"
-xcopy "C:\gstreamer\1.0\x86_64\lib" "C:\opencv\build\install\x64\vc16\lib" /E/H
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc_mt\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" "C:\opencv\build\install\x64\vc16\bin"
-copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" "C:\opencv\build\install\x64\vc16\bin"
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler\*.dll" "C:\opencv\build\install\x64\vc16\bin"
+set "PATH=%PATH%;C:\opencv\opencv\build\install\x64\vc16\bin"
+set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"
+set "PATH=%PATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14"
 ```
-Jeezz 200 dlls ...
+
+Optional:
+```
+set "PATH=%PATH%;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\mkl"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\ipp"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\daal"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler"
+```
+
+```
+import sys
+print('\n'.join(sys.path))
+```
+
+```
+C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
+py -2 -c "import cv2; print('OpenCV: ' + cv2.__version__ + 'for python installed and working')"
+py -2 -c "import cv2; print(cv2.getBuildInformation())"
+py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
+py -3 -c "import cv2; print(cv2.getBuildInformation())"
+```
 
 ### Test
 #### Camera
