@@ -101,9 +101,20 @@ Open a command shell and cd to the location of get-pip.py and execute following:
 ```
 py -3 get-pip.py
 py -3 -m pip install pip --upgrade
-py -3 -m pip install numpy --upgrade
+```
+
+From https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy download
+* numpy‑1.18.3+mkl‑cp38‑cp38‑win_amd64.whl
+* numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
+* yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
+
+```
+py -3 -m pip install numpy‑1.18.3+mkl‑cp38‑cp38‑win_amd64.whl
+py -2 -m pip install numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
 py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
+py -3 -m pip install yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
+py -2 -m pip install yappi --upgrade
 ```
 
 ## Unistalling of Previous opencv Installtions
@@ -298,6 +309,7 @@ STATUS: Disabled, does not compile.
 
 ### JavaScript
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
+WARNING: This will install a python and java interpreter. On my installation cmake picked up this Python 3 instead of the system wide one.
 ```
 cd C:/opencv/oppencv_dep
 git clone https://github.com/emscripten-core/emsdk.git
@@ -335,7 +347,7 @@ Your path and environment variables should include:
 Environent Variables
 * INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
-* GSTREAMER_DIR=C:\gstreamer\1.0\x86_64\bin
+* GSTREAMER_DIR=C:\gstreamer\1.0\x86_64
 * HDF5_DIR = C:\HDF5\1.12.0\cmake
 
 PATH Environment Variable
@@ -349,6 +361,7 @@ PATH Environment Variable
 * C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
 * C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
 * C:\gstreamer\1.0\x86_64\bin"
+
 Optional and needed for Build 3:
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 
@@ -397,11 +410,13 @@ Intel RealSense
 
 GSTREAMER
 * WITH_GSTREAMER=ON
-It should automatically set the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library.
+
+It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
 TBB, Parallel framework should list TBB (ver...)
 * BUILD_TBB=OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
 * WITH_TBB=ON
+
 The following TBB folders should be set automatically:
 * TBB_DIR is not found
 * TBB_ENV_INCLUDE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
@@ -409,12 +424,17 @@ The following TBB folders should be set automatically:
 * TBB_ENV_LIB_DEBUG  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
 * TBB_VER_FILE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
 
-MKL 
+Intel Media SDK Support
 * WITH_MFX
+* WITH_MSMF
+* WITH_MSMF_DXVA
+
+MKL 
 * WITH_MKL
 * MKL_USE_MULTITHREAD
 * MKL_WITH_TBB
-When setting executing the setup script it should configure automatically:
+
+When executing the setup script it should configure automatically:
 * MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
 * MKL_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_sequential.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
 * MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
@@ -561,7 +581,7 @@ cmake-gui ..\
 ```
 
 ### CUDA
-* WITH_NVCUVID=OFF 
+* WITH_NVCUVID=ON CUDA Video decodeing support
 * WITH_CUDA=ON
 * CUDA_FAST_MATH=ON 
 * WITH_CUBLAS=ON 
