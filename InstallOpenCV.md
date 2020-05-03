@@ -25,11 +25,11 @@ Although you can enable a world build which creates a single dll for opencv, the
 
 I enable opencv builds for python 2 and python 3. I had builds that open in python 2 without errors and don't open in python 3. At this time I dont have a recipe that simply identfies the component that failed to load. However the following is my approach:
 
-### Dumpbin
+### dumpbin
 ```
 dumpbin C:\Python38\Lib\site-packages\cv2\python-3.8\cv2.cp38-win_amd64.pyd /IMPORTS | findstr dll
 ```
-This lists all dlls your build is attempting to open. Make sure each dll listed is found in you CMD windows with:
+This lists all dlls your build is attempting to open. Make sure each dll listed is found in your CMD windows with:
 ```
 where dllname_from_previous_output
 ```
@@ -37,9 +37,9 @@ This approach can take significant time, and is not guaranteed to find the culpr
 
 ### procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor file system activity.
-I start python and procmon and stop procmon from monitoring. I clear its output. Then I start monitoring and type ```import cv2```  in python. As soon as the error appears I stop monitoring. Then I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused cv2 to fail. The one that breaks your installation could be listed under an other task than python.exe as it could be an other component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
+I start python and procmon and stop procmon from monitoring. I clear its output. Then I start monitoring and type ```import cv2```  in python. As soon as the error appears I stop monitoring. Then I use find tool in procmon to locate python activity e.g. Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities to identify which ones caused cv2 to fail. The one that breaks your installation could be listed under an other task than python.exe as it could be a sub-component failing to load its dlls. The more components you activate in your openCV build, the more such components can cause a fail.
 
-### Cleaning of previous build
+### Cleaning of Previous Build
 You can clean the build configurtion in cmake-gui by clearing the cache. You can also clean previous builds by deleting the content of the build directory. If you modify the build with cmake or cmake-gui, it appears that only the necessary modules are rebuilt. If you can not complete an incremental build, start disabling features and when that does not help, you might need to clear the cache or start from scratch by deleting the build folder.
 
 ### Fun
@@ -94,7 +94,7 @@ py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
 ```
 
-## Unistall previous opencv versions
+## Unistalling of Previous opencv Installtions
 To make sure python finds your build you will want to remove any other installations of opencv.
 ```
 pip3 uninstall opencv-python
@@ -238,7 +238,7 @@ mkdir opencv_dep
 ### Intel TBB, MKL, MPI, IPP, DAAL
 To accelerate some OpenCV operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. [Intel libraries](https://software.seek.intel.com/performance-libraries). The chrome browser seems to have have issues with selecting the downloads unfortunately.
 
-### LAPACK BLAS
+### LAPACK, BLAS
 BLAS is part of the Intel Performance libraries which we installed above.
 You dont need to build it. 
 LA stands for linear algebra and is the backbone of computer vision and scientific computing.
@@ -431,7 +431,7 @@ Turn Following Features OFF
 * WITH_CUDA=OFF
 * OPENCV_DNN_CUDA=OFF
 
-#### CMD Shell Version
+#### CMD Shell Equivalent
 STATUS: Not verified
 ```
 "C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
@@ -525,14 +525,14 @@ This is only useful if you have an NVIDA GPU.
 Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
 Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
 
-### NVIDIA video codec SDK
+### NVIDIA Video Codec SDK
 Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
 [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
 
 ### QT
 Installing QT takes a very long time. In addition it might interfere with your current ninja and cmake setup.
-Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as first time build. 
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as a first time build. 
 
 To install QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage. I filter for LTS version.
 
@@ -564,12 +564,12 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
 
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
-### Env Variable
+### Env Variables
 QT_PLUGIN_PATH = C:\Qt\5.x.y\msvc2017_64\plugins
 
 If this worked ok, we can try to include CUDA support. CUDA compiled opencv will not run if there is no NVIDIA GPU on the system.
 
-### Graphics Libraries
+### Graphical User Interfaces
 * WITH_QT=ON
 * Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5
 With x.y the QT version you downloaded.
@@ -642,5 +642,5 @@ https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 ```
 
-### Create single library to include all features
+### Create Single Library to Include all Features
 * BUILD_opencv_world=ON
