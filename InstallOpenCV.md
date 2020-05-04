@@ -15,7 +15,7 @@ It is also common that the cmake and cmake-gui do not create the same build conf
 
 I prefer building with Ninja because opencv build times are very long and Ninja reduces them significantly. 
 
-Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
+Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) and https://dev.infohub.cc/build-opencv-410/ and
 https://dev.infohub.cc/build-opencv-430-with-cuda/
 
 
@@ -191,14 +191,16 @@ Examples and Tests
 * INSTALL_TESTS
 
 Make sure this is ON or set:
-* BUILD_opencv_python3
-* BUILD_opencv_python2
-* OPENCV_EXTRA_MODULES_PATH "C:/opencv/opencv_contrib/modules"
-* OPENCV_ENABLE_NONFREE
-* BUILD_SHARED_LIBS
-* OPENCV_PYTHON3_VERSION
+* BUILD_opencv_python3 = ON
+* BUILD_opencv_python2 = ON
+* OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
+* OPENCV_ENABLE_NONFREE = ON
+* BUILD_SHARED_LIBS = ON
+* OPENCV_PYTHON3_VERSION, not sure, might have issue with cmake-gui
 Add the variable:
-* PYTHON_DEFAULT_EXECUTABLE "C:\Python38\python.exe"
+* PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
+* CMAKE_BUILD_TYPE = "Release"
+* CPU_BASELINE should autopopulate to your CPU
 
 ### Configure and Generate
 After successful configuratin, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
@@ -397,24 +399,24 @@ cmake-gui ..\
 ```
 
 Features to be turned on and variables to be set
-* OPENCV_EXTRA_MODULES_PATH="C:/opencv/opencv_contrib/modules"
-* OPENCV_ENABLE_NONFREE=ON
-* BUILD_SHARED_LIBS=ON
-* BUILD_opencv_python3=ON
-* BUILD_opencv_python2=ON
+* OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
+* OPENCV_ENABLE_NONFREE = ON
+* BUILD_SHARED_LIBS = ON
+* BUILD_opencv_python3 = ON
+* BUILD_opencv_python2 = ON
 
 Add Entry
 * PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
 
 EIGEN
-* WITH_EIGEN=OFF
-* EIGEN_INCLUDE_PATH="C:/opencv/dep/eigen/Eigen"
+* WITH_EIGEN = OFF
+* EIGEN_INCLUDE_PATH = "C:/opencv/dep/eigen/Eigen"
 * Eigen3_DIR is not found
 
 Intel RealSense
-* WITH_LIBREALSENSE=ON
-* LIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
-* LIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
+* WITH_LIBREALSENSE = ON
+* LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
+* LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
 * realsense2_DIR is not found
 
 GSTREAMER
@@ -423,25 +425,25 @@ GSTREAMER
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
 TBB, Parallel framework should list TBB (ver...)
-* BUILD_TBB=OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
-* WITH_TBB=ON
+* BUILD_TBB = OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
+* WITH_TBB = ON
 
 The following TBB folders should be set automatically:
 * TBB_DIR is not found
-* TBB_ENV_INCLUDE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
-* TBB_ENV_LIB  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
-* TBB_ENV_LIB_DEBUG  C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
-* TBB_VER_FILE C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
+* TBB_ENV_INCLUDE = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
+* TBB_ENV_LIB = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
+* TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
+* TBB_VER_FILE = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
 
 Intel Media SDK Support
-* WITH_MFX
-* WITH_MSMF
-* WITH_MSMF_DXVA
+* WITH_MFX = ON
+* WITH_MSMF = ON
+* WITH_MSMF_DXVA = ON
 
 MKL 
-* WITH_MKL
-* MKL_USE_MULTITHREAD
-* MKL_WITH_TBB
+* WITH_MKL = ON
+* MKL_USE_MULTITHREAD = ON
+* MKL_WITH_TBB = ON
 
 When executing the setup script it should configure automatically:
 * MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
@@ -451,29 +453,28 @@ When executing the setup script it should configure automatically:
 HDF
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
-* BUILD_opencv_hdf=OFF
-* HDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib"
-* HDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
+* BUILD_opencv_hdf = OFF
+* HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"
+* HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"
 
 OPENCL
 
 This should be set automatically.
-* WITH_OPENCL=ON
-* WITH_OPENCLAMDBLAS=ON
-* WITH_OPENCLEMDFFT=ON
-* WITH_OPENCL_D3D11_NV=ON
-* WITH_OPENCL_SVM=ON support vector machine classified
+* WITH_OPENCL = ON
+* WITH_OPENCLAMDBLAS = ON
+* WITH_OPENCLEMDFFT = ON
+* WITH_OPENCL_D3D11_NV = ON
+* WITH_OPENCL_SVM = ON support vector machine classified
 
 JavaScript
 
-* BUILD_opencv_js=OFF
+* BUILD_opencv_js = OFF
 
 Turn Following Features OFF
-* USE_WIN32_FILEIO=OFF, this might enable bigTIFF or file acceess for >2GB.
-* WITH_CUDA=OFF
-* OPENCV_DNN_CUDA=OFF
-
-WITH_OPPENCL_SVM
+* USE_WIN32_FILEIO = OFF, this might enable bigTIFF or file acceess for >2GB.
+* WITH_CUDA = OFF
+* OPENCV_DNN_CUDA = OFF
+* WITH_OPPENCL_SVM = not sure
 
 #### CMD Shell Equivalent
 STATUS: Not verified
@@ -603,19 +604,19 @@ CUDA
 cmake-gui ..\
 ```
 
--DWITH_CUDA = ON -DOPENCV_DNN_CUDA = ON -DCUDA_FAST_MATH = ON -DENABLE_FAST_MATH = ON -DOPENCV_EXTRA_MODULES_PATH = "G: / Venvs / Build_cv430 / Opencv_contrib / Modules" -DCMAKE_INSTALL_PREFIX = "C: / Lib / OpenCV430" = -DCPU_BASELINE "AVX2" -DCMAKE_CONFIGURATION_TYPES = "Release" -DCMAKE_BUILD_TYPE = "Release" -DOPENCV_ENABLE_NONFREE = ON -DINSTALL_PYTHON_EXAMPLES = ON -DWITH_QT = ON -DPYTHON3_PACKAGES_PATH = "G: / Venvs / Build_cv430 / Lib / Site-Packages" -DCUDA_GENERATION = "Turing"
-
 ### CUDA
-* WITH_NVCUVID=ON CUDA Video decodeing support
-* WITH_CUDA=ON
-* CUDA_FAST_MATH=ON 
-* WITH_CUBLAS=ON 
-* CUDA_ARCH_PTX=7.5
-* CUDA_ARCH_PTX=7.5 
-* CUDA_TOOLKIT_ROOT_DIR="C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"
+* WITH_NVCUVID = ON, enable CUDA Video decodeing support
+* WITH_CUDA = ON, enable CUDA 
+* CUDA_FAST_MATH = ON 
+* ENABLE_FAST_MATH = ON
+* WITH_CUBLAS = ON
+* CUDA_ARCH_PTX = 7.5, selected from all options
+* CUDA_ARCH_PTX = 7.5, selected from all options
+* CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"
 * CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2
-* OPENCV_DNN_CUDA=ON
-* CUDA_BUILD_EMULATION=OFF
+* OPENCV_DNN_CUDA = ON, Neural Network Classifiers on CUDA
+* CUDA_BUILD_EMULATION = OFF, autopopulated
+* CUDA_GENERATION = "Turing", autopopulated
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
