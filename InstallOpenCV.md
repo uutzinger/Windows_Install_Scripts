@@ -16,6 +16,8 @@ It is also common that the cmake and cmake-gui do not create the same build conf
 I prefer building with Ninja because opencv build times are very long and Ninja reduces them significantly. 
 
 Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd).
+https://dev.infohub.cc/build-opencv-430-with-cuda/
+
 
 ## Debug
 Once you start more complex builds, the two main issues you will need to solve is to 
@@ -103,7 +105,7 @@ py -3 get-pip.py
 py -3 -m pip install pip --upgrade
 ```
 
-From https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy download
+From https://www.lfd.uci.edu/~gohlke/pythonlibs download
 * numpy‑1.18.3+mkl‑cp38‑cp38‑win_amd64.whl
 * numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
 * yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
@@ -166,14 +168,20 @@ You should not need to worry about dlls. It is a light build with just the defau
 There will entries in RED, meaning cmake-gui would like you to take a look at them. 
 Please verify:
 
-For a light build, following options are usually off:
+For a light build, many options are usually off such as:
+
+Video
 * WITH_GSTREAMER
-* WITH_MFX
-* WITH_MKL
-* WITH_TBB
-* WITH_EIGEN
+* WITH_MFX, Intel Video Acceleration
+* WITH_MKL, Intel Math Library
 * WITH_LIBREALSENSE
 * BUILD_opencv_hdf
+
+Math Acceleration
+* WITH_TBB, Intel Threadbuilding Blocks
+* WITH_EIGEN
+
+Examples and Tests
 * D-DBUILD_EXAMPLES
 * BUILD_DOCS
 * BUILD_TESTS
@@ -184,6 +192,7 @@ For a light build, following options are usually off:
 
 Make sure this is ON or set:
 * BUILD_opencv_python3
+* BUILD_opencv_python2
 * OPENCV_EXTRA_MODULES_PATH "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE
 * BUILD_SHARED_LIBS
@@ -464,6 +473,8 @@ Turn Following Features OFF
 * WITH_CUDA=OFF
 * OPENCV_DNN_CUDA=OFF
 
+WITH_OPPENCL_SVM
+
 #### CMD Shell Equivalent
 STATUS: Not verified
 ```
@@ -552,7 +563,14 @@ Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA suppo
 
 ### CUDA
 Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
-This is only useful if you have an NVIDA GPU.
+This is only useful if you have an NVIDA GPU. 
+If you have previously insgtalled version, and want to upgrade, make sure to uninstall
+* Nsight Visual Studio Integration
+* CUDA Visual Studio Integration
+* CUDA Sampples
+* CUDA Runtime
+* CUDA Documentation
+* CUDA Development
 
 ### cuDNN
 Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
@@ -569,6 +587,11 @@ Not all opencv components compile nicely when QT is enabled and unless you reall
 
 To install QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage. I filter for LTS version.
 
+You will need the MSVC, UWP and not MinGW components.
+
+### VTK
+VTK_WRAP_PYTHON disable
+
 ### Environment Variables
 You might want to update your path and environment variables:
 
@@ -579,6 +602,8 @@ CUDA
 ```
 cmake-gui ..\
 ```
+
+-DWITH_CUDA = ON -DOPENCV_DNN_CUDA = ON -DCUDA_FAST_MATH = ON -DENABLE_FAST_MATH = ON -DOPENCV_EXTRA_MODULES_PATH = "G: / Venvs / Build_cv430 / Opencv_contrib / Modules" -DCMAKE_INSTALL_PREFIX = "C: / Lib / OpenCV430" = -DCPU_BASELINE "AVX2" -DCMAKE_CONFIGURATION_TYPES = "Release" -DCMAKE_BUILD_TYPE = "Release" -DOPENCV_ENABLE_NONFREE = ON -DINSTALL_PYTHON_EXAMPLES = ON -DWITH_QT = ON -DPYTHON3_PACKAGES_PATH = "G: / Venvs / Build_cv430 / Lib / Site-Packages" -DCUDA_GENERATION = "Turing"
 
 ### CUDA
 * WITH_NVCUVID=ON CUDA Video decodeing support
