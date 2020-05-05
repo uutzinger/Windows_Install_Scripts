@@ -171,24 +171,24 @@ Please verify:
 For a light build, many options are usually off such as:
 
 Video
-* WITH_GSTREAMER
-* WITH_MFX, Intel Video Acceleration
-* WITH_MKL, Intel Math Library
-* WITH_LIBREALSENSE
-* BUILD_opencv_hdf
+* WITH_GSTREAMER = OFF
+* WITH_MFX = OFF, Intel Video Acceleration
+* WITH_MKL = OFF, Intel Math Library
+* WITH_LIBREALSENSE = OFF
+* BUILD_opencv_hdf = OFF
 
 Math Acceleration
-* WITH_TBB, Intel Threadbuilding Blocks
-* WITH_EIGEN
+* WITH_TBB = OFF, Intel Threadbuilding Blocks
+* WITH_EIGEN = OFF
 
 Examples and Tests
-* D-DBUILD_EXAMPLES
-* BUILD_DOCS
-* BUILD_TESTS
-* BUILD_PERF_TESTS
-* INSTALL_PYTHON_EXAMPLES
-* INSTALL_C_EXAMPLES
-* INSTALL_TESTS
+* BUILD_EXAMPLES = OFF
+* BUILD_DOCS = OFF
+* BUILD_TESTS = OFF
+* BUILD_PERF_TESTS = OFF
+* INSTALL_PYTHON_EXAMPLES = OFF
+* INSTALL_C_EXAMPLES = OFF
+* INSTALL_TESTS = OFF
 
 Make sure this is ON or set:
 * BUILD_opencv_python3 = ON
@@ -197,10 +197,11 @@ Make sure this is ON or set:
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON
 * OPENCV_PYTHON3_VERSION= ON, not sure, might have issue with cmake-gui
+* CPU_BASELINE should autopopulate to your CPU
+
 Add the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
 * CMAKE_BUILD_TYPE = "Release"
-* CPU_BASELINE should autopopulate to your CPU
 
 ### Configure and Generate
 After successful configuratin, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
