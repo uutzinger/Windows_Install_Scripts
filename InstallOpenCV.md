@@ -196,7 +196,7 @@ Make sure this is ON or set:
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON
-* OPENCV_PYTHON3_VERSION, not sure, might have issue with cmake-gui
+* OPENCV_PYTHON3_VERSION= ON, not sure, might have issue with cmake-gui
 Add the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
 * CMAKE_BUILD_TYPE = "Release"
@@ -606,17 +606,21 @@ cmake-gui ..\
 
 ### CUDA
 * WITH_NVCUVID = ON, enable CUDA Video decodeing support
-* WITH_CUDA = ON, enable CUDA 
-* CUDA_FAST_MATH = ON 
-* ENABLE_FAST_MATH = ON
+* WITH_CUDA = ON, enable CUDA
+* WITH_CUFFT = ON
 * WITH_CUBLAS = ON
+* CUDA_FAST_MATH = ON 
 * CUDA_ARCH_PTX = 7.5, selected from all options
 * CUDA_ARCH_PTX = 7.5, selected from all options
 * CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"
 * CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2
-* OPENCV_DNN_CUDA = ON, Neural Network Classifiers on CUDA
 * CUDA_BUILD_EMULATION = OFF, autopopulated
 * CUDA_GENERATION = "Turing", autopopulated
+* CUDA_HOST_COMPLIER = ... autopopulated
+* CUDA_USE_STATIC_CUDA_RUNTIME = ON
+* OPENCV_DNN_CUDA = ON, Neural Network Classifiers on CUDA
+* ENABLE_FAST_MATH = ON
+* BUILD_opencv_cudev = ON
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
@@ -637,6 +641,9 @@ Rerun configure and generate in cmake-gui.
 If you have previous builds you might want to rename build/install to build/install_noCUDA so you can preserve non_cuda version.
 
 ### Build
+
+If you build with Visual Studio C, open Build -> Configuration Manager and enable INSTALL.
+
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
