@@ -19,7 +19,7 @@ cd build
 ```
 
 ```
-cmake-gui
+cmake-gui ..\
 ```
 
 Configure for Visual Studio Compiler for x64 application.
@@ -32,14 +32,19 @@ Enable
 * CMAKE_INSTALL_PREFIX = C:\VTK
 * VTK_USE_CUDA = ON
 
-Open the project by clicking approriate button in CMAKE GUI.
-Open Build / Batch Build and make sure INSTALL is enabled and clich Build.
+Open the project by clicking approriate button in cmake gui.
+In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build.
 It will take about 30 minutes.
 
 ## Copying files
+```
 copy C:\VTK\VTK-9.0.0\build\bin\Lib\site-packages to C:\Python38\Lib\site-packages
 copy C:\VTK\VTK-9.0.0\build\bin\Release to C:\Python38\Lib\site-packages\vtkmodules
 copp C:\VTK\VTK-9.0.0\build\lib\Release to C:\Python38\Lib\site-packages\vtkmodules
+```
 
 ## Testing
-Run the QuadraticTetra.py program from https://github.com/lorensen/VTKExamples
+Run the QuadraticTetra.py program from https://github.com/lorensen/VTKExamples in command shell:
+```
+py -3 QuadraticTetra.py
+```
