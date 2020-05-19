@@ -229,7 +229,7 @@ We will copy the dlls needed for our package to the "redist" folder. This needs 
 ```
 REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-copy  "C:\opencv\opencv\build\install\x64\vc16\lib*" C:\opencv\opencv_redist /y
+copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 REM   Intel MPI ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
