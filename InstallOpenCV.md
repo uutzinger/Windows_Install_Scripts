@@ -727,7 +727,7 @@ REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\x64\vc16\lib*" C:\opencv\opencv_redist /y
 REM   Intel MPI ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*.dll" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\opencv\opencv_redist /y
 REM   INTEL TBB ========
