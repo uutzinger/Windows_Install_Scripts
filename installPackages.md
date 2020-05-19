@@ -165,6 +165,7 @@ Environment Variables
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
 * GSTREAMER_DIR=C:\gstreamer\1.0\x86_64
 * HDF5_DIR = C:\HDF5\1.12.0\cmake
+* QT_PLUGIN_PATH = C:\Qt\5.x.y\msvc2017_64\plugins
 
 PATH
 * C:\Python38
@@ -175,6 +176,7 @@ PATH
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 * C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 * C:\opencv\opencv_redist
+
 
 We will copy the dlls needed for our package to "redist" folder. This avoids enlarging the path variable.
 
@@ -210,4 +212,6 @@ copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software D
 REM   INTEL RealSense ==
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
+REM QT =================
+copy  "C:\Qt\5.14.1\msvc2017_64\bin\*" C:\opencv\opencv_redist /y
 ```
