@@ -726,7 +726,7 @@ copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\x64\vc16\lib*" C:\opencv\opencv_redist /y
 REM   Intel MPI ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*.dll" C:\opencv\opencv_redist /y
-copy  vC:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\opencv\opencv_redist /y
 REM   INTEL TBB ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\opencv\opencv_redist /y
@@ -734,9 +734,10 @@ copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\wi
 REM   INTEL MKL ========
 xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\opencv\opencv_redist /s /h /i /e
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\opencv\opencv_redist /y
 REM   INTEL IPP ========
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\opencv\opencv_redist /y
 xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s /h /i /e
+REM   INTEL DAAL =======
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL compiler ===
