@@ -83,6 +83,38 @@ Architecture: Windows 64 bit
 Linking: Shared and Dev
 Unzip and install in your ffmpeg folder 
 
+
+### CUDA
+Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
+This is only useful if you have an NVIDA GPU. 
+If you have previously insgtalled version, and want to upgrade, make sure to uninstall
+* Nsight Visual Studio Integration
+* CUDA Visual Studio Integration
+* CUDA Sampples
+* CUDA Runtime
+* CUDA Documentation
+* CUDA Development
+
+### cuDNN
+Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
+Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x
+
+### NVIDIA Video Codec SDK
+Optional: Download the Video Codec SDK, extract and copy include and lib directories to 
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vx.x
+[VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
+
+### QT
+Installing QT takes a very long time. In addition it might interfere with your current ninja and cmake setup.
+Not all opencv components compile nicely when QT is enabled and unless you really need QT functionality enabled, I don't recommended it on Windows as a first time build. 
+
+To install QT download it from https://www.qt.io/download-open-source. At the bottom is installer link in green. Login with your QT account. One you have the QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume 3GB of storage. I filter for LTS version.
+
+You will need the MSVC, UWP and not MinGW components.
+
+### VTK
+https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
+
 ## INACTIVE Packages
 
 ### HDF5 STATUS: Disabled, does not compile.
@@ -140,7 +172,10 @@ PATH
 * C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 * C:\gstreamer\1.0\x86_64\bin
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
+* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 * C:\opencv\opencv_redist
+
 We will copy the dlls needed for our package to "redist" folder. This avoids enlarging the path variable.
 
 ## Colelcting dll and libs
