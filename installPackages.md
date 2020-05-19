@@ -203,27 +203,28 @@ If you dont know how to do modify the PATH, Rapid Environment Editor is a tool t
 
 Environment Variables
 
-* INTELMEDIASDKROOT = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
+* INTELMEDIASDKROOT     = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
 * GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
-* GSTREAMER_DIR=C:\gstreamer\1.0\x86_64
-* HDF5_DIR = C:\HDF5\1.12.0\cmake
-* QT_PLUGIN_PATH = C:\Qt\5.x.y\msvc2017_64\plugins
+* GSTREAMER_DIR         = C:\gstreamer\1.0\x86_64
+* HDF5_DIR              = C:\HDF5\1.12.0\cmake
+* QT_PLUGIN_PATH        = C:\Qt\5.x.y\msvc2017_64\plugins
+* JAVE_HOME             = C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\
 
 PATH
+
 * C:\Python38
 * C:\Python38\Scripts
 * C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 * C:\gstreamer\1.0\x86_64\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
-* C:\PROGRA~1\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
+
+This is to location where I installed all dlls and binaries. It will need to be added to the PATH
 * C:\opencv\opencv_redist
 
-We will copy the dlls needed for our package to the "redist" folder.
-
 ## Colelcting dll and libs
-
-Lets copy the dlls, libs in the redistribution folder to a central location. This needs about 3.5 GBytes.
+We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes.
 
 ```
 REM   OpenCV ===========
