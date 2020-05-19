@@ -214,4 +214,7 @@ copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\openc
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
 REM QT =================
 copy  "C:\Qt\5.14.1\msvc2017_64\bin\*" C:\opencv\opencv_redist /y
+REM GSTREAMER ==========
+REM copy "C:\gstreamer\1.0\x86_64\bin\*" C:\opencv\opencv_redist /y
+REM xcopy "C:\gstreamer\1.0\x86_64\lib"  C:\opencv\opencv_redist /E/H
 ```
