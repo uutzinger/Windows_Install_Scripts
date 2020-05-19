@@ -99,6 +99,7 @@ For Windows: https://gstreamer.freedesktop.org/download/ or https://gstreamer.fr
 Install both
 * msvc
 * devel msvc
+
 The gst-python bindings are not available on Windows, unfortunately. 
 If they were available we could access gstreamer pipelines directly in python. 
 For now we can use opencv.
