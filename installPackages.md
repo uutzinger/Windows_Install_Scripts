@@ -217,6 +217,7 @@ PATH
 * C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 * C:\gstreamer\1.0\x86_64\bin
+* C:\Qt\5.12.8\msvc2017_64\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 
@@ -238,11 +239,11 @@ REM   INTEL TBB ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*" C:\opencv\opencv_redist /y
 REM   INTEL MKL ========
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\opencv\opencv_redist /s /h /i /e
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\opencv\opencv_redist /s/h/i/e/y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL IPP ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\opencv\opencv_redist /y
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s /h /i /e
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s/h/i/e/y
 REM   INTEL DAAL =======
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\opencv\opencv_redist /y
@@ -256,9 +257,9 @@ REM   INTEL RealSense ==
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
 REM QT =================
-copy  "C:\Qt\5.14.1\msvc2017_64\bin\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Qt\5.12.8\msvc2017_64\bin\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Qt\5.12.8\msvc2017_64\lib\*" C:\opencv\opencv_redist /y
 REM GSTREAMER ==========
-
 REM copy  "C:\gstreamer\1.0\x86_64\bin\*" C:\opencv\opencv_redist /y
-REM xcopy "C:\gstreamer\1.0\x86_64\lib"  C:\opencv\opencv_redist /s /h /i /e
+REM xcopy "C:\gstreamer\1.0\x86_64\lib\*"  C:\opencv\opencv_redist /s/h/i/e/y
 ```
