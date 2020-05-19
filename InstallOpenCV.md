@@ -720,6 +720,8 @@ C:\opencv\opencv_redist
 ```
 
 Collect all the dll and lib files and copy them to central location so that we dont unneccessarily exceed the path variable.
+This is about 3.5GBytes.
+
 ```
 REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
