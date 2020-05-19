@@ -10,6 +10,7 @@ This write up perpares your Windows 10 computer for
 * CUDA
 * QT
 * VTK
+
 and attempts to provide the binaries, dlls and libs at a central location.
 
 ## Install Python
