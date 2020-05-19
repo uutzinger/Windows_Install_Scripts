@@ -721,30 +721,30 @@ C:\gstreamer\1.0\x86_64\bin"
 Collect all the dll and lib files and copy them to central location so that we dont unneccessarily exceed the path variable.
 ```
 REM   OpenCV ===========
-copy  C:\opencv\opencv\build\install\x64\vc16\bin C:\Python38\Lib\site-packages\cv2\python-3.8
-copy  C:\opencv\opencv\build\install\x64\vc16\lib C:\Python38\Lib\site-packages\cv2\python-3.8
+copy  C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
+copy  C:\opencv\opencv\build\install\x64\vc16\lib*" C:\opencv\opencv_redist /y
 REM   Intel MPI ========
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*.dll 
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\* 
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*.dll" C:\opencv\opencv_redist /y
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\opencv\opencv_redist /y
 REM   INTEL TBB ========
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\opencv\opencv_redist /y
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*" C:\opencv\opencv_redist /y
 REM   INTEL MKL ========
-xcopy C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl /E/H
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp
+xcopy C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\opencv\opencv_redist /s /h /i /e
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\opencv\opencv_redist /y
+copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\opencv\opencv_redist /y
 REM   INTEL IPP ========
-xcopy C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64
+xcopy C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s /h /i /e
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL compiler ===
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler
-copy  C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\compiler\lib\intel64
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\compiler\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL Medi SDK ===
-copy  C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
-copy  C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64
+copy  "C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64\*" C:\opencv\opencv_redist /y
 REM   INTEL RealSense ==
-copy  C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64
-copy  C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64
+copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
 ```
