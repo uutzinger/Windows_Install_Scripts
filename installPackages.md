@@ -153,9 +153,9 @@ I installed:
 For Visualization Tool Kit follow description here:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
 
-## INACTIVE Packages
+## Packages not ready for OpenCV
 
-### HDF5 STATUS: Disabled, does not compile.
+### HDF5 STATUS: does not compile.
 If you are intersted in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
 https://www.hdfgroup.org/downloads/hdf5/
 Make an account and obtain the vs14.zip version.
@@ -163,7 +163,7 @@ I installed into C:/HDF5.
 lib and include folders are in C:/HDF5/x.yy.z/lib/ and include folders.
 OpenCV provides a wrapper for the libhdf5 library. If HDF5_DIR is set as environment variable it will find cmake files.
 
-### JavaScript STATUS: Disabled, does not compile
+### JavaScript STATUS: does not compile
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
 WARNING: This will install a python and java interpreter. On my installation cmake picked up this Python 3 instead of the system wide one.
 ```
@@ -188,7 +188,7 @@ set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 WITH_MATLAB=ON requires mex builder and some libraries to be found. In matlab command prompt: mex -setup
 This is not yet working in my setup as Matlab interface is not getting built. I assume I will need to activate additional components.
 
-### EIGEN STATUS: Disabled, does not compile.
+### EIGEN STATUS: does not compile.
 To active the EIGEN library you need to download it
 ```
 git clone https://gitlab.com/libeigen/eigen.git
