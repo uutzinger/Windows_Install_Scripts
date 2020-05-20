@@ -221,7 +221,7 @@ PATH
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 
-This is to location where I installed all dlls and binaries. It will need to be added to the PATH
+This is the location where I copied all dlls and binaries. It will need to be added to the PATH:
 * C:\opencv\opencv_redist
 
 ## Colelcting dll and libs
