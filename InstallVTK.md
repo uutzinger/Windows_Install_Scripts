@@ -39,8 +39,8 @@ It will take about 30 minutes.
 ## Copying files
 ```
 xcopy C:\VTK\VTK-9.0.0\build\bin\Lib\site-packages C:\Python38\Lib\site-packages /s/h/i/e/y
-copy C:\VTK\VTK-9.0.0\build\bin\Release\* to C:\Python38\Lib\site-packages\vtkmodules
-copy C:\VTK\VTK-9.0.0\build\lib\Release\* to C:\Python38\Lib\site-packages\vtkmodules
+copy C:\VTK\VTK-9.0.0\build\bin\Release\* C:\Python38\Lib\site-packages\vtkmodules
+copy C:\VTK\VTK-9.0.0\build\lib\Release\* C:\Python38\Lib\site-packages\vtkmodules
 ```
 
 ## Testing
