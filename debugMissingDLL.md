@@ -25,8 +25,7 @@ This lists all dlls your build is attempting to open. Make sure each dll listed 
 where dllname_from_previous_output
 ```
 This approach can take significant time, and is not guaranteed to find the culprit. 
-You can automate this approachby piping the output ofthe first command to file ```dumbin ... > missing.bat``` Then edit missing.bat and add ```
-where ``` infront of each line. Then you can run missing.bat and it will let you know where an error occurs.
+You can automate this approachby piping the output ofthe first command to file ```dumbin ... > missing.bat``` Then edit missing.bat and add ```where ``` infront of each line. Then you can run missing.bat and it will let you know where an error occurs.
 
 ## procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor Windows file system activity.
@@ -37,6 +36,16 @@ SUCCESS. There are many such activities. I can not say exactly how to navigate t
 to identify which ones caused the package to fail. The one that breaks your installation could be listed under an other task 
 than python.exe as it could be a sub-component failing to load its dlls. The more components you activate in your build, 
 the more such components can cause a fail.
+
+## sys.path
+In python run
+```
+import sys
+sys.path
+sys.path.append('C:\\opencv\\opencv_redist')
+sys.path.append('C:\\gstreamer\\1.0\\x86_64\\bin')
+sys.path.remove('C:\\Python38\\python38.zip')
+```
 
 ## Cleaning a Previous Build
 You can clean the build configurtion in cmake-gui by clearing the cache (Menu item). 
