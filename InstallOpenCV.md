@@ -55,7 +55,7 @@ set "openCvSource=C:\opencv\opencv"
 set "openCVExtraModules=C:\opencv\opencv_contrib\modules"
 set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
-set "generator=Ninja"
+set "generator=Visual Studio 16 2019"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
 ```
 
@@ -64,7 +64,7 @@ When you execute the vcvars script twice in a row, it will throw error the secon
 ## Build
 Here I show 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
 
-## Build 1
+## Build 1 STATUS: Completed Successfully.
 With this first build, I will not use the command line option. We will start directly with cmake-gui.
 You should not need to worry about dlls. It is a light build with just the default settings, extra and non free modules and python.
 
@@ -73,7 +73,7 @@ You should not need to worry about dlls. It is a light build with just the defau
 "C:\Program Files\CMake\bin\cmake-gui.exe"
 ```
 * Clear Build Cache. This will remove any revious configuration options.
-* Run configure. Select Ninja as your compiler environment. Select native compilers.
+* Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.
 
 ### Verify Build Variables
 There will entries in RED, meaning cmake-gui would like you to take a look at them. 
@@ -85,8 +85,8 @@ Video
 * WITH_GSTREAMER = OFF
 * WITH_MFX = OFF, Intel Video Acceleration
 * WITH_MKL = OFF, Intel Math Library
-* WITH_LIBREALSENSE = OFF
-* BUILD_opencv_hdf = OFF
+* WITH_LIBREALSENSE = OFF, Intel Real Sense Camera
+* BUILD_opencv_hdf = OFF, HDF5 file fromat
 
 Math Acceleration
 * WITH_TBB = OFF, Intel Threadbuilding Blocks
@@ -106,11 +106,11 @@ Make sure this is ON or set:
 * BUILD_opencv_python2 = ON
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
-* BUILD_SHARED_LIBS = ON
-* OPENCV_PYTHON3_VERSION= ON, not sure, might have issue with cmake-gui
-* CPU_BASELINE should autopopulate to your CPU
+* BUILD_SHARED_LIBS = ON, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
+* OPENCV_PYTHON3_VERSION= OFF, not sure, it might have issue with cmake-gui
+* CPU_BASELINE, should autopopulate to your CPU
 
-Add the variable:
+You might need to modify the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
 * CMAKE_BUILD_TYPE = "Release"
 
@@ -145,10 +145,14 @@ Optional:
 ```
 
 ### Build
-And finally do first build using cmake and Ninja:
+And finally do first build using cmake in command line:
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
+or call the compiler with "Open_Project" in cmake-gui. Select build / batch build and enable INSTALL and build. If there are previous versions you can clean the files with "clean" button.
+
+### Collect DLLs
+If you had dlls built you  might want to collect them at single location and add that location to the PATH.
 
 ```
 REM   OpenCV ===========
@@ -166,8 +170,6 @@ py -2 -c "import cv2; print(cv2.getBuildInformation())"
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
-
-STATUS: Completed Successfully.
 
 ## Build 2
 Now lets enable more features:
