@@ -44,9 +44,13 @@ Open a command shell and cd to the location of get-pip.py and execute following:
 py -3 get-pip.py
 py -3 -m pip install pip --upgrade
 ```
+Make sure you have the latest  Microsoft C++ 2015-2019 redistributable:
+https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+and the 2008 redistributale installed
+https://www.microsoft.com/en-us/download/details.aspx?id=15336
 
 I recommend the following python packages rom https://www.lfd.uci.edu/~gohlke/pythonlibs download
-* numpy‑1.18.3+mkl‑cp38‑cp38‑win_amd64.whl
+* numpy‑1.18.4+mkl‑cp38‑cp38‑win_amd64.whl
 * numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
 * yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
 
@@ -58,11 +62,11 @@ py -3 -m pip install flake8 --upgrade
 py -3 -m pip install yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
 ```
 I usually also have 
-* scikit-image
-* pylint
 * cython
 * scipy
 * pillow
+* scikit-image
+* scikit-learn
 * matplotlib
 * pandas
 * wave
@@ -152,6 +156,10 @@ I installed:
 ## VTK
 For Visualization Tool Kit follow description here:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
+
+## DLIB
+Machine learning
+https://github.com/davisking/dlib
 
 ## Packages not ready for OpenCV
 
