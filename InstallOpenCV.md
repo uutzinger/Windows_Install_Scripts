@@ -86,7 +86,6 @@ Video
 * WITH_MFX = OFF, Intel Video Acceleration
 * WITH_MKL = OFF, Intel Math Library
 * WITH_LIBREALSENSE = OFF, Intel Real Sense Camera
-* BUILD_opencv_hdf = OFF, HDF5 file fromat
 
 Math Acceleration
 * WITH_TBB = OFF, Intel Threadbuilding Blocks
@@ -107,8 +106,10 @@ Make sure this is ON or set:
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
+* BUILD_opencv_world=ON, create single dll
 * OPENCV_PYTHON3_VERSION= OFF, not sure, it might have issue with cmake-gui
 * CPU_BASELINE, should autopopulate to your CPU
+* BUILD_opencv_hdf = ON, HDF5 file fromat
 
 You might need to modify the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
