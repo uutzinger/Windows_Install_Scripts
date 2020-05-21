@@ -71,6 +71,8 @@ I usually also have
 * pandas
 * wave
 * imutils 
+* itk
+
 in my python installation.
 
 ## Intel TBB, MKL, MPI, IPP, DAAL
