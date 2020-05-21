@@ -150,11 +150,13 @@ And finally do first build using cmake and Ninja:
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
 
+```
 REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
+```
 
 ### Test
 ```
