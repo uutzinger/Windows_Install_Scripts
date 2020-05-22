@@ -107,9 +107,9 @@ Make sure this is ON or set:
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
 * BUILD_opencv_world=ON, create single dll
-* OPENCV_PYTHON3_VERSION= OFF, not sure, it might have issue with cmake-gui
+* OPENCV_PYTHON3_VERSION= ON, not sure, it might have issue with cmake-gui
 * CPU_BASELINE, should autopopulate to your CPU
-* BUILD_opencv_hdf = ON, HDF5 file fromat
+* BUILD_opencv_hdf = OFF, HDF5 file format
 
 You might need to modify the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
