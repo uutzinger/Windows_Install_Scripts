@@ -102,18 +102,18 @@ Examples and Tests
 
 Make sure this is ON or set:
 * BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = ON
+* BUILD_opencv_python2 = OFF
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
-* BUILD_opencv_world=ON, create single dll
-* OPENCV_PYTHON3_VERSION= ON, not sure, it might have issue with cmake-gui
+* BUILD_opencv_world = ON, create single dll
+* OPENCV_PYTHON3_VERSION = ON, not sure, it might have issue with cmake-gui
 * CPU_BASELINE, should autopopulate to your CPU
 * BUILD_opencv_hdf = OFF, HDF5 file format
 
-You might need to modify the variable:
+Modify or create the variable:
 * PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
-* CMAKE_BUILD_TYPE = "Release"
+* CMAKE_CONFIGURATION_TYPES = "Release"
 
 ### Configure and Generate
 After successful configuratin, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
@@ -158,9 +158,9 @@ If you had dlls built you  might want to collect them at single location and add
 ```
 REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
-copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
 ### Test
