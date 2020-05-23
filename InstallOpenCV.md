@@ -60,8 +60,9 @@ Many online posts have been consulted for this document e.g.
 * [7] https://lightbuzz.com/opencv-cuda/
 * [8] https://pterneas.com/2018/11/02/opencv-cuda/
 
-## Fun
-This explains algorithm optimizations by Intel for opencv. https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
+## Background Reading
+
+This explains algorithm optimizations by Intel for opencv https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel pointing towards Halide and OpenCL
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
@@ -226,7 +227,7 @@ Now lets enable more features:
   * Math Kernel Library
   * Thread Building Blocks
   * IPP
-* Eigen, ON HOLD
+* Eigen
 * Video features
   * gstreamer, ON HOLD 
   * Intel Media SDK
@@ -249,7 +250,8 @@ cd C:\opencv\opencv\build
 cmake-gui ..\
 ```
 
-Features to be turned ON/OFF and variables to be set
+Features to be turned ON/OFF and variables to be set:
+
 * ```OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"```
 * ```OPENCV_ENABLE_NONFREE = ON```
 * ```BUILD_SHARED_LIBS = ON```, [2], when on this will created DLLs, when off this will created static libraries (*.lib)
@@ -261,11 +263,10 @@ Features to be turned ON/OFF and variables to be set
 * ```DBUILD_opencv_gapi = OFF```, recommended by [1]
 * ```ENABLE_FAST_MATH = OFF```, recommended by cmake
 
-
 Add Entry
 * ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"```, otherwise python2 will be used to build opencv.
 
-EIGEN [Status: OFF]
+EIGEN [Status: NOT WORKING]
 
 when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
 * ```WITH_EIGEN = OFF```
@@ -284,7 +285,7 @@ GSTREAMER [STATUS: ON HOLD]
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
-TBB [STATUS: ON]
+TBB [STATUS: WORKING]
 
 You either download the TBB source or the prebuilt binaries from Intel.
 The cmake configureation should list under Parallel framework: TBB (ver...)
@@ -300,7 +301,7 @@ The following TBB folders should be set automatically:
 * ```TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib```
 * ```TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h```
 
-MKL [STATUS: ON]
+MKL [STATUS: WORKING]
 * ```WITH_MKL = ON```
 * ```MKL_USE_MULTITHREAD = ON```, [1]
 * ```MKL_WITH_TBB = ON```, [1]
@@ -318,7 +319,7 @@ mkl_sequential is not picked up in my build. For shared library builds the dll.l
 
 * ```MKL_ROOT_DIR = "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl"```
 
-LAPACK [STATUS: ON]
+LAPACK [STATUS: WORKING]
 
 Please verify:
 * ```LAPACK_LIBRARIES = ```
@@ -329,7 +330,7 @@ Please verify:
 
 For shared library builds the dll.lib versions need to be selected.
 
-Intel Media SDK Support [STATUS: ON]
+Intel Media SDK Support [STATUS: WORKING]
 
 * ```WITH_MFX = ON```
 * ```WITH_MSMF = ON```
@@ -341,14 +342,14 @@ Please check:
 
 Enabling Intel MFX will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.
 
-HDF [STATUS: deoes not compile]
+HDF [STATUS: NOT WORKING]
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
 * ```BUILD_opencv_hdf = OFF```
 * ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
 * ```HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"```
 
-OPENCL [STATUS: ON]
+OPENCL [STATUS: WORKING]
 
 This enables cv::ocl::resize() versus cv::resize() which provides hardware acceleration.
 
@@ -359,11 +360,11 @@ This should be set automatically. Please check:
 * ```WITH_OPENCL_D3D11_NV = ON```
 * ```WITH_OPENCL_SVM = ON``` support vector machine classifier
 
-JavaScript [STATUS: OFF]
+JavaScript [STATUS: NOT WORKING]
 
 * ```BUILD_opencv_js = OFF```
 
-MISC Features [STATUS: ON]
+MISC Features [STATUS: WORKING]
 
 * ```USE_WIN32_FILEIO = ON```
 * ```WITH_CUDA = OFF```
