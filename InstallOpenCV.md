@@ -1,6 +1,41 @@
 # Compiling OpenCV on Windows 10
 WARNING I have not yet been able to successfullt build opencv beyond build one listed below.
 
+- [Compiling OpenCV on Windows 10](#compiling-opencv-on-windows-10)
+  * [Motivation](#motivation)
+  * [Approach](#approach)
+    + [Fun](#fun)
+  * [Pre Requisits](#pre-requisits)
+    + [Open CV Source](#open-cv-source)
+  * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
+  * [Prepare your Shell Build Environment](#prepare-your-shell-build-environment)
+  * [Build](#build)
+  * [Build 1 STATUS: Completed Successfully.](#build-1-status--completed-successfully)
+    + [Let's Start Light (minimal)](#let-s-start-light--minimal-)
+    + [Verify Build Variables](#verify-build-variables)
+    + [Configure and Generate](#configure-and-generate)
+    + [CMD Shell Equivalent](#cmd-shell-equivalent)
+    + [Build](#build-1)
+    + [Collect DLLs](#collect-dlls)
+    + [Test](#test)
+  * [Build 2](#build-2)
+    + [Configure Build](#configure-build)
+      - [CMD Shell Equivalent](#cmd-shell-equivalent-1)
+    + [Collect DLLs](#collect-dlls-1)
+    + [Test](#test-1)
+      - [Camera](#camera)
+  * [Build 3](#build-3)
+    + [CUDA](#cuda)
+    + [Graphical User Interfaces](#graphical-user-interfaces)
+    + [Build](#build-2)
+    + [Optional: Build against FFMPEG and not the opencv FFMPEG wrapper](#optional--build-against-ffmpeg-and-not-the-opencv-ffmpeg-wrapper)
+    + [Building Dependencies from Source](#building-dependencies-from-source)
+    + [Create Single Library to Include all Features](#create-single-library-to-include-all-features)
+    + [Build 1](#build-1)
+  * [Install to:                    C:/opencv/opencv/build/install](#install-to---------------------c--opencv-opencv-build-install)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## Motivation
 There are many reasons to build your own OpenCV binaries for example to enable hardware acceleration or gstreamer.
 
@@ -73,7 +108,7 @@ set "generator=Visual Studio 16 2019"
 When you execute some of the vcvars script twice in a row, it will throw error the second time. You can ignore those.
 **It is critical to run this setup each time in the shell window that you will use cmake or cmake-gui before you start configuring your build.
 
-## Build
+# Build
 Here I show 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
 
 ## Build 1 STATUS: Completed Successfully.
@@ -513,8 +548,7 @@ https://structure.io/openni
 ### Create Single Library to Include all Features
 * BUILD_opencv_world=ON
 
-
-### Build 1
+# Build 1 CMAKE Output
 C:\opencv\opencv\build>py -3 -c "import cv2; print(cv2.getBuildInformation())"
 
 General configuration for OpenCV 4.3.0-dev =====================================
