@@ -39,7 +39,7 @@ WARNING I have not yet been able to successfullt build opencv beyond build one l
 ## Motivation
 There are many reasons to build your own OpenCV binaries for example to enable hardware acceleration or gstreamer.
 
-Building OpenCV beyond its default settings is notoriously difficlut. The (!python for engineers)[https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/] oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
+Building OpenCV beyond its default settings is notoriously difficlut. The (python for engineers)[https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/] oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
 
 The main issue is that there are many temptations for enabling components that you dont need but break your build and that figureing out which option needs to be enabled for succcessful build takes a long time as each build attempt takes 10-30 minutes. Some build option create a wrapper for external libraries you need to download and some build the library. The documentation is sparse and googeling the build options does not produce quality links.
 
