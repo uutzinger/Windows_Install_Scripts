@@ -4,10 +4,10 @@
   * [Motivation](#motivation)
   * [Approach](#approach)
   * [Fun](#fun)
-  * [Pre Requisits](#pre-requisits)
-  * [Obtain OpenCV Source](#obtain-opencv-source)
+  * [Pre - Requisits](#pre---requisits)
+  * [Obtaining OpenCV Source](#obtaining-opencv-source)
   * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
-  * [Prepare your Shell Build Environment](#prepare-your-shell-build-environment)
+  * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
 - [Build](#build)
   * [Build 1 [STATUS: Completed Successfully]](#build-1--status--completed-successfully-)
     + [Let's Start Light (minimal)](#let-s-start-light--minimal-)
@@ -17,13 +17,13 @@
     + [Build](#build-1)
     + [Collect DLLs](#collect-dlls)
     + [Test](#test)
-  * [Build 2 [STATUS: Successfully]](#build-2--status--successfully-)
+  * [Build 2 [STATUS: Completed Successfully]](#build-2--status--completed-successfully-)
     + [Configure Build](#configure-build)
-      - [CMD Shell Equivalent](#cmd-shell-equivalent-1)
-    + [Collect DLLs](#collect-dlls-1)
-    + [Test](#test-1)
+    + [CMD Shell Equivalent](#cmd-shell-equivalent-1)
+    + [Collecting DLLs](#collecting-dlls)
+    + [Testing](#testing)
       - [Camera](#camera)
-  * [Build 3](#build-3)
+  * [Build 3 [STATUS: Work in Progress]](#build-3--status--work-in-progress-)
     + [CUDA](#cuda)
     + [Graphical User Interfaces](#graphical-user-interfaces)
     + [Build](#build-2)
@@ -64,12 +64,12 @@ This explains algorithm optimizations by Intel for opencv. https://www.slideshar
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
-## Pre Requisits
+## Pre - Requisits
 
 Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md
 
-## Obtain OpenCV Source
-Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times it can be confusing on GitHub to identify the latest release. You can check openCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
+## Obtaining OpenCV Source
+Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times it can be confusing on GitHub to identify the latest release. You can check OpenCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
 
 ```
 mkdir C:/opencv
@@ -87,7 +87,7 @@ pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
 ```
 
-## Prepare your Shell Build Environment
+## Preparing your Shell Build Environment
 
 Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:
 ```
@@ -218,7 +218,7 @@ py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
-## Build 2 [STATUS: Successfully]
+## Build 2 [STATUS: Completed Successfully]
 
 Now lets enable more features:
 * Intel optimizations
@@ -366,7 +366,7 @@ MISC Features [STATUS: ON]
 * ```WITH_CUDA = OFF```
 * ```OPENCV_DNN_CUDA = OFF```
 
-#### CMD Shell Equivalent
+### CMD Shell Equivalent
 
 STATUS: Not verified
 
@@ -402,7 +402,7 @@ STATUS: Not verified
 -DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 ```
 
-### Collect DLLs
+### Collecting DLLs
 If you had dlls built you  might want to collect them at single location and add that location to the PATH.
 
 ```
@@ -413,7 +413,7 @@ copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
 REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
-### Test
+### Testing
 
 We need to add the following directories to the search path so opencv can find the necessary dlls:```
 set "PATH=%PATH
@@ -458,7 +458,7 @@ gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rt
 ```
 Now check with test_rtsp_simplegstramer.py
 
-## Build 3
+## Build 3 [STATUS: Work in Progress]
 Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. OpenCV built with CUDA support will not run on a computer without CUDA GPU. The QT build replaces GUI option.
 
 ```
@@ -466,28 +466,23 @@ cmake-gui ..\
 ```
 
 ### CUDA
--DWITH_CUDA=ON 
--DCUDA_TOOLKIT_ROOT_DIR="C:/Program Files/NVIDIA GPU Computingolkit/CUDA/v10.1" 
--DCUDA_FAST_MATH=ON 
--DWITH_CUBLAS=ON 
 
-
-* WITH_CUDA = ON, enable CUDA
-* WITH_NVCUVID = ON, enable CUDA Video decodeing support
-* WITH_CUFFT = ON
-* WITH_CUBLAS = ON
-* CUDA_FAST_MATH = ON 
-* CUDA_ARCH_PTX = 7.5, selected from all options
-* CUDA_ARCH_PTX = 7.5, selected from all options
-* CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"
-* CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2
-* CUDA_BUILD_EMULATION = OFF, autopopulated
-* CUDA_GENERATION = "Turing", autopopulated
-* CUDA_HOST_COMPLIER = ... autopopulated
-* CUDA_USE_STATIC_CUDA_RUNTIME = ON
-* OPENCV_DNN_CUDA = ON, Neural Network Classifiers on CUDA
-* ENABLE_FAST_MATH = ON
-* BUILD_opencv_cudev = ON
+* ```WITH_CUDA = ON```, enable CUDA
+* ```WITH_NVCUVID = ON```, enable CUDA Video decodeing support
+* ```WITH_CUFFT = ON```
+* ```WITH_CUBLAS = ON```
+* ```CUDA_FAST_MATH = ON``` 
+* ```CUDA_ARCH_PTX = 7.5```, selected from all options
+* ```CUDA_ARCH_PTX = 7.5```, selected from all options
+* ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
+* ```CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2```
+* ```CUDA_BUILD_EMULATION = OFF```, autopopulated
+* ```CUDA_GENERATION = "Turing"```, autopopulated
+* ```CUDA_HOST_COMPLIER = ``` ... autopopulated
+* ```CUDA_USE_STATIC_CUDA_RUNTIME = ON>???```
+* ```OPENCV_DNN_CUDA = ON```, Neural Network Classifiers on CUDA
+* ```ENABLE_FAST_MATH = OFF```
+* ```BUILD_opencv_cudev = ON```
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
@@ -495,8 +490,8 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 ### Graphical User Interfaces
-* WITH_QT=ON
-* Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5
+* ```WITH_QT=ON```
+* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
 With x.y the QT version you downloaded.
 Rerun configure and generate in cmake-gui.
 
