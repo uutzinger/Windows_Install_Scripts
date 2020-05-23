@@ -260,7 +260,7 @@ Features to be turned ON/OFF and variables to be set
 * ```DBUILD_opencv_gapi = OFF```, recommended by [1]
 
 Add Entry
-* ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe", otherwise python2 will be used to build opencv.
+* ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"```, otherwise python2 will be used to build opencv.
 
 EIGEN [Status: OFF]
 
