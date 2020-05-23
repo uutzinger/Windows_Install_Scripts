@@ -493,7 +493,7 @@ CUDA support adds a lot of modules and build time. It looks like the NVIDIA tool
 * ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
 * ```CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2```
 * ```CUDA_BUILD_EMULATION = OFF```, autopopulated
-* ```CUDA_GENERATION = "Auto"```, select from list
+* ```CUDA_GENERATION = "Turing"```, select from list, Auto does not work for me
 * ```CUDA_HOST_COMPLIER = ```, autopopulated
 * ```CUDA_USE_STATIC_CUDA_RUNTIME = ON```, autopopulated
 * ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.
