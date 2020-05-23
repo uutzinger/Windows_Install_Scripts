@@ -258,6 +258,8 @@ Features to be turned ON/OFF and variables to be set
 * ```OPENCV_PYTHON3_VERSION = ON```, apparently cmake-gui confuses this variable [4], [2] recommends it ON
 * ```BUILD_opencv_hdf = OFF```, recommended by [1]
 * ```DBUILD_opencv_gapi = OFF```, recommended by [1]
+* ```ENABLE_FAST_MATH = OFF```, recommended by cmake
+
 
 Add Entry
 * ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"```, otherwise python2 will be used to build opencv.
@@ -468,21 +470,22 @@ cmake-gui ..\
 ### CUDA
 
 * ```WITH_CUDA = ON```, enable CUDA
-* ```WITH_NVCUVID = ON```, enable CUDA Video decodeing support
+* ```WITH_NVCUVID = ON```, [1] enable CUDA Video decodeing support
 * ```WITH_CUFFT = ON```
-* ```WITH_CUBLAS = ON```
-* ```CUDA_FAST_MATH = ON``` 
+* ```WITH_CUBLAS = ON``` [1,4,10]
+* ```CUDA_FAST_MATH = ON```, [3,4] 
 * ```CUDA_ARCH_PTX = 7.5```, selected from all options
-* ```CUDA_ARCH_PTX = 7.5```, selected from all options
+* ```CUDA_ARCH_PTX = 7.5```, entered to be same as PTX
 * ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
 * ```CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2```
 * ```CUDA_BUILD_EMULATION = OFF```, autopopulated
-* ```CUDA_GENERATION = "Turing"```, autopopulated
-* ```CUDA_HOST_COMPLIER = ``` ... autopopulated
-* ```CUDA_USE_STATIC_CUDA_RUNTIME = ON>???```
-* ```OPENCV_DNN_CUDA = ON```, Neural Network Classifiers on CUDA
-* ```ENABLE_FAST_MATH = OFF```
+* ```CUDA_GENERATION = "Auto"```, select from list
+* ```CUDA_HOST_COMPLIER = ```, autopopulated
+* ```CUDA_USE_STATIC_CUDA_RUNTIME = ON```, autopopulated
+* ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA
+* ```BUILD_CUDA_STUBS = OFF```
 * ```BUILD_opencv_cudev = ON```
+* ```BUILD_opencv_cuda* = ON```
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
