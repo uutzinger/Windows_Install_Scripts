@@ -236,35 +236,35 @@ This is the location where I copied all dlls and binaries. It will need to be ad
 
 ## Colelcting dll and libs
 We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes.
-
+When you build shared libs, dll files are needed, otherwise libraries (*.lib)
 ```
 REM   Intel MPI ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\opencv\opencv_redist /y
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\opencv\opencv_redist /y
 REM   INTEL TBB ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\* C:\opencv\opencv_redist /y
 REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*" C:\opencv\opencv_redist /y
 REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc_mt\*" C:\opencv\opencv_redist /y
 REM   INTEL MKL ========
 xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\opencv\opencv_redist /s/h/i/e/y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL IPP ========
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\opencv\opencv_redist /y
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s/h/i/e/y
+REM xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\opencv\opencv_redist /s/h/i/e/y
 REM   INTEL DAAL =======
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL compiler ===
 copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\compiler\lib\intel64\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\compiler\lib\intel64\*" C:\opencv\opencv_redist /y
 REM   INTEL Medi SDK ===
 copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64\*" C:\opencv\opencv_redist /y
 REM   INTEL RealSense ==
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\opencv_redist /y
-copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
+REM copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
 REM QT =================
 REM copy  "C:\Qt\5.12.8\msvc2017_64\bin\*" C:\opencv\opencv_redist /y
 REM copy  "C:\Qt\5.12.8\msvc2017_64\lib\*" C:\opencv\opencv_redist /y
