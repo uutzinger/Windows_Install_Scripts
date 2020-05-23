@@ -1,5 +1,4 @@
 # Compiling OpenCV on Windows 10
-WARNING I have not yet been able to successfullt build opencv beyond build one listed below.
 
 - [Compiling OpenCV on Windows 10](#compiling-opencv-on-windows-10)
   * [Motivation](#motivation)
@@ -39,9 +38,9 @@ WARNING I have not yet been able to successfullt build opencv beyond build one l
 ## Motivation
 There are many reasons to build your own OpenCV binaries for example to enable hardware acceleration or gstreamer.
 
-Building OpenCV beyond its default settings is notoriously difficlut. The (python for engineers)[https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/] oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
+Building OpenCV beyond its default settings is notoriously difficlut. The [python for engineers](https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/) oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
 
-The main issue is that there are many temptations for enabling components that you dont need but break your build and that figureing out which option needs to be enabled for succcessful build takes a long time as each build attempt takes 10-30 minutes. Some build option create a wrapper for external libraries you need to download and some build the library. The documentation is sparse and googeling the build options does not produce quality links.
+The main issue are the many temptations for enabling components that you dont need but break your build and that figuring out which option needs to be enabled takes a long time because a build typically takes 10-30 minutes. Some build options create a wrapper for external libraries which you need to download prior to the build and others will download the modules for you. The documentation is sparse and googeling the build options does not produce quality links.
 
 I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support.
 I need to eanble gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceeration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform. I need architeture optimization because I will attempt using high frame rate cameras in my research.
@@ -219,18 +218,18 @@ py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
-## Build 2
+## Build 2 [STATUS: Work in progress]
 
 Now lets enable more features:
 * Intel optimizations
   * Math Kernel Library
   * Thread Building Blocks
   * IPP
-* Eigen ON HOLD
+* Eigen, ON HOLD
 * Video features
-  * gstreamer ON HOLD 
-  * Intel Media SDK ON HOLD
-  * Intel Realsense ON HOLD
+  * gstreamer, ON HOLD 
+  * Intel Media SDK
+  * Intel Realsense, ON HOLD
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact specfic configurtions you already have. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
@@ -252,16 +251,16 @@ cmake-gui ..\
 Features to be turned ON/OFF and variables to be set
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
-* BUILD_SHARED_LIBS = ON, [2], when on this will created DLLs, when off this will created static libraries (8.lib)
+* BUILD_SHARED_LIBS = ON, [2], when on this will created DLLs, when off this will created static libraries (*.lib)
 * BUILD_opencv_world = ON, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file 
 * BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = OFF, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but with pyton 3 import cv2 creates dll errors.
-* OPENCV_PYTHON3_VERSION = ON, apparently cmake-gui confuses this variable [4], [2]recommends it ON
+* BUILD_opencv_python2 = OFF, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
+* OPENCV_PYTHON3_VERSION = ON, apparently cmake-gui confuses this variable [4], [2] recommends it ON
 * BUILD_opencv_hdf = OFF, recommended by [1]
-* DBUILD_opencv_gapi=OFF [1]
+* DBUILD_opencv_gapi = OFF, recommended by [1]
 
 Add Entry
-* PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
+* PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe", otherwise python2 will be used to build opencv.
 
 EIGEN [Status: OFF]
 
@@ -271,6 +270,7 @@ when you turn EIGEN ON, you will need to provide the source code, its not automa
 * Eigen3_DIR is not found
 
 Intel RealSense [STATUS: ON HOLD]
+
 * WITH_LIBREALSENSE = OFF, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.
 * LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
 * LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
