@@ -1,26 +1,33 @@
 # Compiling OpenCV on Windows 10
+WARNING I have not yet been able to successfullt build opencv beyond build one listed below.
+
 ## Motivation
-There are many reasons to build your own openCV binaries. The issue with building your own binaries are the many temptations of enabling components that you dont really need but break your build.
+There are many reasons to build your own OpenCV binaries for example to enable hardware acceleration or gstreamer.
+
+Building OpenCV beyond its default settings is notoriously difficlut. The (!python for engineers)[https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/] oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
+
+The main issue is that there are many temptations for enabling components that you dont need but break your build and that figureing out which option needs to be enabled for succcessful build takes a long time as each build attempt takes 10-30 minutes. Some build option create a wrapper for external libraries you need to download and some build the library. The documentation is sparse and googeling the build options does not produce quality links.
 
 I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support.
 I need to eanble gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceeration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform. I need architeture optimization because I will attempt using high frame rate cameras in my research.
 
-The temptations I encountered are: Enabling Eigen, Matlab, JavaScript, Java, HDF5. Intel TBB, IPP, MKL and CUDA are complex enough to build into opencv for architecture opimization. I don't program in Java nor JavaScript. I have over many years used Matlab for scientific computing but I dont need to build an opencv interface for Matlab, as I can obtain that through Mathworks when the need arises. If I have issue of needing to save and read very large files (>2Gb), I can check into packages other than opencv that provide that functionality.
-
 ## Approach
-This guide's purpose is to build opencv in several steps and with increasing complexity.
+In this guide I propose to build opencv in several steps and with increasing complexity.
 
-It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted even when attempting to turn off the component in the build script.
-It is also common that the cmake and cmake-gui do not create the same build configuration. Often there is more than one cmake version installed on your computer.
+It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted without clearing previous build cache. Its not enough to turn off the build option. It is also common that the cmake and cmake-gui do not create the same build configuration. Often there is more than one cmake version installed on your computer.
 
-I prefer building with Ninja because opencv build times are very long and Ninja reduces them significantly. 
-
-Many online posts have been consulted for this script e.g. [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) and https://dev.infohub.cc/build-opencv-410/ and
-https://dev.infohub.cc/build-opencv-430-with-cuda/
+Many online posts have been consulted for this document e.g. 
+* [1] [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) 
+* [2] https://dev.infohub.cc/build-opencv-410/ 
+* [3] https://dev.infohub.cc/build-opencv-430-with-cuda/
+* [4] https://geeks-world.github.io/articles/464015/index.html
+* [5] https://docs.opencv.org/4.3.0/d3/d52/tutorial_windows_install.html
+* [6] https://www.learnopencv.com/install-opencv-4-on-windows/
+* [7] https://lightbuzz.com/opencv-cuda/
 
 ### Fun
-This explains algorithm optimizationsby Intel for opencv.
-https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
+This explains algorithm optimizations by Intel for opencv. https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
+
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
 ## Pre Requisits
@@ -48,7 +55,7 @@ pip3 uninstall opencv-contrib-python
 
 ## Prepare your Shell Build Environment
 
-Open a command prompt (CMD) and enter the following commands with directories pointing to your installations
+Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:
 ```
 cd C:/opencv/opencv/build
 set "openCvSource=C:\opencv\opencv"
@@ -57,9 +64,14 @@ set "openCvBuild=%openCvSource%\build"
 set "buildType=Release"
 set "generator=Visual Studio 16 2019"
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+set "generator=Visual Studio 16 2019"
 ```
 
-When you execute the vcvars script twice in a row, it will throw error the second time. You can ignore that.
+When you execute some of the vcvars script twice in a row, it will throw error the second time. You can ignore those.
+**It is critical to run this setup each time in the shell window that you will use cmake or cmake-gui before you start configuring your build.
 
 ## Build
 Here I show 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
@@ -173,16 +185,17 @@ py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
 
 ## Build 2
+
 Now lets enable more features:
 * Intel optimizations
   * Math Kernel Library
   * Thread Building Blocks
   * IPP
-* Eigen ONHOLD
+* Eigen ON HOLD
 * Video features
-  * gstreamer ONHOLD 
-  * Intel Media SDK ONHOLD
-  * Intel Realsense ONHOLD
+  * gstreamer ON HOLD 
+  * Intel Media SDK ON HOLD
+  * Intel Realsense ON HOLD
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact specfic configurtions you already have. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
@@ -192,21 +205,8 @@ cd C:/opencv
 mkdir opencv_dep
 ```
 
-### Setup Shell
-```
-set "openCvSource=C:\opencv\opencv"
-set "openCVExtraModules=C:\opencv\opencv_contrib\modules"
-set "openCvBuild=%openCvSource%\build"
-set "buildType=Release"
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
-set "generator=Visual Studio 16 2019"
-```
 ### Configure Build
 
-#### cmake-gui
 Start cmake-gui in the CMD shell that has the bat files from above executed.
 
 ```
@@ -217,61 +217,77 @@ cmake-gui ..\
 Features to be turned ON/OFF and variables to be set
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
-* BUILD_SHARED_LIBS = ON
-* BUILD_opencv_world = ON
+* BUILD_SHARED_LIBS = ON, [2], when on this will created DLLs, when off this will created static libraries (8.lib)
+* BUILD_opencv_world = ON, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file 
 * BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = OFF
-* OPENCV_PYTHON3_VERSION = ON
-* BUILD_opencv_hdf = OFF
-* DBUILD_opencv_gapi=OFF [Rawley]
-
+* BUILD_opencv_python2 = OFF, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but with pyton 3 import cv2 creates dll errors.
+* OPENCV_PYTHON3_VERSION = ON, apparently cmake-gui confuses this variable [4], [2]recommends it ON
+* BUILD_opencv_hdf = OFF, recommended by [1]
+* DBUILD_opencv_gapi=OFF [1]
 
 Add Entry
 * PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
 
-EIGEN
+EIGEN [Status: OFF]
+
+when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
 * WITH_EIGEN = OFF
-* EIGEN_INCLUDE_PATH = "C:/opencv/dep/eigen/Eigen"
+* EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"
 * Eigen3_DIR is not found
 
-Intel RealSense
-* WITH_LIBREALSENSE = ON
+Intel RealSense [STATUS: ON HOLD]
+* WITH_LIBREALSENSE = OFF, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.
 * LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
 * LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
 * realsense2_DIR is not found
 
-GSTREAMER
-* WITH_GSTREAMER=ON
+GSTREAMER [STATUS: ON HOLD]
+* WITH_GSTREAMER=OFF
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
-TBB, Parallel framework should list TBB (ver...)
-* BUILD_TBB = OFF, you want to use the precompiled files which we downloaded and installed above. This is not a wrapper.
-* WITH_TBB = ON
+TBB [STATUS: MKL & TBB linking has issue between static and dynamic libraries]
+
+You either download the TBB source or the prebuilt binaries from Intel.
+The cmake configureation should list under Parallel framework: TBB (ver...)
+[1] recommends the dlls from C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt which are statically linked to VC runtime. By default the vc14 versions are picked up by cmake.
+
+* BUILD_TBB = OFF, you want to use the precompiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.
+* WITH_TBB = ON, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
 
 The following TBB folders should be set automatically:
 * TBB_DIR is not found
-* TBB_ENV_INCLUDE = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
-* TBB_ENV_LIB = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
+* TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
+* TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
 * TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
-* TBB_VER_FILE = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
+* TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
+
+MKL 
+* WITH_MKL = ON
+* MKL_USE_MULTITHREAD = ON, [1]
+* MKL_WITH_TBB = ON, [1]
+
+When executing the setup script it should configure automatically:
+* MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
+* MKL_LIBRARIES    = 
+  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;
+  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;
+  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;
+  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib;
+  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_sequential_dll.lib;
+
+mkl_sequential is not picked up in every build.
+
+For shared library builds the dll.lib versions need to be selected.
+
+* MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
 
 Intel Media SDK Support
 * WITH_MFX = ON
 * WITH_MSMF = ON
 * WITH_MSMF_DXVA = ON
 
-MKL 
-* WITH_MKL = ON
-* MKL_USE_MULTITHREAD = ON
-* MKL_WITH_TBB = ON
-
-When executing the setup script it should configure automatically:
-* MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
-* MKL_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_sequential.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core.lib
-* MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
-
-HDF
+HDF [STATUS: deoes not compile]
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
 * BUILD_opencv_hdf = OFF
@@ -280,22 +296,24 @@ When the HDF5_DIR is set as environment variable it should find the directories 
 
 OPENCL
 
+cv::ocl::resize() versus cv::resize()
+
 This should be set automatically.
 * WITH_OPENCL = ON
 * WITH_OPENCLAMDBLAS = ON
 * WITH_OPENCLEMDFFT = ON
 * WITH_OPENCL_D3D11_NV = ON
-* WITH_OPENCL_SVM = ON support vector machine classified
+* WITH_OPENCL_SVM = ON support vector machine classifier
 
-JavaScript
+JavaScript [STATUS: OFF]
 
 * BUILD_opencv_js = OFF
 
-Turn Following Features OFF
-* USE_WIN32_FILEIO = OFF, this might enable bigTIFF or file acceess for >2GB.
+MISC Features:
+
+* USE_WIN32_FILEIO = ON
 * WITH_CUDA = OFF
 * OPENCV_DNN_CUDA = OFF
-* WITH_OPPENCL_SVM = not sure
 
 #### CMD Shell Equivalent
 STATUS: Not verified
@@ -329,6 +347,17 @@ STATUS: Not verified
 -DBUILD_opencv_hdf=OFF ^
 -DHDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib" ^
 -DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
+```
+
+### Collect DLLs
+If you had dlls built you  might want to collect them at single location and add that location to the PATH.
+
+```
+REM   OpenCV ===========
+copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
+copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
 ### Test
