@@ -470,7 +470,7 @@ cmake-gui ..\
 ```
 
 ### CUDA
-
+CUDA support adds a lot of modules and build time. It looks like the NVIDIA tools take advantage of one CPU core only.
 * ```WITH_CUDA = ON```, enable CUDA
 * ```WITH_NVCUVID = ON```, [1] enable CUDA Video decodeing support
 * ```WITH_CUFFT = ON```
