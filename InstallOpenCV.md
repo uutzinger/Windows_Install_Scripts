@@ -178,11 +178,11 @@ Now lets enable more features:
   * Math Kernel Library
   * Thread Building Blocks
   * IPP
-* Eigen
+* Eigen ONHOLD
 * Video features
-  * gstreamer 
-  * Intel Media SDK
-  * Intel Realsense
+  * gstreamer ONHOLD 
+  * Intel Media SDK ONHOLD
+  * Intel Realsense ONHOLD
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact specfic configurtions you already have. If something breaks, you can attempt removing compoents and go back to build 1 until it completes again.
 
@@ -191,18 +191,6 @@ First we will want to install additional components. Some of them I like to inst
 cd C:/opencv
 mkdir opencv_dep
 ```
-
-PATH Environment Variable
-* C:\opencv\opencv\build\install\x64\vc16\bin"
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal
-* C:\PROGRA~2\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler
-* C:\PROGRA~2\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64
-* C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-* C:\gstreamer\1.0\x86_64\bin"
 
 ### Setup Shell
 ```
@@ -214,7 +202,7 @@ set "buildType=Release"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
-set "generator=Ninja"
+set "generator=Visual Studio 16 2019"
 ```
 ### Configure Build
 
@@ -226,12 +214,17 @@ cd C:\opencv\opencv\build
 cmake-gui ..\
 ```
 
-Features to be turned on and variables to be set
+Features to be turned ON/OFF and variables to be set
 * OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
 * OPENCV_ENABLE_NONFREE = ON
 * BUILD_SHARED_LIBS = ON
+* BUILD_opencv_world = ON
 * BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = ON
+* BUILD_opencv_python2 = OFF
+* OPENCV_PYTHON3_VERSION = ON
+* BUILD_opencv_hdf = OFF
+* DBUILD_opencv_gapi=OFF [Rawley]
+
 
 Add Entry
 * PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"
@@ -311,6 +304,7 @@ STATUS: Not verified
 -DCMAKE_BUILD_TYPE=%buildType% ^
 -DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
 -DOPENCV_ENABLE_NONFREE=ON ^
+
 -DBUILD_SHARED_LIBS=ON ^
 -DBUILD_opencv_python3=ON ^
 -DBUILD_EXAMPLES=OFF ^
@@ -337,20 +331,15 @@ STATUS: Not verified
 -DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
 ```
 
-### Build
-```
-"C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
-```
-
 ### Test
 
-We need to add the following directories to the search path so opencv can find the necessary dlls:
-```
-set "PATH=%PATH%;C:\opencv\opencv\build\install\x64\vc16\bin"
-set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"
-set "PATH=%PATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14"
-```
+We need to add the following directories to the search path so opencv can find the necessary dlls:```
+set "PATH=%PATH
+%;C:\opencv\opencv\buil
+d\install\x64\vc1
+6\bin"set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"set "PAT=%P
+ATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libaries\windows\redis
+t\intel64\tbb\vc14"```
 
 Optional:
 ```
@@ -395,8 +384,14 @@ cmake-gui ..\
 ```
 
 ### CUDA
-* WITH_NVCUVID = ON, enable CUDA Video decodeing support
+-DWITH_CUDA=ON 
+-DCUDA_TOOLKIT_ROOT_DIR="C:/Program Files/NVIDIA GPU Computingolkit/CUDA/v10.1" 
+-DCUDA_FAST_MATH=ON 
+-DWITH_CUBLAS=ON 
+
+
 * WITH_CUDA = ON, enable CUDA
+* WITH_NVCUVID = ON, enable CUDA Video decodeing support
 * WITH_CUFFT = ON
 * WITH_CUBLAS = ON
 * CUDA_FAST_MATH = ON 
