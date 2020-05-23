@@ -58,6 +58,7 @@ Many online posts have been consulted for this document e.g.
 * [5] https://docs.opencv.org/4.3.0/d3/d52/tutorial_windows_install.html
 * [6] https://www.learnopencv.com/install-opencv-4-on-windows/
 * [7] https://lightbuzz.com/opencv-cuda/
+* [8] https://pterneas.com/2018/11/02/opencv-cuda/
 
 ## Fun
 This explains algorithm optimizations by Intel for opencv. https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
@@ -482,10 +483,13 @@ cmake-gui ..\
 * ```CUDA_GENERATION = "Auto"```, select from list
 * ```CUDA_HOST_COMPLIER = ```, autopopulated
 * ```CUDA_USE_STATIC_CUDA_RUNTIME = ON```, autopopulated
-* ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA
+* ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.
 * ```BUILD_CUDA_STUBS = OFF```
 * ```BUILD_opencv_cudev = ON```
 * ```BUILD_opencv_cuda* = ON```
+
+This build creates a lot:
+```warning : field of class type without a DLL interface used in a class with a DLL interface```
 
 Needs to be on path
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
