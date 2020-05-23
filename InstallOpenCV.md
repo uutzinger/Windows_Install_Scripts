@@ -317,10 +317,20 @@ For shared library builds the dll.lib versions need to be selected.
 
 * MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
 
+LAPACK
+
+* LAPACK_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib
+
+For shared library builds the dll.lib versions need to be selected.
+
+
 Intel Media SDK Support
+
 * WITH_MFX = ON
 * WITH_MSMF = ON
 * WITH_MSMF_DXVA = ON
+
+This will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.
 
 HDF [STATUS: deoes not compile]
 
