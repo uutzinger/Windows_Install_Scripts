@@ -59,7 +59,7 @@ Many online posts have been consulted for this document e.g.
 * [6] https://www.learnopencv.com/install-opencv-4-on-windows/
 * [7] https://lightbuzz.com/opencv-cuda/
 
-### Fun
+## Fun
 This explains algorithm optimizations by Intel for opencv. https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
@@ -68,7 +68,7 @@ This is excellent summary of the Halide algorithm development tools https://hali
 
 Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md
 
-### Open CV Source
+## Obtain OpenCV Source
 Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times it can be confusing on GitHub to identify the latest release. You can check openCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
 
 ```
@@ -128,38 +128,38 @@ Please verify:
 For a light build, many options are usually off such as:
 
 Video
-* WITH_GSTREAMER = OFF
-* WITH_MFX = OFF, Intel Video Acceleration
-* WITH_MKL = OFF, Intel Math Library
-* WITH_LIBREALSENSE = OFF, Intel Real Sense Camera
+* ```WITH_GSTREAMER = OFF```
+* ```WITH_MFX = OFF```, Intel Video Acceleration
+* ```WITH_MKL = OFF```, Intel Math Library
+* ```WITH_LIBREALSENSE = OFF```, Intel Real Sense Camera
 
 Math Acceleration
-* WITH_TBB = OFF, Intel Threadbuilding Blocks
-* WITH_EIGEN = OFF
+* ```WITH_TBB = OFF```, Intel Threadbuilding Blocks
+* ```WITH_EIGEN = OFF```
 
 Examples and Tests
-* BUILD_EXAMPLES = OFF
-* BUILD_DOCS = OFF
-* BUILD_TESTS = OFF
-* BUILD_PERF_TESTS = OFF
-* INSTALL_PYTHON_EXAMPLES = OFF
-* INSTALL_C_EXAMPLES = OFF
-* INSTALL_TESTS = OFF
+* ```BUILD_EXAMPLES = OFF```
+* ```BUILD_DOCS = OFF```
+* ```BUILD_TESTS = OFF```
+* ```BUILD_PERF_TESTS = OFF```
+* ```INSTALL_PYTHON_EXAMPLES = OFF```
+* ```INSTALL_C_EXAMPLES = OFF```
+* ```INSTALL_TESTS = OFF```
 
 Make sure this is ON or set:
-* BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = OFF
-* OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
-* OPENCV_ENABLE_NONFREE = ON
-* BUILD_SHARED_LIBS = ON, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
-* BUILD_opencv_world = ON, create single dll
-* OPENCV_PYTHON3_VERSION = ON, not sure, it might have issue with cmake-gui
-* CPU_BASELINE, should autopopulate to your CPU
-* BUILD_opencv_hdf = OFF, HDF5 file format
+* ```BUILD_opencv_python3 = ON```
+* ```BUILD_opencv_python2 = OFF```
+* ```OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"```
+* ```OPENCV_ENABLE_NONFREE = ON```
+* ```BUILD_SHARED_LIBS = ON```, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
+* ```BUILD_opencv_world = ON```, create single dll
+* ```OPENCV_PYTHON3_VERSION = ON```, not sure, it might have issue with cmake-gui
+* ```CPU_BASELINE```, should autopopulate to your CPU
+* ```BUILD_opencv_hdf = OFF```, HDF5 file format
 
 Modify or create the variable:
-* PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"
-* CMAKE_CONFIGURATION_TYPES = "Release"
+* ```PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"```
+* ```CMAKE_CONFIGURATION_TYPES = "Release"```
 
 ### Configure and Generate
 After successful configuratin, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
@@ -249,35 +249,35 @@ cmake-gui ..\
 ```
 
 Features to be turned ON/OFF and variables to be set
-* OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"
-* OPENCV_ENABLE_NONFREE = ON
-* BUILD_SHARED_LIBS = ON, [2], when on this will created DLLs, when off this will created static libraries (*.lib)
-* BUILD_opencv_world = ON, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file 
-* BUILD_opencv_python3 = ON
-* BUILD_opencv_python2 = OFF, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
-* OPENCV_PYTHON3_VERSION = ON, apparently cmake-gui confuses this variable [4], [2] recommends it ON
-* BUILD_opencv_hdf = OFF, recommended by [1]
-* DBUILD_opencv_gapi = OFF, recommended by [1]
+* ```OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"```
+* ```OPENCV_ENABLE_NONFREE = ON```
+* ```BUILD_SHARED_LIBS = ON```, [2], when on this will created DLLs, when off this will created static libraries (*.lib)
+* ```BUILD_opencv_world = ON```, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file 
+* ```BUILD_opencv_python3 = ON```
+* ```BUILD_opencv_python2 = OFF```, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
+* ```OPENCV_PYTHON3_VERSION = ON```, apparently cmake-gui confuses this variable [4], [2] recommends it ON
+* ```BUILD_opencv_hdf = OFF```, recommended by [1]
+* ```DBUILD_opencv_gapi = OFF```, recommended by [1]
 
 Add Entry
-* PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe", otherwise python2 will be used to build opencv.
+* ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe", otherwise python2 will be used to build opencv.
 
 EIGEN [Status: OFF]
 
 when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
-* WITH_EIGEN = OFF
-* EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"
-* Eigen3_DIR is not found
+* ```WITH_EIGEN = OFF```
+* ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
+* ```Eigen3_DIR``` is not found
 
 Intel RealSense [STATUS: ON HOLD]
 
-* WITH_LIBREALSENSE = OFF, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.
-* LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"
-* LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
-* realsense2_DIR is not found
+* ```WITH_LIBREALSENSE = OFF```, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.```
+* ```LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"```
+* ```LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"```
+* ```realsense2_DIR``` is not found
 
 GSTREAMER [STATUS: ON HOLD]
-* WITH_GSTREAMER=OFF
+* ```WITH_GSTREAMER=OFF```
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
@@ -287,78 +287,78 @@ You either download the TBB source or the prebuilt binaries from Intel.
 The cmake configureation should list under Parallel framework: TBB (ver...)
 [1] recommends the dlls from C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt which are statically linked to VC runtime. By default the vc14 versions are picked up by cmake.
 
-* BUILD_TBB = OFF, you want to use the precompiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.
-* WITH_TBB = ON, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
+* ```BUILD_TBB = OFF```, you want to use the precompiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.
+* ```WITH_TBB = ON```, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
 
 The following TBB folders should be set automatically:
-* TBB_DIR is not found
-* TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include
-* TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib
-* TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib
-* TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h
+* ```TBB_DIR``` is not found
+* ```TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include```
+* ```TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib```
+* ```TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib```
+* ```TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h```
 
 MKL 
-* WITH_MKL = ON
-* MKL_USE_MULTITHREAD = ON, [1]
-* MKL_WITH_TBB = ON, [1]
+* ```WITH_MKL = ON```
+* ```MKL_USE_MULTITHREAD = ON```, [1]
+* ```MKL_WITH_TBB = ON```, [1]
 
 When executing the setup script it should configure automatically:
-* MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include
-* MKL_LIBRARIES    = 
-  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;
-  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;
-  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;
-  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib;
-  * C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_sequential_dll.lib;
+* ```MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include```
+* ```MKL_LIBRARIES    = ```
+  * ```C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;```
+  * ```C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;```
+  * ```C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;```
+  * ```C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib;```
+  * ```C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_sequential_dll.lib;```
 
 mkl_sequential is not picked up in every build.
 
 For shared library builds the dll.lib versions need to be selected.
 
-* MKL_ROOT_DIR C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl
+* ```MKL_ROOT_DIR = "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl"```
 
 LAPACK
 
-* LAPACK_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib
+* ```LAPACK_LIBRARIES = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib```
 
 For shared library builds the dll.lib versions need to be selected.
 
 
 Intel Media SDK Support
 
-* WITH_MFX = ON
-* WITH_MSMF = ON
-* WITH_MSMF_DXVA = ON
+* ```WITH_MFX = ON```
+* ```WITH_MSMF = ON```
+* ```WITH_MSMF_DXVA = ON```
 
 This will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.
 
 HDF [STATUS: deoes not compile]
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
-* BUILD_opencv_hdf = OFF
-* HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"
-* HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"
+* ```BUILD_opencv_hdf = OFF```
+* ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
+* ```HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"```
 
 OPENCL
 
 cv::ocl::resize() versus cv::resize()
 
 This should be set automatically.
-* WITH_OPENCL = ON
-* WITH_OPENCLAMDBLAS = ON
-* WITH_OPENCLEMDFFT = ON
-* WITH_OPENCL_D3D11_NV = ON
-* WITH_OPENCL_SVM = ON support vector machine classifier
+* ```WITH_OPENCL = ON```
+* ```WITH_OPENCLAMDBLAS = ON```
+* ```WITH_OPENCLEMDFFT = ON```
+* ```WITH_OPENCL_D3D11_NV = ON```
+* ```WITH_OPENCL_SVM = ON``` support vector machine classifier
 
 JavaScript [STATUS: OFF]
 
-* BUILD_opencv_js = OFF
+* ```BUILD_opencv_js = OFF```
 
 MISC Features:
 
-* USE_WIN32_FILEIO = ON
-* WITH_CUDA = OFF
-* OPENCV_DNN_CUDA = OFF
+* ```USE_WIN32_FILEIO = ON```
+* ```WITH_CUDA = OFF```
+* ```OPENCV_DNN_CUDA = OFF```
 
 #### CMD Shell Equivalent
 STATUS: Not verified
