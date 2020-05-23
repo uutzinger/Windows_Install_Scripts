@@ -9,7 +9,7 @@ WARNING I have not yet been able to successfullt build opencv beyond build one l
     + [Open CV Source](#open-cv-source)
   * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
   * [Prepare your Shell Build Environment](#prepare-your-shell-build-environment)
-  * [Build](#build)
+- [Build](#build)
   * [Build 1 STATUS: Completed Successfully.](#build-1-status--completed-successfully)
     + [Let's Start Light (minimal)](#let-s-start-light--minimal-)
     + [Verify Build Variables](#verify-build-variables)
@@ -31,7 +31,7 @@ WARNING I have not yet been able to successfullt build opencv beyond build one l
     + [Optional: Build against FFMPEG and not the opencv FFMPEG wrapper](#optional--build-against-ffmpeg-and-not-the-opencv-ffmpeg-wrapper)
     + [Building Dependencies from Source](#building-dependencies-from-source)
     + [Create Single Library to Include all Features](#create-single-library-to-include-all-features)
-    + [Build 1](#build-1)
+- [Build 1 CMAKE Output](#build-1-cmake-output)
   * [Install to:                    C:/opencv/opencv/build/install](#install-to---------------------c--opencv-opencv-build-install)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
@@ -551,6 +551,7 @@ https://structure.io/openni
 # Build 1 CMAKE Output
 C:\opencv\opencv\build>py -3 -c "import cv2; print(cv2.getBuildInformation())"
 
+```
 General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
 
@@ -660,3 +661,4 @@ General configuration for OpenCV 4.3.0-dev =====================================
 
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
+```
