@@ -534,26 +534,27 @@ cuMat2.upload(npMat2)
 _ = cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
 current_time = time.time()
 
-for i in range(10):
+for i in range(20):
    _ = cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
 
 cuda_time = time.time()
 
-for i in range(10):
+for i in range(20):
    _ = cv.gemm(npMat1,npMat2,1,None,0,None,1)
 
 cpu_time = time.time()
 
-for i in range(10):
+for i in range(20):
    _ = npMat3 @ npMat4
 
 np_time = time.time()
 # CUDA time
-print('CUDA execution time is   : {}'.format(cuda_time-current_time))
+print('CUDA execution time is   : {}'.format((cuda_time-current_time)/20.0))
 # OpenCV Mat Pultiplication
-print('OpenCV execution time is : {}'.format(cpu_time-cuda_time))
+print('OpenCV execution time is : {}'.format((cpu_time-cuda_time)/20.0))
 # NumPy Mat Multiplication
-print('NumPy execution time is  : {}'.format(np_time-cpu_time)
+print('NumPy execution time is  : {}'.format((np_time-cpu_time/20.0)))
+#
 ```
 
 ## Build 4
