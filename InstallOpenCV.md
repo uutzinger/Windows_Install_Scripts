@@ -274,7 +274,7 @@ Features to be turned ON/OFF and variables to be set:
 * ```BUILD_opencv_python2 = OFF```, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
 * ```OPENCV_PYTHON3_VERSION = ON```, apparently cmake-gui confuses this variable [4], [2] recommends it ON
 * ```BUILD_opencv_hdf = OFF```, recommended by [1]
-* ```DBUILD_opencv_gapi = OFF```, recommended by [1]
+* ```DBUILD_opencv_gapi = ON```, OFF is recommended by [1], but ON is default and works
 * ```ENABLE_FAST_MATH = OFF```, recommended by cmake
 
 Add Entry
@@ -562,48 +562,59 @@ In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and th
 
 ## Build 4
 
+These are additions to build 3. Do not clear the cache or delete previous build files.
+
 * Video features
   * gstreamer 
   * Intel Realsense
 
 ### Configure Build
 
-EIGEN [Status: NOT WORKING]
+Intel RealSense [STATUS: Work in progress]
 
-when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
-* ```WITH_EIGEN = OFF```
-* ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
-* ```Eigen3_DIR``` is not found
-
-Intel RealSense [STATUS: ON HOLD]
-
-* ```WITH_LIBREALSENSE = OFF```, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.```
+* ```WITH_LIBREALSENSE = ON```
+* ```realsense2_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0"```
 * ```LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"```
 * ```LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"```
-* ```realsense2_DIR``` is not found
 
-GSTREAMER [STATUS: ON HOLD]
-* ```WITH_GSTREAMER=OFF```
+Its not clear yet if librealsense support in OpenCV requires the librealsense source.
+Librealsense has its own python wrapper which might be sufficient to access Intel tracking and 3D cameras.
+
+GSTREAMER [STATUS: Work in progress]
+
+* ```WITH_GSTREAMER=ON```
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
-HDF [STATUS: NOT WORKING]
+QT [Status: Work in progress]
+
+* ```WITH_QT=ON```
+* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
+
+With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
+
+HDF [STATUS: ON HOLD]
 
 When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
+
 * ```BUILD_opencv_hdf = OFF```
 * ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
 * ```HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"```
+
+Java [Status: ON HOLD]
+
+If you need the java wrapper to be built, you should disable python3. Somehow python2, python3 and java wrappers dont get along in cmake and OpenCV and each one will need to be built separately.
 
 JavaScript [STATUS: NOT WORKING]
 
 * ```BUILD_opencv_js = OFF```
 
-QT [Status: In Progress]
+EIGEN [Status: NOT WORKING]
 
-* ```WITH_QT=ON```
-* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
-With x.y the QT version you downloaded.
-Rerun configure and generate in cmake-gui.
+When you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
+* ```WITH_EIGEN = OFF```, its not compling for me
+* ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
+* ```Eigen3_DIR``` is not found
 
 ### BUILD
 
