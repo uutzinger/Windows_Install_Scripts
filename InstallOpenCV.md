@@ -4,17 +4,16 @@
   * [Motivation](#motivation)
   * [Approach](#approach)
   * [Background Reading](#background-reading)
-  * [Pre - Requisits](#pre---requisits)
+  * [Pre-Requisits](#pre-requisits)
   * [Obtaining OpenCV Source](#obtaining-opencv-source)
   * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
-- [Build](#build)
+- [Building OpenCV](#building-opencv)
   * [Build 1 [STATUS: Completed Successfully]](#build-1--status--completed-successfully-)
-    + [Let's Start Light (minimal)](#let-s-start-light--minimal-)
     + [Verify Build Variables](#verify-build-variables)
     + [Configure and Generate](#configure-and-generate)
     + [CMD Shell Equivalent](#cmd-shell-equivalent)
-    + [Build](#build-1)
+    + [Build](#build)
     + [Collect DLLs](#collect-dlls)
     + [Test](#test)
   * [Build 2 [STATUS: Completed Successfully]](#build-2--status--completed-successfully-)
@@ -23,15 +22,17 @@
     + [Collecting DLLs](#collecting-dlls)
     + [Testing](#testing)
       - [Camera](#camera)
-  * [Build 3 [STATUS: Work in Progress]](#build-3--status--work-in-progress-)
-    + [CUDA](#cuda)
+  * [Build 3 [STATUS: Completed Successfully]](#build-3--status--completed-successfully-)
+    + [Configure BUILD](#configure-build)
+    + [Build](#build-1)
+    + [Test](#test-1)
+  * [Build 4](#build-4)
     + [Graphical User Interfaces](#graphical-user-interfaces)
-    + [Build](#build-2)
     + [Optional: Build against FFMPEG and not the opencv FFMPEG wrapper](#optional--build-against-ffmpeg-and-not-the-opencv-ffmpeg-wrapper)
     + [Building Dependencies from Source](#building-dependencies-from-source)
-    + [Create Single Library to Include all Features](#create-single-library-to-include-all-features)
 - [Build 1 CMAKE Output](#build-1-cmake-output)
 - [Build 2 CMAKE Output](#build-2-cmake-output)
+- [Build 3 CMAKE Output](#build-3-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -118,7 +119,9 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 **It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
 
 # Building OpenCV
-Here I show 3 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
+Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
+
+The first build is minimal. The second enables Intel Performance Libraries. The third build anables CUDA. The forth build includes QT and few additional device drivers.
 
 ## Build 1 [STATUS: Completed Successfully]
 
@@ -131,7 +134,7 @@ It is a light build with just the default settings, extra and non free modules a
 * Clear Build Cache. This will remove any revious configuration options.
 * Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.
 
-### Verify Build Variables
+### Configure Build
 
 The entries in RED need to be taken care off by running Configure again. But befoer that verify your settings with the ones below:
 
@@ -401,7 +404,7 @@ REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redis
 REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
-### Testing
+### Test
 
 Run python 3 in command shell
 ```
@@ -536,12 +539,11 @@ cpu_time = time.time()
 _ = npMat3 @ npMat4
 np_time = time.time()
 # CUDA time
-print(cuda_time-current_time)
+print('CUDA execution time is   : {}'.format(cuda_time-current_time))
 # OpenCV Mat Pultiplication
-print(cpu_time-cuda_time)
+print('OpenCV execution time is : {}'.format(cpu_time-cuda_time))
 # NumPy Mat Multiplication
-print(NP_time-cPU_time)
-
+print('NumPy execution time is  : {}'.format(np_time-cpu_time)
 ```
 
 ## Build 4
@@ -550,6 +552,7 @@ print(NP_time-cPU_time)
   * gstreamer 
   * Intel Realsense
 
+### Configure Build
 
 EIGEN [Status: NOT WORKING]
 
@@ -581,17 +584,35 @@ JavaScript [STATUS: NOT WORKING]
 
 * ```BUILD_opencv_js = OFF```
 
+QT [Status: In Progress]
 
-### Graphical User Interfaces
 * ```WITH_QT=ON```
 * ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
 With x.y the QT version you downloaded.
 Rerun configure and generate in cmake-gui.
 
+### BUILD
+
 `Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
+### Collect DLLs
 
-### Optional: Build against FFMPEG and not the opencv FFMPEG wrapper
+I collect the built dlls built to a single location and add that location to the PATH.
+
+```
+REM   OpenCV ===========
+copy      "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
+copy      "C:\opencv\opencv\build\install\java\*"         C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\bin\*"          C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
+```
+
+### TEST
+
+
+## Optional
+
+Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
 modules/videoio/cmake/detect_ffmpeg.cmake
 
@@ -628,7 +649,7 @@ endif()
 
 * FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
 
-### Building Dependencies from Source
+## Building Dependencies from Source
 It should not be necessary to build these dependencies
 ```
 git clone https://github.com/oneapi-src/oneTBB.git
