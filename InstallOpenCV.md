@@ -473,7 +473,7 @@ gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rt
 ```
 Now check with test_rtsp_simplegstramer.py
 
-## Build 3 [STATUS: Work in Progress]
+## Build 3 [STATUS: Completed Successfully]
 
 Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The QT build replaces GUI option.
 
@@ -525,8 +525,23 @@ If you build with Visual Studio C, open Build -> Configuration Manager and enabl
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
 
-This will create many DLL interface warnings. Ignore them. It might take 3 hours to complete.
-Now that we have dll and CUDA suport where does library need to go? Check variable script in install folder.
+### Test
+
+```
+import numpy as np
+import cv2 as cv
+import timeit
+
+npTmp = np.random.random((1024, 1024)).astype(np.float32)
+npMat1 = np.stack([npTmp,npTmp],axis=2)
+npMat2 = npMat1
+cuMat1 = cv.cuda_GpuMat()
+cuMat2 = cv.cuda_GpuMat()
+cuMat1.upload(npMat1)
+cuMat2.upload(npMat2)
+    
+timeit.timeit('cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)', number=1)
+```
 
 
 ### Optional: Build against FFMPEG and not the opencv FFMPEG wrapper
