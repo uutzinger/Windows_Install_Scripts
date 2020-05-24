@@ -527,6 +527,8 @@ If you build with Visual Studio C, open Build -> Configuration Manager and enabl
 
 ### Test
 
+"%openCvBuild%\install\x64\vc16\bin\opencv_perf_cudaarithm.exe" --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
+
 ```
 import numpy as np
 import cv2 as cv
@@ -541,8 +543,12 @@ cuMat1.upload(npMat1)
 cuMat2.upload(npMat2)
 
 current_time = time.time()
-cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
-print(time.time()-current_time)
+_ = cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
+cuda_time = time.time()
+_ = cv.gemm(npMat1,npMat2,1,None,0,None,1)
+cpu_time = time.time()
+print(cuda_time-current_time)
+print(cpu_time-cuda_time)
 
 ```
 
