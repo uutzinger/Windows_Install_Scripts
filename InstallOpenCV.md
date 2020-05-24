@@ -530,7 +530,7 @@ If you build with Visual Studio C, open Build -> Configuration Manager and enabl
 ```
 import numpy as np
 import cv2 as cv
-import timeit
+import time
 
 npTmp = np.random.random((1024, 1024)).astype(np.float32)
 npMat1 = np.stack([npTmp,npTmp],axis=2)
@@ -539,8 +539,11 @@ cuMat1 = cv.cuda_GpuMat()
 cuMat2 = cv.cuda_GpuMat()
 cuMat1.upload(npMat1)
 cuMat2.upload(npMat2)
-    
-timeit.timeit('cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)', number=1)
+
+current_time = time.time()
+cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
+print(time.time()-current_time)
+
 ```
 
 
