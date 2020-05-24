@@ -451,6 +451,7 @@ CUDA support doubles your build size and consumes much larger build time.
 Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
 https://en.wikipedia.org/wiki/CUDA#GPUs_supported
 My notebook computer has GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0
+For detailed coverage of CUDA_ARCH settings and GPU coverage refer to [1]
 
 CUDA [STATUS: Working]
 
@@ -459,8 +460,8 @@ CUDA [STATUS: Working]
 * ```WITH_CUFFT = ON```
 * ```WITH_CUBLAS = ON``` [1,4,10]
 * ```CUDA_FAST_MATH = ON```, [3,4] 
-* ```CUDA_ARCH_BIN = 5.0```, selected from all options
-* ```CUDA_ARCH_PTX = 5.0```, entered to be same as PTX
+* ```CUDA_ARCH_BIN = 5.0,5.2```, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure
+* ```CUDA_ARCH_PTX = 5.0```, entered to be the lowest of ARCH_BIN or leave empty
 * ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
 * ```CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2```
 * ```CUDA_BUILD_EMULATION = OFF```, autopopulated
@@ -501,9 +502,14 @@ The command line equievalent is:
 
 ### Test
 
-You can test CUDA performance with:
+You can test CUDA performance according [1]:
 ```
-"%openCvBuild%\install\x64\vc16\bin\opencv_perf_cudaarithm.exe" --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
+"C:\opencv\opencv\build\install\x64\vc16\bin\opencv_perf_cudaarithm.exe" --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
+```
+My outpput is:
+```
+[ RUN      ] Sz_Type_Flags_GEMM.GEMM/29, where GetParam() = (1024x1024, 32FC2, 0|cv::GEMM_1_T)
+[ PERFSTAT ]    (samples=25   mean=12.49   median=12.48   min=11.99   stddev=0.27 (2.1%))
 ```
 
 You can test CUDA performance in pyton with:
@@ -515,6 +521,8 @@ import time
 npTmp = np.random.random((1024, 1024)).astype(np.float32)
 npMat1 = np.stack([npTmp,npTmp],axis=2)
 npMat2 = npMat1
+npMat3 = npTmp + npTmp*1j
+npMat4 = npMat3
 cuMat1 = cv.cuda_GpuMat()
 cuMat2 = cv.cuda_GpuMat()
 cuMat1.upload(npMat1)
@@ -525,8 +533,14 @@ _ = cv.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
 cuda_time = time.time()
 _ = cv.gemm(npMat1,npMat2,1,None,0,None,1)
 cpu_time = time.time()
+_ = npMat3 @ npMat4
+np_time = time.time()
+# CUDA time
 print(cuda_time-current_time)
+# OpenCV Mat Pultiplication
 print(cpu_time-cuda_time)
+# NumPy Mat Multiplication
+print(NP_time-cPU_time)
 
 ```
 
