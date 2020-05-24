@@ -10,32 +10,34 @@
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
 - [Building OpenCV](#building-opencv)
   * [Build 1 [STATUS: Completed Successfully]](#build-1--status--completed-successfully-)
-    + [Verify Build Variables](#verify-build-variables)
+    + [Configure Build](#configure-build)
     + [Configure and Generate](#configure-and-generate)
     + [CMD Shell Equivalent](#cmd-shell-equivalent)
     + [Build](#build)
     + [Collect DLLs](#collect-dlls)
     + [Test](#test)
   * [Build 2 [STATUS: Completed Successfully]](#build-2--status--completed-successfully-)
-    + [Configure Build](#configure-build)
+    + [Configure Build](#configure-build-1)
     + [CMD Shell Equivalent](#cmd-shell-equivalent-1)
     + [Collecting DLLs](#collecting-dlls)
-    + [Testing](#testing)
+    + [Test](#test-1)
       - [Camera](#camera)
   * [Build 3 [STATUS: Completed Successfully]](#build-3--status--completed-successfully-)
     + [Configure BUILD](#configure-build)
     + [Build](#build-1)
-    + [Test](#test-1)
+    + [Test](#test-2)
   * [Build 4](#build-4)
-    + [Graphical User Interfaces](#graphical-user-interfaces)
-    + [Optional: Build against FFMPEG and not the opencv FFMPEG wrapper](#optional--build-against-ffmpeg-and-not-the-opencv-ffmpeg-wrapper)
-    + [Building Dependencies from Source](#building-dependencies-from-source)
+    + [Configure Build](#configure-build-2)
+    + [BUILD](#build)
+    + [Collect DLLs](#collect-dlls-1)
+    + [TEST](#test)
+  * [Optional](#optional)
+  * [Building Dependencies from Source](#building-dependencies-from-source)
 - [Build 1 CMAKE Output](#build-1-cmake-output)
 - [Build 2 CMAKE Output](#build-2-cmake-output)
 - [Build 3 CMAKE Output](#build-3-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 ## Motivation
 
 There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.
@@ -618,8 +620,6 @@ When you turn EIGEN ON, you will need to provide the source code, its not automa
 
 ### BUILD
 
-`Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
-
 ### Collect DLLs
 
 I collect the built dlls built to a single location and add that location to the PATH.
@@ -632,10 +632,14 @@ REM copy  "C:\opencv\opencv\build\install\bin\*"          C:\opencv\opencv_redis
 REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 ```
 
+Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
+
 ### TEST
 
 
 ## Optional
+
+### Build Againts FFMPEG
 
 Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
@@ -674,8 +678,10 @@ endif()
 
 * FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
 
-## Building Dependencies from Source
+### Building Dependencies from Source
+
 It should not be necessary to build these dependencies
+
 ```
 git clone https://github.com/oneapi-src/oneTBB.git
 git clone https://github.com/AcademySoftwareFoundation/openexr.git
@@ -685,24 +691,6 @@ git checkout 5.15.0
 https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 ```
-
-
-We need to add the following directories to the search path so opencv can find the necessary dlls:```
-set "PATH=%PATH%;C:\opencv\opencv\build\install\x64\vc16\bin"
-set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"
-set "PAT=%PATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libaries\windows\redist\intel64\tbb\vc14"```
-
-Optional:
-```
-set "PATH=%PATH%;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\mkl"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\ipp"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\daal"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler"
-```
-
-WORKING ON THIS SECTION --END
 
 # Build 1 CMAKE Output
 
