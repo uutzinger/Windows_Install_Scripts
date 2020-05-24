@@ -217,18 +217,20 @@ If you had dlls built you  might want to collect them at the single location and
 
 ```
 REM   OpenCV ===========
-copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
+copy      "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
+copy      "C:\opencv\opencv\build\install\java\*"         C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\bin\*"          C:\opencv\opencv_redist /y
 REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
-copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
 ### Test
 
 ```
 C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
+
 py -2 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -2 -c "import cv2; print(cv2.getBuildInformation())"
+
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
@@ -481,7 +483,10 @@ Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA suppo
 cmake-gui ..\
 ```
 
-### CUDA
+### Configure BUILD
+
+CUDA [STATUS: WORKING]
+
 CUDA support adds a lot of modules and build time. It looks like the NVIDIA tools take advantage of one CPU core only.
 * ```WITH_CUDA = ON```, enable CUDA
 * ```WITH_NVCUVID = ON```, [1] enable CUDA Video decodeing support
@@ -500,6 +505,13 @@ CUDA support adds a lot of modules and build time. It looks like the NVIDIA tool
 * ```BUILD_CUDA_STUBS = OFF```
 * ```BUILD_opencv_cudev = ON```
 * ```BUILD_opencv_cuda* = ON```
+
+TEST [STATUS: WORKING]
+
+INSTALL_TESTS = ON
+BUILD_PERF_TESTS = ON
+BUILD_TESTS = ON
+BUILD_opencv_ppython_tests = ON
 
 This build creates a lot:
 ```warning : field of class type without a DLL interface used in a class with a DLL interface```
