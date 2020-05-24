@@ -509,6 +509,7 @@ You can test CUDA performance according [1]:
 ```
 "C:\opencv\opencv\build\install\x64\vc16\bin\opencv_perf_cudaarithm.exe" --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
 ```
+
 My outpput is:
 ```
 [ RUN      ] Sz_Type_Flags_GEMM.GEMM/29, where GetParam() = (1024x1024, 32FC2, 0|cv::GEMM_1_T)
@@ -553,9 +554,11 @@ print('CUDA execution time is   : {}'.format((cuda_time-current_time)/20.0))
 # OpenCV Mat Pultiplication
 print('OpenCV execution time is : {}'.format((cpu_time-cuda_time)/20.0))
 # NumPy Mat Multiplication
-print('NumPy execution time is  : {}'.format((np_time-cpu_time/20.0)))
+print('NumPy execution time is  : {}'.format((np_time-cpu_time)/20.0))
 #
 ```
+
+In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and the numpy routine 45ms. Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 500ms. Also compared to cuda performance test program, python implementation takes almost 3 times as long.
 
 ## Build 4
 
