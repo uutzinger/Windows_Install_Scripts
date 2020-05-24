@@ -266,8 +266,9 @@ REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.21
 REM   INTEL Medi SDK ===
 copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\opencv\opencv_redist /y
 REM copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64\*" C:\opencv\opencv_redist /y
+
 REM   INTEL RealSense ==
-copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*" C:\opencv\opencv_redist /y
+copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\opencv\opencv_redist /y
 REM copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\opencv\opencv_redist /y
 
 REM QT =================
