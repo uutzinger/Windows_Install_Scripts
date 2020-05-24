@@ -52,9 +52,9 @@ I want to be able to use the same USB cameras on arm based single board computer
 ## Approach
 In this guide I propose to build opencv in several steps and with increasing complexity.
 
-It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted without clearing previous build cache. Its not enough to turn off the build option in cmake. It is also common that the cmake and cmake-gui do not create the same build configuration. Often there is more than one cmake version installed on your computer.
+It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake.
 
-Many online posts have been consulted for this document e.g. 
+Many online posts have been consulted for this document.
 * [1] [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) 
 * [2] https://dev.infohub.cc/build-opencv-410/ 
 * [3] https://dev.infohub.cc/build-opencv-430-with-cuda/
@@ -70,13 +70,13 @@ This explains algorithm optimizations by Intel for opencv https://www.slideshare
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
-## Pre - Requisits
+## Pre-Requisits
 
 Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md
-I propose to work with dynamic link libraries and to copy all the relevant ones to central location.
+I propose to work with dynamic link libraries and to copy all the relevant ones to a central location.
 
 ## Obtaining OpenCV Source
-Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times it can be confusing on GitHub to identify the latest release. You can check OpenCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
+Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times, it can be confusing on GitHub to identify the latest release version. You can check OpenCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
 
 ```
 mkdir C:/opencv
@@ -113,18 +113,18 @@ set "generator=Visual Studio 16 2019"
 set "generator=Visual Studio 16 2019"
 ```
 
-When you execute some of the vcvars script twice in a row, it will throw error the second time. You can ignore those.
+When you execute some of the vcvars script twice in a row, it will throw an error the second time. You can ignore those.
+
 **It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
 
-# Build
-Here I show 3 builds with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
+# Building OpenCV
+Here I show 3 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
 
 ## Build 1 [STATUS: Completed Successfully]
 
 With this first build, I will not use the command line option. We will start directly with cmake-gui.
-You should not need to worry about dlls. It is a light build with just the default settings, extra and non free modules and python.
+It is a light build with just the default settings, extra and non free modules and python.
 
-### Let's Start Light (minimal)
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
 ```
@@ -133,21 +133,22 @@ You should not need to worry about dlls. It is a light build with just the defau
 
 ### Verify Build Variables
 
-The entries in RED need to be taken care off. Please verify:
-
-For a light build, many options are usually off such as:
+The entries in RED need to be taken care off by running Configure again. But befoer that verify your settings with the ones below:
 
 Video
+
 * ```WITH_GSTREAMER = OFF```
 * ```WITH_MFX = OFF```, Intel Video Acceleration
 * ```WITH_MKL = OFF```, Intel Math Library
 * ```WITH_LIBREALSENSE = OFF```, Intel Real Sense Camera
 
 Math Acceleration
+
 * ```WITH_TBB = OFF```, Intel Threadbuilding Blocks
 * ```WITH_EIGEN = OFF```
 
 Examples and Tests
+
 * ```BUILD_EXAMPLES = OFF```
 * ```BUILD_DOCS = OFF```
 * ```BUILD_TESTS = OFF```
@@ -157,6 +158,7 @@ Examples and Tests
 * ```INSTALL_TESTS = OFF```
 
 Make sure this is ON or set:
+
 * ```BUILD_opencv_python3 = ON```
 * ```BUILD_opencv_python2 = OFF```
 * ```OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"```
@@ -168,19 +170,19 @@ Make sure this is ON or set:
 * ```BUILD_opencv_hdf = OFF```, HDF5 file format
 
 Modify or create the variable:
+
 * ```PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"```
 * ```CMAKE_CONFIGURATION_TYPES = "Release"```
 
 ### Configure and Generate
 After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
 
-Run the Generate fucntion. Hopefully there will be no errors and the warnings allow you to still build opencv.
+Run the Generate fucntion to create your build project.
+If generate shows errors and warnings but completes its processs, you can continue building OpenCV.
 
 ### CMD Shell Equivalent
 
 The equivalent command in the CMD window is listed below. 
-
-Optional:
 
 ```
 "C:\Program Files\CMake\bin\cmake.exe" ^
@@ -202,9 +204,7 @@ Optional:
 ```
 
 ### Build
-And finally do first build using "Open_Project" in cmake-gui or cmake in command line:
-
-Select build / batch build and enable INSTALL and then click on build. If there are previous versions you can clean the files with the "clean" button.
+And finally do first build using "Open_Project" in cmake-gui. Select build / batch build and enable INSTALL and then click on build. If there are previously compiled files in your build directory. you can clean them with the "clean" button.
 
 The command line quivalent is:
 ```
@@ -213,7 +213,7 @@ The command line quivalent is:
 
 ### Collect DLLs
 
-If you had dlls built you  might want to collect them at the single location and add that location to your PATH.
+I collect the built dlls built to a single location and add that location to the PATH.
 
 ```
 REM   OpenCV ===========
@@ -224,6 +224,8 @@ REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redis
 ```
 
 ### Test
+
+In a command shell:
 
 ```
 C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
@@ -244,17 +246,15 @@ Now lets enable more features:
   * IPP
 * Eigen
 * Video features
-  * gstreamer, ON HOLD 
   * Intel Media SDK
-  * Intel Realsense, ON HOLD
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact your build. If something breaks, you can go back to build 1.
 
-In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultanously causes problems when loading the cv2  module.
+In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultanously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.
 
 ### Configure Build
 
-Start cmake-gui in the CMD shell that has the bat files from above executed.
+Start cmake-gui in the CMD shell. Make sure the shell environment was configures as shown above.
 
 ```
 cd C:\opencv\opencv\build
@@ -276,25 +276,6 @@ Features to be turned ON/OFF and variables to be set:
 
 Add Entry
 * ```PYTHON_DEFAULT_EXECUTABLE="C:\Python38\python.exe"```, otherwise python2 will be used to build opencv.
-
-EIGEN [Status: NOT WORKING]
-
-when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
-* ```WITH_EIGEN = OFF```
-* ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
-* ```Eigen3_DIR``` is not found
-
-Intel RealSense [STATUS: ON HOLD]
-
-* ```WITH_LIBREALSENSE = OFF```, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.```
-* ```LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"```
-* ```LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"```
-* ```realsense2_DIR``` is not found
-
-GSTREAMER [STATUS: ON HOLD]
-* ```WITH_GSTREAMER=OFF```
-
-It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
 TBB [STATUS: WORKING]
 
@@ -353,13 +334,6 @@ Please check:
 
 Enabling Intel MFX will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.
 
-HDF [STATUS: NOT WORKING]
-
-When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
-* ```BUILD_opencv_hdf = OFF```
-* ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
-* ```HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"```
-
 OPENCL [STATUS: WORKING]
 
 This enables cv::ocl::resize() versus cv::resize() which provides hardware acceleration.
@@ -371,15 +345,16 @@ This should be set automatically. Please check:
 * ```WITH_OPENCL_D3D11_NV = ON```
 * ```WITH_OPENCL_SVM = ON``` support vector machine classifier
 
-JavaScript [STATUS: NOT WORKING]
-
-* ```BUILD_opencv_js = OFF```
-
 MISC Features [STATUS: WORKING]
 
 * ```USE_WIN32_FILEIO = ON```
 * ```WITH_CUDA = OFF```
 * ```OPENCV_DNN_CUDA = OFF```
+* ```WITH_GSTREAMER=OFF```
+* ```WITH_LIBREALSENSE = OFF```
+* ```BUILD_opencv_hdf = OFF```
+* ```WITH_EIGEN = OFF```
+* ```BUILD_opencv_js = OFF``
 
 ### CMD Shell Equivalent
 
@@ -412,9 +387,7 @@ STATUS: Not verified
 -DWITH_LIBREALSENSE=ON ^
 -DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
 -DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
--DBUILD_opencv_hdf=OFF ^
--DHDF5_C_LIBRARY="C:/HDF5/1.12.0/lib/libhdf5.lib" ^
--DHDF5_INCLUDE_DIRS="C:/HDF5/1.12.0/include"
+-DBUILD_opencv_hdf=OFF
 ```
 
 ### Collecting DLLs
@@ -423,61 +396,49 @@ If you had dlls built you  might want to collect them at single location and add
 ```
 REM   OpenCV ===========
 copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
+REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
 REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
 ### Testing
 
-WORKING ON THIS SECTION --Start
-
-We need to add the following directories to the search path so opencv can find the necessary dlls:```
-set "PATH=%PATH%;C:\opencv\opencv\build\install\x64\vc16\bin"
-set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"
-set "PAT=%PATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libaries\windows\redist\intel64\tbb\vc14"```
-
-Optional:
+Run python 3 in command shell
 ```
-set "PATH=%PATH%;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\mkl"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\ipp"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\daal"
-set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler"
+py -3
 ```
 
-WORKING ON THIS SECTION --END
-
+Check the python path:
 ```
 import sys
 print('\n'.join(sys.path))
 ```
 
+My output is:
+```
+C:\Python38\python38.zip
+C:\Python38\DLLs
+C:\Python38\lib
+C:\Python38
+C:\Python38\lib\site-packages
+```
+
 ```
 C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
-py -2 -c "import cv2; print('OpenCV: ' + cv2.__version__ + 'for python installed and working')"
-py -2 -c "import cv2; print(cv2.getBuildInformation())"
-
-STATUS: Completed
-
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
-
-STATUS: In progress
 ```
 
 #### Camera
 ```
 gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
-
 gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
 ```
 Now check with test_rtsp_simplegstramer.py
 
 ## Build 3 [STATUS: Completed Successfully]
 
-Inlucde CUDA and QT. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The QT build replaces GUI option.
+Inlucde CUDA. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The CUDA_Generation will need to match your GPU.
 
 ```
 cmake-gui ..\
@@ -508,30 +469,26 @@ CUDA support adds a lot of modules and build time. It looks like the NVIDIA tool
 
 TEST [STATUS: WORKING]
 
-INSTALL_TESTS = ON
-BUILD_PERF_TESTS = ON
-BUILD_TESTS = ON
-BUILD_opencv_ppython_tests = ON
+If you want to conduct performance tests enable these:
 
-This build creates a lot:
+* ```INSTALL_TESTS = ON```
+* ```BUILD_PERF_TESTS = ON```
+* ```BUILD_TESTS = ON```
+* ```BUILD_opencv_python_tests = ON```
+
+This build creates a lot of warning:
 ```warning : field of class type without a DLL interface used in a class with a DLL interface```
+You can ignore them.
 
-Needs to be on path
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin
-
-Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
-
-### Graphical User Interfaces
-* ```WITH_QT=ON```
-* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
-With x.y the QT version you downloaded.
-Rerun configure and generate in cmake-gui.
+Make sure the PATH includes ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin```
 
 If you have previous builds you might want to rename build/install to build/install_noCUDA so you can preserve non_cuda version.
 
 ### Build
 
-If you build with Visual Studio C, open Build -> Configuration Manager and enable INSTALL.
+If you build with Visual Studio C, open Build -> Configuration Manager and enable INSTALL and click build.
+
+The command line equievalent is:
 
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
@@ -539,8 +496,12 @@ If you build with Visual Studio C, open Build -> Configuration Manager and enabl
 
 ### Test
 
+You can test CUDA performance with:
+```
 "%openCvBuild%\install\x64\vc16\bin\opencv_perf_cudaarithm.exe" --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
+```
 
+You can test CUDA performance in pyton with:
 ```
 import numpy as np
 import cv2 as cv
@@ -563,6 +524,52 @@ print(cuda_time-current_time)
 print(cpu_time-cuda_time)
 
 ```
+
+## Build 4
+
+* Video features
+  * gstreamer 
+  * Intel Realsense
+
+
+EIGEN [Status: NOT WORKING]
+
+when you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
+* ```WITH_EIGEN = OFF```
+* ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
+* ```Eigen3_DIR``` is not found
+
+Intel RealSense [STATUS: ON HOLD]
+
+* ```WITH_LIBREALSENSE = OFF```, its not clear yet if libreal sense will need to built from source and if python wrapper from libirealsense is sufficient to access Intel tracking and 3D cameras.```
+* ```LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"```
+* ```LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"```
+* ```realsense2_DIR``` is not found
+
+GSTREAMER [STATUS: ON HOLD]
+* ```WITH_GSTREAMER=OFF```
+
+It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
+
+HDF [STATUS: NOT WORKING]
+
+When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
+* ```BUILD_opencv_hdf = OFF```
+* ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
+* ```HDF5_INCLUDE_DIRS = "C:/HDF5/1.12.0/include"```
+
+JavaScript [STATUS: NOT WORKING]
+
+* ```BUILD_opencv_js = OFF```
+
+
+### Graphical User Interfaces
+* ```WITH_QT=ON```
+* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
+With x.y the QT version you downloaded.
+Rerun configure and generate in cmake-gui.
+
+`Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 
 ### Optional: Build against FFMPEG and not the opencv FFMPEG wrapper
@@ -613,6 +620,24 @@ git checkout 5.15.0
 https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 ```
+
+
+We need to add the following directories to the search path so opencv can find the necessary dlls:```
+set "PATH=%PATH%;C:\opencv\opencv\build\install\x64\vc16\bin"
+set "PATH=%PATH%;C:\gstreamer\1.0\x86_64\bin"
+set "PAT=%PATH%;C:\PROGRA~2\Intel RealSense SDK 2.0\bin\x64
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libaries\windows\redist\intel64\tbb\vc14"```
+
+Optional:
+```
+set "PATH=%PATH%;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\mkl"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\ipp"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\daal"
+set "PATH=%PATH%;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\compiler"
+```
+
+WORKING ON THIS SECTION --END
 
 # Build 1 CMAKE Output
 
