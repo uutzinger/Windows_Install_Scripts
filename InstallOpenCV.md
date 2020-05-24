@@ -810,3 +810,126 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 ```
+
+
+# Build 3 CMAKE Output
+
+py -3 -c "import cv2; print(cv2.getBuildInformation())"
+
+```
+General configuration for OpenCV 4.3.0-dev =====================================
+  Version control:               4.3.0-294-ge96a58f091
+
+  Extra modules:
+    Location (extra):            C:/opencv/opencv_contrib/modules
+    Version control (extra):     4.3.0-48-g1311b057
+
+  Platform:
+    Timestamp:                   2020-05-21T22:35:07Z
+    Host:                        Windows 10.0.18362 AMD64
+    CMake:                       3.17.2
+    CMake generator:             Visual Studio 16 2019
+    CMake build tool:            C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe
+    MSVC:                        1926
+
+  CPU/HW features:
+    Baseline:                    SSE SSE2 SSE3
+      requested:                 SSE3
+
+  C/C++:
+    Built as dynamic libs?:      YES
+    C++ standard:                11
+    C++ Compiler:                C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.26.28801/bin/Hostx64/x64/cl.exe  (ver 19.26.28805.0)
+    C++ flags (Release):         /DWIN32 /D_WINDOWS /W4 /GR  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /EHa /wd4127 /wd4251 /wd4324 /wd4275 /wd4512 /wd4589 /MP  /MD /O2 /Ob2 /DNDEBUG
+    C++ flags (Debug):           /DWIN32 /D_WINDOWS /W4 /GR  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /EHa /wd4127 /wd4251 /wd4324 /wd4275 /wd4512 /wd4589 /MP  /MDd /Zi /Ob0 /Od /RTC1
+    C Compiler:                  C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.26.28801/bin/Hostx64/x64/cl.exe
+    C flags (Release):           /DWIN32 /D_WINDOWS /W3  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /MP   /MD /O2 /Ob2 /DNDEBUG
+    C flags (Debug):             /DWIN32 /D_WINDOWS /W3  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /MP /MDd /Zi /Ob0 /Od /RTC1
+    Linker flags (Release):      /machine:x64  /INCREMENTAL:NO
+    Linker flags (Debug):        /machine:x64  /debug /INCREMENTAL
+    ccache:                      NO
+    Precompiled headers:         NO
+    Extra dependencies:          cudart_static.lib nppc.lib nppial.lib nppicc.lib nppicom.lib nppidei.lib nppif.lib nppig.lib nppim.lib nppist.lib nppisu.lib nppitc.lib npps.lib cublas.lib cudnn.lib cufft.lib -LIBPATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64
+    3rdparty dependencies:
+
+  OpenCV modules:
+    To be built:                 aruco bgsegm bioinspired calib3d ccalib core cudaarithm cudabgsegm cudacodec cudafeatures2d cudafilters cudaimgproc cudalegacy cudaobjdetect cudaoptflow cudastereo cudawarping cudev datasets dnn dnn_objdetect dnn_superres dpm face features2d flann fuzzy gapi hfs highgui img_hash imgcodecs imgproc intensity_transform line_descriptor ml objdetect optflow phase_unwrapping photo plot python3 quality rapid reg rgbd saliency shape stereo stitching structured_light superres surface_matching text tracking ts video videoio videostab world xfeatures2d ximgproc xobjdetect xphoto
+    Disabled:                    hdf python2 python_tests
+    Disabled by dependency:      -
+    Unavailable:                 alphamat cnn_3dobj cvv freetype java js matlab ovis sfm viz
+    Applications:                apps
+    Documentation:               NO
+    Non-free algorithms:         YES
+
+  Windows RT support:            NO
+
+  GUI:
+    Win32 UI:                    YES
+    VTK support:                 NO
+
+  Media I/O:
+    ZLib:                        build (ver 1.2.11)
+    JPEG:                        build-libjpeg-turbo (ver 2.0.4-62)
+    WEBP:                        build (ver encoder: 0x020f)
+    PNG:                         build (ver 1.6.37)
+    TIFF:                        build (ver 42 - 4.0.10)
+    JPEG 2000:                   build Jasper (ver 1.900.1)
+    OpenEXR:                     build (ver 2.3.0)
+    HDR:                         YES
+    SUNRASTER:                   YES
+    PXM:                         YES
+    PFM:                         YES
+
+  Video I/O:
+    DC1394:                      NO
+    FFMPEG:                      YES (prebuilt binaries)
+      avcodec:                   YES (58.54.100)
+      avformat:                  YES (58.29.100)
+      avutil:                    YES (56.31.100)
+      swscale:                   YES (5.5.100)
+      avresample:                YES (4.0.0)
+    DirectShow:                  YES
+    Media Foundation:            YES
+      DXVA:                      YES
+    Intel Media SDK:             YES (C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib)
+
+  Parallel framework:            TBB (ver 2020.2 interface 11102)
+
+  Trace:                         YES (with Intel ITT)
+
+  Other third-party libraries:
+    Intel IPP:                   2020.0.0 Gold [2020.0.0]
+           at:                   C:/opencv/opencv/build/3rdparty/ippicv/ippicv_win/icv
+    Intel IPP IW:                sources (2020.0.0)
+              at:                C:/opencv/opencv/build/3rdparty/ippicv/ippicv_win/iw
+    Lapack:                      YES (C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib)
+    Custom HAL:                  NO
+    Protobuf:                    build (3.5.1)
+
+  NVIDIA CUDA:                   YES (ver 10.2, CUFFT CUBLAS NVCUVID FAST_MATH)
+    NVIDIA GPU arch:             75
+    NVIDIA PTX archs:
+
+  cuDNN:                         YES (ver 7.6.5)
+
+  OpenCL:                        YES (SVM NVD3D11)
+    Include path:                C:/opencv/opencv/3rdparty/include/opencl/1.2
+    Link libraries:              Dynamic load
+
+  Python 3:
+    Interpreter:                 C:/Python38/python.exe (ver 3.8.3)
+    Libraries:                   C:/Python38/libs/python38.lib (ver 3.8.3)
+    numpy:                       C:/Python38/lib/site-packages/numpy/core/include (ver 1.18.4)
+    install path:                C:/Python38/Lib/site-packages/cv2/python-3.8
+
+  Python (for build):            C:/Python38/python.exe
+
+  Java:
+    ant:                         C:/ANT/bin/ant.bat (ver 1.10.7)
+    JNI:                         C:/Program Files/AdoptOpenJDK/jdk-11.0.7.10-hotspot/include C:/Program Files/AdoptOpenJDK/jdk-11.0.7.10-hotspot/include/win32 C:/Program Files/AdoptOpenJDK/jdk-11.0.7.10-hotspot/include
+    Java wrappers:               NO
+    Java tests:                  NO
+
+  Install to:                    C:/opencv/opencv/build/install
+-----------------------------------------------------------------
+```
