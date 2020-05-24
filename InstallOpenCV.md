@@ -446,20 +446,25 @@ cmake-gui ..\
 
 ### Configure BUILD
 
-CUDA [STATUS: WORKING]
+CUDA support doubles your build size and consumes much larger build time. 
 
-CUDA support adds a lot of modules and build time. It looks like the NVIDIA tools take advantage of one CPU core only.
+Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
+https://en.wikipedia.org/wiki/CUDA#GPUs_supported
+My notebook computer has GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0
+
+CUDA [STATUS: Working]
+
 * ```WITH_CUDA = ON```, enable CUDA
 * ```WITH_NVCUVID = ON```, [1] enable CUDA Video decodeing support
 * ```WITH_CUFFT = ON```
 * ```WITH_CUBLAS = ON``` [1,4,10]
 * ```CUDA_FAST_MATH = ON```, [3,4] 
-* ```CUDA_ARCH_PTX = 7.5```, selected from all options
-* ```CUDA_ARCH_PTX = 7.5```, entered to be same as PTX
+* ```CUDA_ARCH_BIN = 5.0```, selected from all options
+* ```CUDA_ARCH_PTX = 5.0```, entered to be same as PTX
 * ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
 * ```CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2```
 * ```CUDA_BUILD_EMULATION = OFF```, autopopulated
-* ```CUDA_GENERATION = "Turing"```, select from list, Auto does not work for me
+* ```CUDA_GENERATION = "Maxwell"```, select from list
 * ```CUDA_HOST_COMPLIER = ```, autopopulated
 * ```CUDA_USE_STATIC_CUDA_RUNTIME = ON```, autopopulated
 * ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.
@@ -482,7 +487,7 @@ You can ignore them.
 
 Make sure the PATH includes ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin```
 
-If you have previous builds you might want to rename build/install to build/install_noCUDA so you can preserve non_cuda version.
+You might want to rename build/install to build/install_noCUDA so you can preserve your non_cuda version.
 
 ### Build
 
