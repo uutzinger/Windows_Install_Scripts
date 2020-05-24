@@ -18,26 +18,28 @@
     + [Test](#test)
   * [Build 2 [STATUS: Completed Successfully]](#build-2--status--completed-successfully-)
     + [Configure Build](#configure-build-1)
-    + [CMD Shell Equivalent](#cmd-shell-equivalent-1)
+    + [Build](#build-1)
     + [Collecting DLLs](#collecting-dlls)
     + [Test](#test-1)
-      - [Camera](#camera)
   * [Build 3 [STATUS: Completed Successfully]](#build-3--status--completed-successfully-)
     + [Configure BUILD](#configure-build)
-    + [Build](#build-1)
+    + [Build](#build-2)
     + [Test](#test-2)
   * [Build 4](#build-4)
     + [Configure Build](#configure-build-2)
-    + [BUILD](#build)
+    + [Build](#build-3)
     + [Collect DLLs](#collect-dlls-1)
-    + [TEST](#test)
+    + [Test](#test-3)
+      - [Gstreamer Camera](#gstreamer-camera)
   * [Optional](#optional)
-  * [Building Dependencies from Source](#building-dependencies-from-source)
+    + [Build Againts FFMPEG](#build-againts-ffmpeg)
+    + [Building Dependencies from Source](#building-dependencies-from-source)
 - [Build 1 CMAKE Output](#build-1-cmake-output)
 - [Build 2 CMAKE Output](#build-2-cmake-output)
 - [Build 3 CMAKE Output](#build-3-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## Motivation
 
 There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.
@@ -361,9 +363,11 @@ MISC Features [STATUS: WORKING]
 * ```WITH_EIGEN = OFF```
 * ```BUILD_opencv_js = OFF``
 
-### CMD Shell Equivalent
+### Build
 
-STATUS: Not verified
+Build using "Open_Project" in cmake-gui. Select build / batch build and enable INSTALL and then click on build. 
+
+The Command Shell equivalent is: (incomplete)
 
 ```
 "C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
@@ -433,13 +437,6 @@ C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
 py -3 -c "import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')"
 py -3 -c "import cv2; print(cv2.getBuildInformation())"
 ```
-
-#### Camera
-```
-gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
-gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
-```
-Now check with test_rtsp_simplegstramer.py
 
 ## Build 3 [STATUS: Completed Successfully]
 
@@ -618,7 +615,7 @@ When you turn EIGEN ON, you will need to provide the source code, its not automa
 * ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
 * ```Eigen3_DIR``` is not found
 
-### BUILD
+### Build
 
 ### Collect DLLs
 
@@ -634,8 +631,14 @@ REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redis
 
 Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
-### TEST
+### Test
 
+#### Gstreamer Camera
+```
+gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
+gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+```
+Now check with test_rtsp_simplegstramer.py
 
 ## Optional
 
