@@ -259,18 +259,6 @@ The command line quivalent is:
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
 
-### Collect DLLs
-
-I collect the built dlls built to a single location and add that location to the PATH.
-
-```
-REM   OpenCV ===========
-copy      "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-copy      "C:\opencv\opencv\build\install\java\*"         C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\bin\*"          C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
-```
-
 ### Test
 
 In a command shell:
@@ -438,17 +426,6 @@ The Command Shell equivalent is: (incomplete)
 -DLIBREALSENSE_INCLUDE_DIR="C:/Program Files (x86)/Intel RealSense SDK 2.0/include" ^
 -DLIBREALSENSE_LIBRARIES="C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib" ^
 -DBUILD_opencv_hdf=OFF
-```
-
-### Collecting DLLs
-If you had dlls built you  might want to collect them at single location and add that location to the PATH.
-
-```
-REM   OpenCV ===========
-copy  "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-copy  "C:\opencv\opencv\build\install\java\*" C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\bin\*" C:\opencv\opencv_redist /y
 ```
 
 ### Test
@@ -687,20 +664,6 @@ When you turn EIGEN ON, you will need to provide the source code, its not automa
 * ```Eigen3_DIR``` is not found
 
 ### Build
-
-### Collect DLLs
-
-I collect the built dlls built to a single location and add that location to the PATH.
-
-```
-REM   OpenCV ===========
-copy      "C:\opencv\opencv\build\install\x64\vc16\bin\*" C:\opencv\opencv_redist /y
-copy      "C:\opencv\opencv\build\install\java\*"         C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\bin\*"          C:\opencv\opencv_redist /y
-REM copy  "C:\opencv\opencv\build\install\x64\vc16\lib\*" C:\opencv\opencv_redist /y
-```
-
-Python will need all qt dlls from ```C:\Qt\5.14.1\msvc2017_64\bin``` copied to ```C:/Python38\Lib\site-packages\cv2\python-3.8\```
 
 ### Test
 
