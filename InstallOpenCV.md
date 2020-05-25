@@ -8,6 +8,7 @@
   * [Obtaining OpenCV Source](#obtaining-opencv-source)
   * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
+  * [Debugging Missing Dependencies](#debugging-missing-dependencies)
 - [Building OpenCV](#building-opencv)
   * [Build 1 [STATUS: Completed Successfully]](#build-1--status--completed-successfully-)
     + [Configure Build](#configure-build)
