@@ -127,7 +127,7 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 
 In general this should help finding missing dependencise: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-However the solution to the dll load failurese in OpenCV 4.3 is described in [3] as not a python problem. It requires the patches outlined below. These can only be applied after you ran configure/generate in CMAKE.
+However the solution to the dll load failurse in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below. These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
 
 * Modify code in ```cd C:\opencv\opencv\build\python_loader\cv2```
 * Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
@@ -161,7 +161,6 @@ PYTHON_EXTENSIONS_PATHS = [
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "python-3.8")
 ] + PYTHON_EXTENSIONS_PATHS
 ```
-
 
 # Building OpenCV
 Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
