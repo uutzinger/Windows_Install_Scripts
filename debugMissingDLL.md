@@ -2,12 +2,29 @@
 
 Once you build more complex python packages, the two main issues you will need to solve is 
 * to find appropriate binaries and packages to include into your build and reference the appropraite directories and lib(s) 
-* to make sure the dlls that those packages need are available in your search path.
+* to make sure the dll dependencies that those packages need are met in your search path.
 
-Although you many packages build the dlls they needs, the support packages that were included in the build still have their own dlls. 
+Although packages build the dlls they needs, the support libraries those packages depend on have their own externa dll dependencies. 
+
 Sometimes your build loads with python 2 and not with python 3. 
 
-There are a few ways trying to identify which dll is missing and preventing your package from loading. Neither are simple nor guaranteed to identify the issue.
+There are a few ways trying to identify which dll is missing and preventing your package from loading. 
+
+## LucasG Dependencies
+Download the distribution files from https://github.com/lucasg/Dependencies and load the dlls, e.g. opencv_worldxxx.dll and examine the dependencies.
+
+Apparently the following dlls dependency errors can be ignroed:
+Recommended ignore dll missing list:
+* API-MS-WIN-*.dll
+* EXT-MS-WIN-*.dll
+* IESHIMS.dll
+* EMCLIENT.dll
+* DEVICELOCKHELPERS.dll
+* EFSCORE.DLL
+* WPAXHOLDER.DLL
+
+## Dependency Walker
+A similar program to Dependencies is available at https://www.dependencywalker.com/. Its more than 10 years old.
 
 ## dumpbin
 Dumpbin is part of Visual Studio Compiler installation.
