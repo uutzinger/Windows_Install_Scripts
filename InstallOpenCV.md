@@ -123,13 +123,14 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 **It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
 
 
-## Debugging missing Depenedencies
-https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
+## Debugging Missing Dependencies
 
-The solution to the dll load failurese in OpenCV 4.3 is well described in [3]. This can only be applied after you ran configure/generate in CMAKE.
+In general this should help finding missing dependencise: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-* Modify code in cd C:\opencv\opencv\build\python_loader\cv2
-* Add MANIFEST.in: echo graft cv2/python-3.8  > MANIFEST.in
+However the solution to the dll load failurese in OpenCV 4.3 is described in [3] as not a python problem. It requires the patches outlined below. These can only be applied after you ran configure/generate in CMAKE.
+
+* Modify code in ```cd C:\opencv\opencv\build\python_loader\cv2```
+* Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
 * Modify setup.py so that lines 54-57 are:
 ```
         ],
