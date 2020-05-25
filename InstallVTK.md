@@ -25,12 +25,12 @@ cmake-gui ..\
 Configure for Visual Studio Compiler for x64 application.
 
 Enable
-* CMAKE_CXX_MP_FLAG = On
-* CMAKE_CXX_MP_NUM_PROCESSORS8 = 8
-* VTK_WRAP_PYTHON = On
-* VTK_PYTHON_VERSION = 3
-* CMAKE_INSTALL_PREFIX = C:\VTK
-* VTK_USE_CUDA = ON
+* ```CMAKE_CXX_MP_FLAG = ON```
+* ```CMAKE_CXX_MP_NUM_PROCESSORS8 = 8```
+* ```VTK_WRAP_PYTHON = ON```, some people reported error when this is turned on but it works for me
+* ```VTK_PYTHON_VERSION = 3```
+* ```CMAKE_INSTALL_PREFIX = C:\VTK```
+* ```VTK_USE_CUDA = ON```
 
 Open the project by clicking approriate button in cmake gui.
 In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build.
@@ -40,7 +40,7 @@ It will take about 30 minutes.
 ```
 xcopy C:\VTK\VTK-9.0.0\build\bin\Lib\site-packages C:\Python38\Lib\site-packages /s/h/i/e/y
 copy C:\VTK\VTK-9.0.0\build\bin\Release\* C:\Python38\Lib\site-packages\vtkmodules /y
-copy C:\VTK\VTK-9.0.0\build\lib\Release\* C:\Python38\Lib\site-packages\vtkmodules /y
+REM copy C:\VTK\VTK-9.0.0\build\lib\Release\* C:\Python38\Lib\site-packages\vtkmodules /y
 ```
 
 ## Testing
