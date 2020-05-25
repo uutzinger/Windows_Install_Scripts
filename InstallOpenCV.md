@@ -122,6 +122,46 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 
 **It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
 
+
+## Debugging missing Depenedencies
+https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
+
+The solution to the dll load failurese in OpenCV 4.3 is well described in [3]. This can only be applied after you ran configure/generate in CMAKE.
+
+* Modify code in cd C:\opencv\opencv\build\python_loader\cv2
+* Add MANIFEST.in: echo graft cv2/python-3.8  > MANIFEST.in
+* Modify setup.py so that lines 54-57 are:
+```
+        ],
+        # Additional Paramters
+        include_package_data=True,
+        zip_safe=False,
+```
+* Modify cv2/config.py
+```
+import os
+
+BINARIES_PATHS = [
+    # 'C:/opencv/opencv/build/bin/Release'
+    os.path.join(os.getenv("CV_PATH",    "C:/opencv/opencv/build/install"), "x64/vc16/bin"),
+    os.path.join(os.getenv("INTEL_PATH", "C:/opencv"), "opencv_redist" ),    
+    os.path.join(os.getenv("VTK_PATH"  , "C:/VTK" ), "bin" ),
+    os.path.join(os.getenv("QT_PATH"   , "C:/Qt/5.12.8/msvc2017_64" ), "bin" ),
+    os.path.join(os.getenv("CUDA_PATH" , "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2" ), "bin") ,
+    os.path.join(os.getenv("GST_PATH"  , "C:/gstreamer/1.0"), "x86_64/bin" )
+] + BINARIES_PATHS
+```
+* Modify cv2/config-3.8.py
+```
+import os
+
+PYTHON_EXTENSIONS_PATHS = [
+    'C:/opencv/opencv/build/lib/python3/Release'
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "python-3.8")
+] + PYTHON_EXTENSIONS_PATHS
+```
+
+
 # Building OpenCV
 Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
 
@@ -566,35 +606,65 @@ These are additions to build 3. Do not clear the cache or delete previous build 
 * Video features
   * gstreamer 
   * Intel Realsense
+* GUI features
+  * QT
+  * VTK
 
 ### Configure Build
 
-Intel RealSense [STATUS: Work in progress]
+Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]
 
 * ```WITH_LIBREALSENSE = ON```
 * ```realsense2_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0"```
 * ```LIBREALSENSE_INCLUDE_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0/include"```
 * ```LIBREALSENSE_LIBRARIES = "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"```
 
-Its not clear yet if librealsense support in OpenCV requires the librealsense source.
-Librealsense has its own python wrapper which might be sufficient to access Intel tracking and 3D cameras.
+This breaks the build with "dll not found" error when importing cv2. At this time I dont know which dll is not found besides the ones provided by the SDK. Best appproach might be to build librealsense from source and check if building the librealsense python wrapper creates the necessary dlls.
 
-GSTREAMER [STATUS: Work in progress]
+GSTREAMER [STATUS: DEBUGGING DEPENDENCY ISSUES]
 
 * ```WITH_GSTREAMER=ON```
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
-QT [Status: Work in progress]
+Using https://github.com/lucasg/Dependencies opencv_world430.dll I found the following missing dlls
+
+api-ms-win-core-wow64-l1-1-0.dll
+api-ms-win-core-wow64-l1-1-1.dll
+api-ms-win-core-winrt-string-l1-1-0.dll
+api-ms-win-core-stringansi-l1-1-0.dll
+api-ms-win-core-versionansi-l1-1-0.dll
+api-ms-win-core-psapi-l1-1-0.dll
+
+ext-ms-win-core-winrt-remote-l1-1-0.dll
+ext-ms-win-com-suspendresiliency-l1-1-0.dll
+ext-ms-win-ro-typeresolution-l1-1-0.dll
+
+HvsiFileTrust.dll
+IESHIMS.DLL
+
+QT [STATUS: IN PROGRESS]
 
 * ```WITH_QT=ON```
 * ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
+* QT_OPENGL_SUPPORT=OFF
 
 With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
 
+VTK [STATUS: IN PROGRESS]
+This might need vtk-8.2 as it can not find config file for 9.0 version.
+You might need QT enabled.
+* VTK_DIR=C:/VTK/lib/cmake/vtk-9.0
+* WITH_VTK=OFF
+
+JAVA [STATUS: IN PROGRESS]
+BUILD_JAVA = ON [2]
+BUILD_opencv_java = OFF
+BUILD_opencv_java_bindings_generator = OFF
+
 HDF [STATUS: ON HOLD]
 
-When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically.
+When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically. HDF support is through libhdf5 which will need to be installed by the user prior to the build.
 
 * ```BUILD_opencv_hdf = OFF```
 * ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
