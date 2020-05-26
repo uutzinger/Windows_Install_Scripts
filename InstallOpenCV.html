@@ -6,16 +6,16 @@
 <link rel="stylesheet" href="https://gitcdn.xyz/repo/goessner/mdmath/master/css/vscode-texmath.css">
 
 </head><body>
-<h1 id="compiling-opencv-on-windows-10-3" data-line="0" class="code-line">Compiling OpenCV on Windows 10</h1>
+<h1 id="compiling-opencv-on-windows-10" data-line="0" class="code-line">Compiling OpenCV on Windows 10</h1>
 <ul>
 <li data-line="2" class="code-line"><a href="#compiling-opencv-on-windows-10" data-href="#compiling-opencv-on-windows-10">Compiling OpenCV on Windows 10</a>
 <ul>
 <li data-line="3" class="code-line"><a href="#motivation" data-href="#motivation">Motivation</a></li>
 <li data-line="4" class="code-line"><a href="#approach" data-href="#approach">Approach</a></li>
 <li data-line="5" class="code-line"><a href="#background-reading" data-href="#background-reading">Background Reading</a></li>
-<li data-line="6" class="code-line"><a href="#pre-requisits" data-href="#pre-requisits">Pre-Requisits</a></li>
+<li data-line="6" class="code-line"><a href="#pre-requisits" data-href="#pre-requisits">Pre-Requisites</a></li>
 <li data-line="7" class="code-line"><a href="#obtaining-opencv-source" data-href="#obtaining-opencv-source">Obtaining OpenCV Source</a></li>
-<li data-line="8" class="code-line"><a href="#unistalling-of-previous-opencv-installtions" data-href="#unistalling-of-previous-opencv-installtions">Unistalling of Previous opencv Installtions</a></li>
+<li data-line="8" class="code-line"><a href="#unistalling-of-previous-opencv-installtions" data-href="#unistalling-of-previous-opencv-installtions">Uninstalling of Previous opencv Installtions</a></li>
 <li data-line="9" class="code-line"><a href="#preparing-your-shell-build-environment" data-href="#preparing-your-shell-build-environment">Preparing your Shell Build Environment</a></li>
 <li data-line="10" class="code-line"><a href="#debugging-missing-dependencies" data-href="#debugging-missing-dependencies">Debugging Missing Dependencies</a></li>
 </ul>
@@ -69,14 +69,14 @@
 <li data-line="36" class="code-line"><a href="#build-3-cmake-output" data-href="#build-3-cmake-output">Build 3 CMAKE Output</a></li>
 </ul>
 <p data-line="38" class="code-line"><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
-<h2 id="motivation-3" data-line="40" class="code-line">Motivation</h2>
+<h2 id="motivation" data-line="40" class="code-line">Motivation</h2>
 <p data-line="42" class="code-line">There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.</p>
 <p data-line="44" class="code-line">Building OpenCV beyond its default settings is notoriously difficlut. The <a href="https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/" data-href="https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/">python for engineers</a> oline book calls people compiling it &quot;masochists&quot; and &quot;If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot&quot;.</p>
 <p data-line="46" class="code-line">The main issue are the many temptations for enabling components that you dont need but break your build and that figuring out which options are needed and which ones not takes a long time. A build typically takes 10-30 minutes when CUDA is not enabled. Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. The documentation is sparse and googeling the build options does not produce quality links.</p>
 <p data-line="48" class="code-line">In the builds described here, I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support. I need architecture optimization because I will attempt using high frame rate cameras in my research.</p>
 <p data-line="50" class="code-line">I need to enable gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic.</p>
 <p data-line="52" class="code-line">I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform.</p>
-<h2 id="approach-3" data-line="54" class="code-line">Approach</h2>
+<h2 id="approach" data-line="54" class="code-line">Approach</h2>
 <p data-line="55" class="code-line">In this guide I propose to build opencv in several steps and with increasing complexity.</p>
 <p data-line="57" class="code-line">It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component might not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake: <code>where cmake</code> and <code>where cmake-gui</code>.</p>
 <p data-line="59" class="code-line">Many online posts have been consulted for this document.</p>
@@ -90,12 +90,12 @@
 <li data-line="66" class="code-line">[7] <a href="https://lightbuzz.com/opencv-cuda/" data-href="https://lightbuzz.com/opencv-cuda/">https://lightbuzz.com/opencv-cuda/</a></li>
 <li data-line="67" class="code-line">[8] <a href="https://pterneas.com/2018/11/02/opencv-cuda/" data-href="https://pterneas.com/2018/11/02/opencv-cuda/">https://pterneas.com/2018/11/02/opencv-cuda/</a></li>
 </ul>
-<h2 id="background-reading-3" data-line="69" class="code-line">Background Reading</h2>
+<h2 id="background-reading" data-line="69" class="code-line">Background Reading</h2>
 <p data-line="71" class="code-line">This explains algorithm optimizations by Intel for opencv <a href="https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel" data-href="https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel">https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel</a> pointing towards Halide and OpenCL.</p>
 <p data-line="73" class="code-line">This is excellent summary of the Halide algorithm development tools <a href="https://halide-lang.org/" data-href="https://halide-lang.org/">https://halide-lang.org/</a> It explains why some programs finish an image processing task much faster than others.</p>
-<h2 id="pre-requisits-3" data-line="75" class="code-line">Pre-Requisits</h2>
+<h2 id="pre-requisites" data-line="75" class="code-line">Pre-Requisites</h2>
 <p data-line="77" class="code-line">Prepare your system with <a href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md" data-href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md">https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md</a>. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location.</p>
-<h2 id="obtaining-opencv-source-3" data-line="79" class="code-line">Obtaining OpenCV Source</h2>
+<h2 id="obtaining-opencv-source" data-line="79" class="code-line">Obtaining OpenCV Source</h2>
 <p data-line="80" class="code-line">Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times, it can be confusing on GitHub to identify the latest release version. You can check OpenCV <a href="https://docs.opencv.org/" data-href="https://docs.opencv.org/">Documentation</a> and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha.</p>
 <pre><code data-line="82" class="code-line"><code><div>mkdir C:/opencv
 cd C:/opencv
@@ -104,12 +104,12 @@ git clone https://github.com/opencv/opencv_contrib.git --branch 4.3.0
 cd C:/opencv/opencv
 mkdir build
 </div></code></code></pre>
-<h2 id="uninstalling-of-previous-opencv-installations-3" data-line="91" class="code-line">Uninstalling of Previous opencv Installations</h2>
+<h2 id="uninstalling-of-previous-opencv-installations" data-line="91" class="code-line">Uninstalling of Previous opencv Installations</h2>
 <p data-line="93" class="code-line">To make sure python finds your build you will want to remove any other installation of opencv.</p>
 <pre><code data-line="94" class="code-line"><code><div>pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
 </div></code></code></pre>
-<h2 id="preparing-your-shell-build-environment-3" data-line="99" class="code-line">Preparing your Shell Build Environment</h2>
+<h2 id="preparing-your-shell-build-environment" data-line="99" class="code-line">Preparing your Shell Build Environment</h2>
 <p data-line="101" class="code-line">Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:</p>
 <pre><code data-line="103" class="code-line"><code><div>cd C:/opencv/opencv/build
 set &quot;openCvSource=C:\opencv\opencv&quot;
@@ -125,7 +125,7 @@ set &quot;generator=Visual Studio 16 2019&quot;
 </div></code></code></pre>
 <p data-line="117" class="code-line">When you execute some of the vcvars script twice in a row, it will throw an error the second time. You can ignore those.</p>
 <p data-line="119" class="code-line"><strong>It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninja before you start configuring your build.</strong></p>
-<h2 id="debugging-missing-dependencies-3" data-line="121" class="code-line">Debugging Missing Dependencies</h2>
+<h2 id="debugging-missing-dependencies" data-line="121" class="code-line">Debugging Missing Dependencies</h2>
 <p data-line="123" class="code-line">In general this should help finding missing dependencies: <a href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md" data-href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md">https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md</a></p>
 <p data-line="125" class="code-line">However the solution to the dll load failures in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.</p>
 <ul>
@@ -145,84 +145,85 @@ set &quot;generator=Visual Studio 16 2019&quot;
 
 BINARIES_PATHS = [
     # 'C:/opencv/opencv/build/bin/Release'
-    os.path.join(os.getenv(&quot;CV_PATH&quot;,    &quot;C:/opencv/opencv/build/install&quot;), &quot;x64/vc16/bin&quot;),
-    os.path.join(os.getenv(&quot;INTEL_PATH&quot;, &quot;C:/opencv&quot;), &quot;opencv_redist&quot; ),    
-    os.path.join(os.getenv(&quot;VTK_PATH&quot;  , &quot;C:/VTK&quot; ), &quot;bin&quot; ),
-    os.path.join(os.getenv(&quot;QT_PATH&quot;   , &quot;C:/Qt/5.12.8/msvc2017_64&quot; ), &quot;bin&quot; ),
-    os.path.join(os.getenv(&quot;CUDA_PATH&quot; , &quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2&quot; ), &quot;bin&quot;) ,
-    os.path.join(os.getenv(&quot;GST_PATH&quot;  , &quot;C:/gstreamer/1.0&quot;), &quot;x86_64/bin&quot; )
+    os.path.join(os.getenv(&quot;CV_PATH&quot;,    &quot;C:/opencv&quot;), &quot;x64/vc16/bin&quot;),
+    os.path.join(os.getenv(&quot;INTEL_PATH&quot;, &quot;C:/Intel&quot;), &quot;bin&quot;),    
+    os.path.join(os.getenv(&quot;VTK_PATH&quot;  , &quot;C:/VTK&quot; ), &quot;bin&quot;),
+    os.path.join(os.getenv(&quot;QT_PATH&quot;   , &quot;C:/Qt/5.15.0/msvc2019_64&quot;), &quot;bin&quot;),
+    os.path.join(os.getenv(&quot;CUDA_PATH&quot; , &quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2&quot;), &quot;bin&quot;),
+    os.path.join(os.getenv(&quot;GST_PATH&quot;  , &quot;C:/gstreamer/1.0&quot;), &quot;x86_64/bin&quot;)
 ] + BINARIES_PATHS
+
 </div></code></code></pre>
 <ul>
-<li data-line="150" class="code-line">Modify cv2/config-3.8.py</li>
+<li data-line="151" class="code-line">Modify cv2/config-3.8.py</li>
 </ul>
-<pre><code data-line="151" class="code-line"><code><div>import os
+<pre><code data-line="152" class="code-line"><code><div>import os
 
 PYTHON_EXTENSIONS_PATHS = [
     'C:/opencv/opencv/build/lib/python3/Release'
     os.path.join(os.path.dirname(os.path.abspath(__file__)), &quot;python-3.8&quot;)
 ] + PYTHON_EXTENSIONS_PATHS
 </div></code></code></pre>
-<h1 id="building-opencv-3" data-line="160" class="code-line">Building OpenCV</h1>
-<p data-line="161" class="code-line">Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.</p>
-<p data-line="163" class="code-line">The first build is minimal. The second enables Intel Performance Libraries. The third build enables CUDA. The forth build includes QT and few additional device drivers.</p>
-<h2 id="build-1-status-completed-successfully-3" data-line="165" class="code-line">Build 1 [STATUS: Completed Successfully]</h2>
-<p data-line="167" class="code-line">With this first build, I will not use the command line option. We will start directly with cmake-gui.
+<h1 id="building-opencv" data-line="161" class="code-line">Building OpenCV</h1>
+<p data-line="162" class="code-line">Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.</p>
+<p data-line="164" class="code-line">The first build is minimal. The second enables Intel Performance Libraries. The third build enables CUDA. The forth build includes QT and few additional device drivers.</p>
+<h2 id="build-1-status-completed-successfully" data-line="166" class="code-line">Build 1 [STATUS: Completed Successfully]</h2>
+<p data-line="168" class="code-line">With this first build, I will not use the command line option. We will start directly with cmake-gui.
 It is a light build with just the default settings, extra and non free modules and python.</p>
-<pre><code data-line="170" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake-gui.exe&quot;
+<pre><code data-line="171" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake-gui.exe&quot;
 </div></code></code></pre>
 <ul>
-<li data-line="173" class="code-line">Clear Build Cache. This will remove any previous configuration options.</li>
-<li data-line="174" class="code-line">Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.</li>
+<li data-line="174" class="code-line">Clear Build Cache. This will remove any previous configuration options.</li>
+<li data-line="175" class="code-line">Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.</li>
 </ul>
-<h3 id="configure-build-12" data-line="176" class="code-line">Configure Build</h3>
-<p data-line="178" class="code-line">The entries in RED need to be taken care off by running Configure again. But bef0roe that verify your settings with the ones below:</p>
-<p data-line="180" class="code-line">Video</p>
+<h3 id="configure-build" data-line="177" class="code-line">Configure Build</h3>
+<p data-line="179" class="code-line">The entries in RED need to be taken care off by running Configure again. But bef0roe that verify your settings with the ones below:</p>
+<p data-line="181" class="code-line">Video</p>
 <ul>
-<li data-line="182" class="code-line"><code>WITH_GSTREAMER = OFF</code></li>
-<li data-line="183" class="code-line"><code>WITH_MFX = OFF</code>, Intel Video Acceleration</li>
-<li data-line="184" class="code-line"><code>WITH_MKL = OFF</code>, Intel Math Library</li>
-<li data-line="185" class="code-line"><code>WITH_LIBREALSENSE = OFF</code>, Intel Real Sense Camera</li>
+<li data-line="183" class="code-line"><code>WITH_GSTREAMER = OFF</code></li>
+<li data-line="184" class="code-line"><code>WITH_MFX = OFF</code>, Intel Video Acceleration</li>
+<li data-line="185" class="code-line"><code>WITH_MKL = OFF</code>, Intel Math Library</li>
+<li data-line="186" class="code-line"><code>WITH_LIBREALSENSE = OFF</code>, Intel Real Sense Camera</li>
 </ul>
-<p data-line="187" class="code-line">Math Acceleration</p>
+<p data-line="188" class="code-line">Math Acceleration</p>
 <ul>
-<li data-line="189" class="code-line"><code>WITH_TBB = OFF</code>, Intel Thread building Blocks</li>
-<li data-line="190" class="code-line"><code>WITH_EIGEN = OFF</code></li>
+<li data-line="190" class="code-line"><code>WITH_TBB = OFF</code>, Intel Thread building Blocks</li>
+<li data-line="191" class="code-line"><code>WITH_EIGEN = OFF</code></li>
 </ul>
-<p data-line="192" class="code-line">Examples and Tests</p>
+<p data-line="193" class="code-line">Examples and Tests</p>
 <ul>
-<li data-line="194" class="code-line"><code>BUILD_EXAMPLES = OFF</code></li>
-<li data-line="195" class="code-line"><code>BUILD_DOCS = OFF</code></li>
-<li data-line="196" class="code-line"><code>BUILD_TESTS = OFF</code></li>
-<li data-line="197" class="code-line"><code>BUILD_PERF_TESTS = OFF</code></li>
-<li data-line="198" class="code-line"><code>INSTALL_PYTHON_EXAMPLES = OFF</code></li>
-<li data-line="199" class="code-line"><code>INSTALL_C_EXAMPLES = OFF</code></li>
-<li data-line="200" class="code-line"><code>INSTALL_TESTS = OFF</code></li>
+<li data-line="195" class="code-line"><code>BUILD_EXAMPLES = OFF</code></li>
+<li data-line="196" class="code-line"><code>BUILD_DOCS = OFF</code></li>
+<li data-line="197" class="code-line"><code>BUILD_TESTS = OFF</code></li>
+<li data-line="198" class="code-line"><code>BUILD_PERF_TESTS = OFF</code></li>
+<li data-line="199" class="code-line"><code>INSTALL_PYTHON_EXAMPLES = OFF</code></li>
+<li data-line="200" class="code-line"><code>INSTALL_C_EXAMPLES = OFF</code></li>
+<li data-line="201" class="code-line"><code>INSTALL_TESTS = OFF</code></li>
 </ul>
-<p data-line="202" class="code-line">Make sure this is ON or set:</p>
+<p data-line="203" class="code-line">Make sure this is ON or set:</p>
 <ul>
-<li data-line="204" class="code-line"><code>BUILD_opencv_python3 = ON</code></li>
-<li data-line="205" class="code-line"><code>BUILD_opencv_python2 = OFF</code></li>
-<li data-line="206" class="code-line"><code>OPENCV_EXTRA_MODULES_PATH = &quot;C:/opencv/opencv_contrib/modules&quot;</code></li>
-<li data-line="207" class="code-line"><code>OPENCV_ENABLE_NONFREE = ON</code></li>
-<li data-line="208" class="code-line"><code>BUILD_SHARED_LIBS = ON</code>, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off</li>
-<li data-line="209" class="code-line"><code>BUILD_opencv_world = ON</code>, create single dll</li>
-<li data-line="210" class="code-line"><code>OPENCV_PYTHON3_VERSION = ON</code>, not sure, it might have issue with cmake-gui</li>
-<li data-line="211" class="code-line"><code>CPU_BASELINE</code>, should auto populate to your CPU</li>
-<li data-line="212" class="code-line"><code>BUILD_opencv_hdf = OFF</code>, HDF5 file format</li>
+<li data-line="205" class="code-line"><code>BUILD_opencv_python3 = ON</code></li>
+<li data-line="206" class="code-line"><code>BUILD_opencv_python2 = OFF</code></li>
+<li data-line="207" class="code-line"><code>OPENCV_EXTRA_MODULES_PATH = &quot;C:/opencv/opencv_contrib/modules&quot;</code></li>
+<li data-line="208" class="code-line"><code>OPENCV_ENABLE_NONFREE = ON</code></li>
+<li data-line="209" class="code-line"><code>BUILD_SHARED_LIBS = ON</code>, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off</li>
+<li data-line="210" class="code-line"><code>BUILD_opencv_world = ON</code>, create single dll</li>
+<li data-line="211" class="code-line"><code>OPENCV_PYTHON3_VERSION = ON</code>, not sure, it might have issue with cmake-gui</li>
+<li data-line="212" class="code-line"><code>CPU_BASELINE</code>, should auto populate to your CPU</li>
+<li data-line="213" class="code-line"><code>BUILD_opencv_hdf = OFF</code>, HDF5 file format</li>
 </ul>
-<p data-line="214" class="code-line">Modify or create the variable:</p>
+<p data-line="215" class="code-line">Modify or create the variable:</p>
 <ul>
-<li data-line="216" class="code-line"><code>PYTHON_DEFAULT_EXECUTABLE = &quot;C:\Python38\python.exe&quot;</code></li>
-<li data-line="217" class="code-line"><code>CMAKE_CONFIGURATION_TYPES = &quot;Release&quot;</code></li>
+<li data-line="217" class="code-line"><code>PYTHON_DEFAULT_EXECUTABLE = &quot;C:\Python38\python.exe&quot;</code></li>
+<li data-line="218" class="code-line"><code>CMAKE_CONFIGURATION_TYPES = &quot;Release&quot;</code></li>
 </ul>
-<h3 id="configure-and-generate-3" data-line="219" class="code-line">Configure and Generate</h3>
-<p data-line="220" class="code-line">After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Don't delete the cache. Just rerun configure in the gui.</p>
-<p data-line="222" class="code-line">Run the Generate function to create your build project.
+<h3 id="configure-and-generate" data-line="220" class="code-line">Configure and Generate</h3>
+<p data-line="221" class="code-line">After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Don't delete the cache. Just rerun configure in the gui.</p>
+<p data-line="223" class="code-line">Run the Generate function to create your build project.
 If generate shows errors and warnings but completes its process, you can continue building OpenCV.</p>
-<h3 id="cmd-shell-equivalent-3" data-line="225" class="code-line">CMD Shell Equivalent</h3>
-<p data-line="227" class="code-line">The equivalent command in the CMD window is listed below.</p>
-<pre><code data-line="229" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; ^
+<h3 id="cmd-shell-equivalent" data-line="226" class="code-line">CMD Shell Equivalent</h3>
+<p data-line="228" class="code-line">The equivalent command in the CMD window is listed below.</p>
+<pre><code data-line="230" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; ^
 -B&quot;%openCvBuild%/&quot; -H&quot;%openCvSource%/&quot; -G&quot;%generator%&quot; ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
 -DOPENCV_EXTRA_MODULES_PATH=&quot;%openCVExtraModules%/&quot; ^
@@ -239,14 +240,14 @@ If generate shows errors and warnings but completes its process, you can continu
 -DINSTALL_TESTS=OFF ^
 -DWITH_GSTREAMER=OFF
 </div></code></code></pre>
-<h3 id="build-12" data-line="248" class="code-line">Build</h3>
-<p data-line="249" class="code-line">And finally do first build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build. If there are previously compiled files in your build directory. you can clean them with the &quot;clean&quot; button.</p>
-<p data-line="251" class="code-line">The command line equivalent is:</p>
-<pre><code data-line="252" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
+<h3 id="build" data-line="249" class="code-line">Build</h3>
+<p data-line="250" class="code-line">And finally do first build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build. If there are previously compiled files in your build directory. you can clean them with the &quot;clean&quot; button.</p>
+<p data-line="252" class="code-line">The command line equivalent is:</p>
+<pre><code data-line="253" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
 </div></code></code></pre>
-<h3 id="test-12" data-line="256" class="code-line">Test</h3>
-<p data-line="258" class="code-line">In a command shell:</p>
-<pre><code data-line="260" class="code-line"><code><div>C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
+<h3 id="test" data-line="257" class="code-line">Test</h3>
+<p data-line="259" class="code-line">In a command shell:</p>
+<pre><code data-line="261" class="code-line"><code><div>C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
 
 py -2 -c &quot;import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')&quot;
 py -2 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
@@ -254,136 +255,136 @@ py -2 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 py -3 -c &quot;import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')&quot;
 py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 </div></code></code></pre>
-<h2 id="build-2-status-completed-successfully-3" data-line="270" class="code-line">Build 2 [STATUS: Completed Successfully]</h2>
-<p data-line="272" class="code-line">Now lets enable more features:</p>
+<h2 id="build-2-status-completed-successfully" data-line="271" class="code-line">Build 2 [STATUS: Completed Successfully]</h2>
+<p data-line="273" class="code-line">Now lets enable more features:</p>
 <ul>
-<li data-line="273" class="code-line">Intel optimizations
+<li data-line="274" class="code-line">Intel optimizations
 <ul>
-<li data-line="274" class="code-line">Math Kernel Library</li>
-<li data-line="275" class="code-line">Thread Building Blocks</li>
-<li data-line="276" class="code-line">IPP</li>
+<li data-line="275" class="code-line">Math Kernel Library</li>
+<li data-line="276" class="code-line">Thread Building Blocks</li>
+<li data-line="277" class="code-line">IPP</li>
 </ul>
 </li>
-<li data-line="277" class="code-line">Eigen</li>
-<li data-line="278" class="code-line">Video features
+<li data-line="278" class="code-line">Eigen</li>
+<li data-line="279" class="code-line">Video features
 <ul>
-<li data-line="279" class="code-line">Intel Media SDK</li>
+<li data-line="280" class="code-line">Intel Media SDK</li>
 </ul>
 </li>
 </ul>
-<p data-line="281" class="code-line">This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact your build. If something breaks, you can go back to build 1.</p>
-<p data-line="283" class="code-line">In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultaneously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.</p>
-<h3 id="configure-build-13" data-line="285" class="code-line">Configure Build</h3>
-<p data-line="287" class="code-line">Start cmake-gui in the CMD shell. Make sure the shell environment was configures as shown above.</p>
-<pre><code data-line="289" class="code-line"><code><div>cd C:\opencv\opencv\build
+<p data-line="282" class="code-line">This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact your build. If something breaks, you can go back to build 1.</p>
+<p data-line="284" class="code-line">In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultaneously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.</p>
+<h3 id="configure-build-1" data-line="286" class="code-line">Configure Build</h3>
+<p data-line="288" class="code-line">Start cmake-gui in the CMD shell. Make sure the shell environment was configures as shown above.</p>
+<pre><code data-line="290" class="code-line"><code><div>cd C:\opencv\opencv\build
 cmake-gui ..\
 </div></code></code></pre>
-<p data-line="294" class="code-line">Features to be turned ON/OFF and variables to be set:</p>
+<p data-line="295" class="code-line">Features to be turned ON/OFF and variables to be set:</p>
 <ul>
-<li data-line="296" class="code-line"><code>OPENCV_EXTRA_MODULES_PATH = &quot;C:/opencv/opencv_contrib/modules&quot;</code></li>
-<li data-line="297" class="code-line"><code>OPENCV_ENABLE_NONFREE = ON</code></li>
-<li data-line="298" class="code-line"><code>BUILD_SHARED_LIBS = ON</code>, [2], when on this will created DLLs, when off this will created static libraries (*.lib)</li>
-<li data-line="299" class="code-line"><code>BUILD_opencv_world = ON</code>, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file</li>
-<li data-line="300" class="code-line"><code>BUILD_opencv_python3 = ON</code></li>
-<li data-line="301" class="code-line"><code>BUILD_opencv_python2 = OFF</code>, if you need python 2 module, build it separately, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.</li>
-<li data-line="302" class="code-line"><code>OPENCV_PYTHON3_VERSION = ON</code>, apparently cmake-gui confuses this variable [4], [2] recommends it ON</li>
-<li data-line="303" class="code-line"><code>BUILD_opencv_hdf = OFF</code>, recommended by [1]</li>
-<li data-line="304" class="code-line"><code>DBUILD_opencv_gapi = ON</code>, OFF is recommended by [1], but ON is default and works</li>
-<li data-line="305" class="code-line"><code>ENABLE_FAST_MATH = OFF</code>, recommended by cmake</li>
+<li data-line="297" class="code-line"><code>OPENCV_EXTRA_MODULES_PATH = &quot;C:/opencv/opencv_contrib/modules&quot;</code></li>
+<li data-line="298" class="code-line"><code>OPENCV_ENABLE_NONFREE = ON</code></li>
+<li data-line="299" class="code-line"><code>BUILD_SHARED_LIBS = ON</code>, [2], when on this will created DLLs, when off this will created static libraries (*.lib)</li>
+<li data-line="300" class="code-line"><code>BUILD_opencv_world = ON</code>, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file</li>
+<li data-line="301" class="code-line"><code>BUILD_opencv_python3 = ON</code></li>
+<li data-line="302" class="code-line"><code>BUILD_opencv_python2 = OFF</code>, if you need python 2 module, build it separately, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.</li>
+<li data-line="303" class="code-line"><code>OPENCV_PYTHON3_VERSION = ON</code>, apparently cmake-gui confuses this variable [4], [2] recommends it ON</li>
+<li data-line="304" class="code-line"><code>BUILD_opencv_hdf = OFF</code>, recommended by [1]</li>
+<li data-line="305" class="code-line"><code>DBUILD_opencv_gapi = ON</code>, OFF is recommended by [1], but ON is default and works</li>
+<li data-line="306" class="code-line"><code>ENABLE_FAST_MATH = OFF</code>, recommended by cmake</li>
 </ul>
-<p data-line="307" class="code-line">Add Entry</p>
+<p data-line="308" class="code-line">Add Entry</p>
 <ul>
-<li data-line="308" class="code-line"><code>PYTHON_DEFAULT_EXECUTABLE=&quot;C:\Python38\python.exe&quot;</code>, otherwise python2 will be used to build opencv.</li>
+<li data-line="309" class="code-line"><code>PYTHON_DEFAULT_EXECUTABLE=&quot;C:\Python38\python.exe&quot;</code>, otherwise python2 will be used to build opencv.</li>
 </ul>
-<p data-line="310" class="code-line">TBB [STATUS: WORKING]</p>
-<p data-line="312" class="code-line">You either download the TBB source or the prebuilt binaries from Intel.
+<p data-line="311" class="code-line">TBB [STATUS: WORKING]</p>
+<p data-line="313" class="code-line">You either download the TBB source or the prebuilt binaries from Intel.
 The cmake configuration should list under Parallel framework: TBB (ver...)
 [1] recommends the dlls from C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt which are statically linked to VC runtime. By default the vc14 versions are picked up by cmake. The default vc14 works for me.</p>
 <ul>
-<li data-line="316" class="code-line"><code>BUILD_TBB = OFF</code>, you want to use the pre-compiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.</li>
-<li data-line="317" class="code-line"><code>WITH_TBB = ON</code>, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV</li>
+<li data-line="317" class="code-line"><code>BUILD_TBB = OFF</code>, you want to use the pre-compiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.</li>
+<li data-line="318" class="code-line"><code>WITH_TBB = ON</code>, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV</li>
 </ul>
-<p data-line="319" class="code-line">The following TBB folders should be set automatically:</p>
+<p data-line="320" class="code-line">The following TBB folders should be set automatically:</p>
 <ul>
-<li data-line="320" class="code-line"><code>TBB_DIR</code> is not found</li>
-<li data-line="321" class="code-line"><code>TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include</code></li>
-<li data-line="322" class="code-line"><code>TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib</code></li>
-<li data-line="323" class="code-line"><code>TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib</code></li>
-<li data-line="324" class="code-line"><code>TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h</code></li>
+<li data-line="321" class="code-line"><code>TBB_DIR</code> is not found</li>
+<li data-line="322" class="code-line"><code>TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include</code></li>
+<li data-line="323" class="code-line"><code>TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib</code></li>
+<li data-line="324" class="code-line"><code>TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb_debug.lib</code></li>
+<li data-line="325" class="code-line"><code>TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h</code></li>
 </ul>
-<p data-line="326" class="code-line">MKL [STATUS: WORKING]</p>
+<p data-line="327" class="code-line">MKL [STATUS: WORKING]</p>
 <ul>
-<li data-line="327" class="code-line"><code>WITH_MKL = ON</code></li>
-<li data-line="328" class="code-line"><code>MKL_USE_MULTITHREAD = ON</code>, [1]</li>
-<li data-line="329" class="code-line"><code>MKL_WITH_TBB = ON</code>, [1]</li>
+<li data-line="328" class="code-line"><code>WITH_MKL = ON</code></li>
+<li data-line="329" class="code-line"><code>MKL_USE_MULTITHREAD = ON</code>, [1]</li>
+<li data-line="330" class="code-line"><code>MKL_WITH_TBB = ON</code>, [1]</li>
 </ul>
-<p data-line="331" class="code-line">When executing the setup script it should configure automatically:</p>
+<p data-line="332" class="code-line">When executing the setup script it should configure automatically:</p>
 <ul>
-<li data-line="332" class="code-line"><code>MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include</code></li>
-<li data-line="333" class="code-line"><code>MKL_LIBRARIES    = </code>
+<li data-line="333" class="code-line"><code>MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/include</code></li>
+<li data-line="334" class="code-line"><code>MKL_LIBRARIES    = </code>
 <ul>
-<li data-line="334" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;</code></li>
-<li data-line="335" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;</code></li>
-<li data-line="336" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;</code></li>
-<li data-line="337" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib;</code></li>
-<li data-line="338" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_sequential_dll.lib;</code></li>
+<li data-line="335" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;</code></li>
+<li data-line="336" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;</code></li>
+<li data-line="337" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;</code></li>
+<li data-line="338" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib;</code></li>
+<li data-line="339" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_sequential_dll.lib;</code></li>
 </ul>
 </li>
 </ul>
-<p data-line="340" class="code-line">mkl_sequential is not picked up in my build. For shared library builds the dll.lib versions need to be selected.</p>
+<p data-line="341" class="code-line">mkl_sequential is not picked up in my build. For shared library builds the dll.lib versions need to be selected.</p>
 <ul>
-<li data-line="342" class="code-line"><code>MKL_ROOT_DIR = &quot;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl&quot;</code></li>
+<li data-line="343" class="code-line"><code>MKL_ROOT_DIR = &quot;C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl&quot;</code></li>
 </ul>
-<p data-line="344" class="code-line">LAPACK [STATUS: WORKING]</p>
-<p data-line="346" class="code-line">Please verify:</p>
+<p data-line="345" class="code-line">LAPACK [STATUS: WORKING]</p>
+<p data-line="347" class="code-line">Please verify:</p>
 <ul>
-<li data-line="347" class="code-line"><code>LAPACK_LIBRARIES = </code>
+<li data-line="348" class="code-line"><code>LAPACK_LIBRARIES = </code>
 <ul>
-<li data-line="348" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;</code></li>
-<li data-line="349" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;</code></li>
-<li data-line="350" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;</code></li>
-<li data-line="351" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib</code></li>
+<li data-line="349" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib;</code></li>
+<li data-line="350" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib;</code></li>
+<li data-line="351" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib;</code></li>
+<li data-line="352" class="code-line"><code>C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib</code></li>
 </ul>
 </li>
 </ul>
-<p data-line="353" class="code-line">For shared library builds the dll.lib versions need to be selected.</p>
-<p data-line="355" class="code-line">Intel Media SDK Support [STATUS: WORKING]</p>
+<p data-line="354" class="code-line">For shared library builds the dll.lib versions need to be selected.</p>
+<p data-line="356" class="code-line">Intel Media SDK Support [STATUS: WORKING]</p>
 <ul>
-<li data-line="357" class="code-line"><code>WITH_MFX = ON</code></li>
-<li data-line="358" class="code-line"><code>WITH_MSMF = ON</code></li>
-<li data-line="359" class="code-line"><code>WITH_MSMF_DXVA = ON</code></li>
+<li data-line="358" class="code-line"><code>WITH_MFX = ON</code></li>
+<li data-line="359" class="code-line"><code>WITH_MSMF = ON</code></li>
+<li data-line="360" class="code-line"><code>WITH_MSMF_DXVA = ON</code></li>
 </ul>
-<p data-line="361" class="code-line">Please check:</p>
+<p data-line="362" class="code-line">Please check:</p>
 <ul>
-<li data-line="362" class="code-line"><code>MFX_LIBRARY = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib</code></li>
-<li data-line="363" class="code-line"><code>MFX_INCLUDE = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/include</code></li>
+<li data-line="363" class="code-line"><code>MFX_LIBRARY = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib</code></li>
+<li data-line="364" class="code-line"><code>MFX_INCLUDE = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/include</code></li>
 </ul>
-<p data-line="365" class="code-line">Enabling Intel MFX will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.</p>
-<p data-line="367" class="code-line">OPENCL [STATUS: WORKING]</p>
-<p data-line="369" class="code-line">This enables cv::ocl::resize() versus cv::resize() which provides hardware acceleration.</p>
-<p data-line="371" class="code-line">This should be set automatically. Please check:</p>
+<p data-line="366" class="code-line">Enabling Intel MFX will create linker warning because libmfx_vs2015.pdb is not provided in Intel Media SDK.</p>
+<p data-line="368" class="code-line">OPENCL [STATUS: WORKING]</p>
+<p data-line="370" class="code-line">This enables cv::ocl::resize() versus cv::resize() which provides hardware acceleration.</p>
+<p data-line="372" class="code-line">This should be set automatically. Please check:</p>
 <ul>
-<li data-line="372" class="code-line"><code>WITH_OPENCL = ON</code></li>
-<li data-line="373" class="code-line"><code>WITH_OPENCLAMDBLAS = ON</code></li>
-<li data-line="374" class="code-line"><code>WITH_OPENCLEMDFFT = ON</code></li>
-<li data-line="375" class="code-line"><code>WITH_OPENCL_D3D11_NV = ON</code></li>
-<li data-line="376" class="code-line"><code>WITH_OPENCL_SVM = ON</code> support vector machine classifier</li>
+<li data-line="373" class="code-line"><code>WITH_OPENCL = ON</code></li>
+<li data-line="374" class="code-line"><code>WITH_OPENCLAMDBLAS = ON</code></li>
+<li data-line="375" class="code-line"><code>WITH_OPENCLEMDFFT = ON</code></li>
+<li data-line="376" class="code-line"><code>WITH_OPENCL_D3D11_NV = ON</code></li>
+<li data-line="377" class="code-line"><code>WITH_OPENCL_SVM = ON</code> support vector machine classifier</li>
 </ul>
-<p data-line="378" class="code-line">MISC Features [STATUS: WORKING]</p>
+<p data-line="379" class="code-line">MISC Features [STATUS: WORKING]</p>
 <ul>
-<li data-line="380" class="code-line"><code>USE_WIN32_FILEIO = ON</code></li>
-<li data-line="381" class="code-line"><code>WITH_CUDA = OFF</code></li>
-<li data-line="382" class="code-line"><code>OPENCV_DNN_CUDA = OFF</code></li>
-<li data-line="383" class="code-line"><code>WITH_GSTREAMER=OFF</code></li>
-<li data-line="384" class="code-line"><code>WITH_LIBREALSENSE = OFF</code></li>
-<li data-line="385" class="code-line"><code>BUILD_opencv_hdf = OFF</code></li>
-<li data-line="386" class="code-line"><code>WITH_EIGEN = OFF</code></li>
-<li data-line="387" class="code-line">```BUILD_opencv_js = OFF``</li>
+<li data-line="381" class="code-line"><code>USE_WIN32_FILEIO = ON</code></li>
+<li data-line="382" class="code-line"><code>WITH_CUDA = OFF</code></li>
+<li data-line="383" class="code-line"><code>OPENCV_DNN_CUDA = OFF</code></li>
+<li data-line="384" class="code-line"><code>WITH_GSTREAMER=OFF</code></li>
+<li data-line="385" class="code-line"><code>WITH_LIBREALSENSE = OFF</code></li>
+<li data-line="386" class="code-line"><code>BUILD_opencv_hdf = OFF</code></li>
+<li data-line="387" class="code-line"><code>WITH_EIGEN = OFF</code></li>
+<li data-line="388" class="code-line">```BUILD_opencv_js = OFF``</li>
 </ul>
-<h3 id="build-13" data-line="389" class="code-line">Build</h3>
-<p data-line="391" class="code-line">Build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build.</p>
-<p data-line="393" class="code-line">The Command Shell equivalent is: (incomplete)</p>
-<pre><code data-line="395" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; -B&quot;%openCvBuild%/&quot; -H&quot;%openCvSource%/&quot; -G&quot;%generator%&quot; ^
+<h3 id="build-1" data-line="390" class="code-line">Build</h3>
+<p data-line="392" class="code-line">Build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build.</p>
+<p data-line="394" class="code-line">The Command Shell equivalent is: (incomplete)</p>
+<pre><code data-line="396" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; -B&quot;%openCvBuild%/&quot; -H&quot;%openCvSource%/&quot; -G&quot;%generator%&quot; ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
 -DOPENCV_EXTRA_MODULES_PATH=&quot;%openCVExtraModules%/&quot; ^
 -DOPENCV_ENABLE_NONFREE=ON ^
@@ -411,82 +412,82 @@ The cmake configuration should list under Parallel framework: TBB (ver...)
 -DLIBREALSENSE_LIBRARIES=&quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib&quot; ^
 -DBUILD_opencv_hdf=OFF
 </div></code></code></pre>
-<h3 id="test-13" data-line="425" class="code-line">Test</h3>
-<p data-line="427" class="code-line">Run python 3 in command shell</p>
-<pre><code data-line="428" class="code-line"><code><div>py -3
+<h3 id="test-1" data-line="426" class="code-line">Test</h3>
+<p data-line="428" class="code-line">Run python 3 in command shell</p>
+<pre><code data-line="429" class="code-line"><code><div>py -3
 </div></code></code></pre>
-<p data-line="432" class="code-line">Check the python path:</p>
-<pre><code data-line="433" class="code-line"><code><div>import sys
+<p data-line="433" class="code-line">Check the python path:</p>
+<pre><code data-line="434" class="code-line"><code><div>import sys
 print('\n'.join(sys.path))
 </div></code></code></pre>
-<p data-line="438" class="code-line">My output is:</p>
-<pre><code data-line="439" class="code-line"><code><div>C:\Python38\python38.zip
+<p data-line="439" class="code-line">My output is:</p>
+<pre><code data-line="440" class="code-line"><code><div>C:\Python38\python38.zip
 C:\Python38\DLLs
 C:\Python38\lib
 C:\Python38
 C:\Python38\lib\site-packages
 </div></code></code></pre>
-<pre><code data-line="447" class="code-line"><code><div>C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
+<pre><code data-line="448" class="code-line"><code><div>C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
 py -3 -c &quot;import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')&quot;
 py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 </div></code></code></pre>
-<h2 id="build-3-status-completed-successfully-3" data-line="453" class="code-line">Build 3 [STATUS: Completed Successfully]</h2>
-<p data-line="455" class="code-line">Inlucde CUDA. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The CUDA_Generation will need to match your GPU.</p>
-<pre><code data-line="457" class="code-line"><code><div>cmake-gui ..\
+<h2 id="build-3-status-completed-successfully" data-line="454" class="code-line">Build 3 [STATUS: Completed Successfully]</h2>
+<p data-line="456" class="code-line">Inlucde CUDA. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The CUDA_Generation will need to match your GPU.</p>
+<pre><code data-line="458" class="code-line"><code><div>cmake-gui ..\
 </div></code></code></pre>
-<h3 id="configure-build-14" data-line="461" class="code-line">Configure BUILD</h3>
-<p data-line="463" class="code-line">CUDA support doubles your build size and consumes much larger build time.</p>
-<p data-line="465" class="code-line">Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
+<h3 id="configure-build-2" data-line="462" class="code-line">Configure BUILD</h3>
+<p data-line="464" class="code-line">CUDA support doubles your build size and consumes much larger build time.</p>
+<p data-line="466" class="code-line">Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
 <a href="https://en.wikipedia.org/wiki/CUDA#GPUs_supported" data-href="https://en.wikipedia.org/wiki/CUDA#GPUs_supported">https://en.wikipedia.org/wiki/CUDA#GPUs_supported</a>
 My notebook computer has a GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0. For detailed coverage of CUDA_ARCH choices and GPU coverage refer to [1].</p>
-<p data-line="469" class="code-line">CUDA [STATUS: Working]</p>
+<p data-line="470" class="code-line">CUDA [STATUS: Working]</p>
 <ul>
-<li data-line="471" class="code-line"><code>WITH_CUDA = ON</code>, enable CUDA</li>
-<li data-line="472" class="code-line"><code>WITH_NVCUVID = ON</code>, [1] enable CUDA Video decodeing support</li>
-<li data-line="473" class="code-line"><code>WITH_CUFFT = ON</code></li>
-<li data-line="474" class="code-line"><code>WITH_CUBLAS = ON</code> [1,4,10]</li>
-<li data-line="475" class="code-line"><code>CUDA_FAST_MATH = ON</code>, [3,4]</li>
-<li data-line="476" class="code-line"><code>CUDA_ARCH_BIN = 5.0,5.2</code>, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure</li>
-<li data-line="477" class="code-line"><code>CUDA_ARCH_PTX = 5.0</code>, entered to be the lowest of ARCH_BIN or leave empty</li>
-<li data-line="478" class="code-line"><code>CUDA_TOOLKIT_ROOT_DIR = &quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2&quot;</code></li>
-<li data-line="479" class="code-line"><code>CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2</code></li>
-<li data-line="480" class="code-line"><code>CUDA_BUILD_EMULATION = OFF</code>, autopopulated</li>
-<li data-line="481" class="code-line"><code>CUDA_GENERATION = &quot;Maxwell&quot;</code>, select from list</li>
-<li data-line="482" class="code-line"><code>CUDA_HOST_COMPLIER = </code>, autopopulated</li>
-<li data-line="483" class="code-line"><code>CUDA_USE_STATIC_CUDA_RUNTIME = ON</code>, autopopulated</li>
-<li data-line="484" class="code-line"><code>OPENCV_DNN_CUDA = ON</code>,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.</li>
-<li data-line="485" class="code-line"><code>BUILD_CUDA_STUBS = OFF</code></li>
-<li data-line="486" class="code-line"><code>BUILD_opencv_cudev = ON</code></li>
-<li data-line="487" class="code-line"><code>BUILD_opencv_cuda* = ON</code></li>
+<li data-line="472" class="code-line"><code>WITH_CUDA = ON</code>, enable CUDA</li>
+<li data-line="473" class="code-line"><code>WITH_NVCUVID = ON</code>, [1] enable CUDA Video decodeing support</li>
+<li data-line="474" class="code-line"><code>WITH_CUFFT = ON</code></li>
+<li data-line="475" class="code-line"><code>WITH_CUBLAS = ON</code> [1,4,10]</li>
+<li data-line="476" class="code-line"><code>CUDA_FAST_MATH = ON</code>, [3,4]</li>
+<li data-line="477" class="code-line"><code>CUDA_ARCH_BIN = 5.0,5.2</code>, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure</li>
+<li data-line="478" class="code-line"><code>CUDA_ARCH_PTX = 5.0</code>, entered to be the lowest of ARCH_BIN or leave empty</li>
+<li data-line="479" class="code-line"><code>CUDA_TOOLKIT_ROOT_DIR = &quot;C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2&quot;</code></li>
+<li data-line="480" class="code-line"><code>CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2</code></li>
+<li data-line="481" class="code-line"><code>CUDA_BUILD_EMULATION = OFF</code>, autopopulated</li>
+<li data-line="482" class="code-line"><code>CUDA_GENERATION = &quot;Maxwell&quot;</code>, select from list</li>
+<li data-line="483" class="code-line"><code>CUDA_HOST_COMPLIER = </code>, autopopulated</li>
+<li data-line="484" class="code-line"><code>CUDA_USE_STATIC_CUDA_RUNTIME = ON</code>, autopopulated</li>
+<li data-line="485" class="code-line"><code>OPENCV_DNN_CUDA = ON</code>,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.</li>
+<li data-line="486" class="code-line"><code>BUILD_CUDA_STUBS = OFF</code></li>
+<li data-line="487" class="code-line"><code>BUILD_opencv_cudev = ON</code></li>
+<li data-line="488" class="code-line"><code>BUILD_opencv_cuda* = ON</code></li>
 </ul>
-<p data-line="489" class="code-line">TEST [STATUS: WORKING]</p>
-<p data-line="491" class="code-line">If you want to conduct performance tests enable these:</p>
+<p data-line="490" class="code-line">TEST [STATUS: WORKING]</p>
+<p data-line="492" class="code-line">If you want to conduct performance tests enable these:</p>
 <ul>
-<li data-line="493" class="code-line"><code>INSTALL_TESTS = ON</code></li>
-<li data-line="494" class="code-line"><code>BUILD_PERF_TESTS = ON</code></li>
-<li data-line="495" class="code-line"><code>BUILD_TESTS = ON</code></li>
-<li data-line="496" class="code-line"><code>BUILD_opencv_python_tests = ON</code></li>
+<li data-line="494" class="code-line"><code>INSTALL_TESTS = ON</code></li>
+<li data-line="495" class="code-line"><code>BUILD_PERF_TESTS = ON</code></li>
+<li data-line="496" class="code-line"><code>BUILD_TESTS = ON</code></li>
+<li data-line="497" class="code-line"><code>BUILD_opencv_python_tests = ON</code></li>
 </ul>
-<p data-line="498" class="code-line">This build creates a lot of warning:
+<p data-line="499" class="code-line">This build creates a lot of warning:
 <code>warning : field of class type without a DLL interface used in a class with a DLL interface</code>
 You can ignore them.</p>
-<p data-line="502" class="code-line">Make sure the PATH includes <code>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin</code></p>
-<p data-line="504" class="code-line">You might want to rename build/install to build/install_noCUDA so you can preserve your non_cuda version.</p>
-<h3 id="build-14" data-line="506" class="code-line">Build</h3>
-<p data-line="508" class="code-line">If you build with Visual Studio C, open Build -&gt; Configuration Manager and enable INSTALL and click build.</p>
-<p data-line="510" class="code-line">The command line equievalent is:</p>
-<pre><code data-line="512" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
+<p data-line="503" class="code-line">Make sure the PATH includes <code>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin</code></p>
+<p data-line="505" class="code-line">You might want to rename build/install to build/install_noCUDA so you can preserve your non_cuda version.</p>
+<h3 id="build-2" data-line="507" class="code-line">Build</h3>
+<p data-line="509" class="code-line">If you build with Visual Studio C, open Build -&gt; Configuration Manager and enable INSTALL and click build.</p>
+<p data-line="511" class="code-line">The command line equievalent is:</p>
+<pre><code data-line="513" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
 </div></code></code></pre>
-<h3 id="test-14" data-line="516" class="code-line">Test</h3>
-<p data-line="518" class="code-line">You can test CUDA performance according [1]:</p>
-<pre><code data-line="519" class="code-line"><code><div>&quot;C:\opencv\opencv\build\install\x64\vc16\bin\opencv_perf_cudaarithm.exe&quot; --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
+<h3 id="test-2" data-line="517" class="code-line">Test</h3>
+<p data-line="519" class="code-line">You can test CUDA performance according [1]:</p>
+<pre><code data-line="520" class="code-line"><code><div>&quot;C:\opencv\opencv\build\install\x64\vc16\bin\opencv_perf_cudaarithm.exe&quot; --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
 </div></code></code></pre>
-<p data-line="523" class="code-line">My outpput is:</p>
-<pre><code data-line="524" class="code-line"><code><div>[ RUN      ] Sz_Type_Flags_GEMM.GEMM/29, where GetParam() = (1024x1024, 32FC2, 0|cv::GEMM_1_T)
+<p data-line="524" class="code-line">My outpput is:</p>
+<pre><code data-line="525" class="code-line"><code><div>[ RUN      ] Sz_Type_Flags_GEMM.GEMM/29, where GetParam() = (1024x1024, 32FC2, 0|cv::GEMM_1_T)
 [ PERFSTAT ]    (samples=25   mean=12.49   median=12.48   min=11.99   stddev=0.27 (2.1%))
 </div></code></code></pre>
-<p data-line="529" class="code-line">You can test CUDA performance in pyton with:</p>
-<pre><code data-line="530" class="code-line"><code><div>import numpy as np
+<p data-line="530" class="code-line">You can test CUDA performance in pyton with:</p>
+<pre><code data-line="531" class="code-line"><code><div>import numpy as np
 import cv2 as cv
 import time
 
@@ -525,100 +526,100 @@ print('OpenCV execution time is : {}'.format((cpu_time-cuda_time)/20.0))
 print('NumPy execution time is  : {}'.format((np_time-cpu_time)/20.0))
 #
 </div></code></code></pre>
-<p data-line="571" class="code-line">In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and the numpy routine 45ms. Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 500ms. Also compared to cuda performance test program, python implementation takes almost 3 times as long.</p>
-<h2 id="build-4-3" data-line="573" class="code-line">Build 4</h2>
-<p data-line="575" class="code-line">These are additions to build 3. Do not clear the cache or delete previous build files.</p>
+<p data-line="572" class="code-line">In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and the numpy routine 45ms. Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 500ms. Also compared to cuda performance test program, python implementation takes almost 3 times as long.</p>
+<h2 id="build-4" data-line="574" class="code-line">Build 4</h2>
+<p data-line="576" class="code-line">These are additions to build 3. Do not clear the cache or delete previous build files.</p>
 <ul>
-<li data-line="577" class="code-line">GUI features
+<li data-line="578" class="code-line">GUI features
 <ul>
-<li data-line="578" class="code-line">QT</li>
-<li data-line="579" class="code-line">VTK</li>
+<li data-line="579" class="code-line">QT</li>
+<li data-line="580" class="code-line">VTK</li>
 </ul>
 </li>
-<li data-line="580" class="code-line">Video features
+<li data-line="581" class="code-line">Video features
 <ul>
-<li data-line="581" class="code-line">gstreamer</li>
-<li data-line="582" class="code-line">Intel Realsense</li>
+<li data-line="582" class="code-line">gstreamer</li>
+<li data-line="583" class="code-line">Intel Realsense</li>
 </ul>
 </li>
 </ul>
-<h3 id="configure-build-15" data-line="584" class="code-line">Configure Build</h3>
-<p data-line="586" class="code-line">QT [STATUS: IN PROGRESS]</p>
+<h3 id="configure-build-3" data-line="585" class="code-line">Configure Build</h3>
+<p data-line="587" class="code-line">QT [STATUS: IN PROGRESS]</p>
 <ul>
-<li data-line="588" class="code-line"><code>WITH_QT=ON</code></li>
-<li data-line="589" class="code-line"><code>Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5</code></li>
-<li data-line="590" class="code-line">QT_OPENGL_SUPPORT=OFF</li>
+<li data-line="589" class="code-line"><code>WITH_QT=ON</code></li>
+<li data-line="590" class="code-line"><code>Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5</code></li>
+<li data-line="591" class="code-line">QT_OPENGL_SUPPORT=OFF</li>
 </ul>
-<p data-line="592" class="code-line">With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.</p>
-<p data-line="594" class="code-line">VTK [STATUS: IN PROGRESS]
+<p data-line="593" class="code-line">With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.</p>
+<p data-line="595" class="code-line">VTK [STATUS: IN PROGRESS]
 This might need vtk-8.2 as it can not find config file for 9.0 version.
 You might need QT enabled.</p>
 <ul>
-<li data-line="597" class="code-line">VTK_DIR=C:/VTK/lib/cmake/vtk-9.0</li>
-<li data-line="598" class="code-line">WITH_VTK=OFF</li>
+<li data-line="598" class="code-line">VTK_DIR=C:/VTK/lib/cmake/vtk-9.0</li>
+<li data-line="599" class="code-line">WITH_VTK=OFF</li>
 </ul>
-<p data-line="600" class="code-line">Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]</p>
+<p data-line="601" class="code-line">Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]</p>
 <ul>
-<li data-line="602" class="code-line"><code>WITH_LIBREALSENSE = ON</code></li>
-<li data-line="603" class="code-line"><code>realsense2_DIR = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0&quot;</code></li>
-<li data-line="604" class="code-line"><code>LIBREALSENSE_INCLUDE_DIR = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/include&quot;</code></li>
-<li data-line="605" class="code-line"><code>LIBREALSENSE_LIBRARIES = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib&quot;</code></li>
+<li data-line="603" class="code-line"><code>WITH_LIBREALSENSE = ON</code></li>
+<li data-line="604" class="code-line"><code>realsense2_DIR = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0&quot;</code></li>
+<li data-line="605" class="code-line"><code>LIBREALSENSE_INCLUDE_DIR = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/include&quot;</code></li>
+<li data-line="606" class="code-line"><code>LIBREALSENSE_LIBRARIES = &quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib&quot;</code></li>
 </ul>
-<p data-line="607" class="code-line">This breaks the build with &quot;dll not found&quot; error when importing cv2. At this time I dont know which dll is not found besides the ones provided by the SDK. Best appproach might be to build librealsense from source and check if building the librealsense python wrapper creates the necessary dlls.</p>
-<p data-line="609" class="code-line">GSTREAMER [STATUS: DEBUGGING DEPENDENCY ISSUES]</p>
+<p data-line="608" class="code-line">This breaks the build with &quot;dll not found&quot; error when importing cv2. At this time I dont know which dll is not found besides the ones provided by the SDK. Best appproach might be to build librealsense from source and check if building the librealsense python wrapper creates the necessary dlls.</p>
+<p data-line="610" class="code-line">GSTREAMER [STATUS: DEBUGGING DEPENDENCY ISSUES]</p>
 <ul>
-<li data-line="611" class="code-line"><code>WITH_GSTREAMER=ON</code></li>
+<li data-line="612" class="code-line"><code>WITH_GSTREAMER=ON</code></li>
 </ul>
-<p data-line="613" class="code-line">It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.</p>
-<p data-line="615" class="code-line">Using <a href="https://github.com/lucasg/Dependencies" data-href="https://github.com/lucasg/Dependencies">https://github.com/lucasg/Dependencies</a> opencv_world430.dll I found the following missing dlls</p>
-<p data-line="617" class="code-line">api-ms-win-core-wow64-l1-1-0.dll
+<p data-line="614" class="code-line">It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.</p>
+<p data-line="616" class="code-line">Using <a href="https://github.com/lucasg/Dependencies" data-href="https://github.com/lucasg/Dependencies">https://github.com/lucasg/Dependencies</a> opencv_world430.dll I found the following missing dlls</p>
+<p data-line="618" class="code-line">api-ms-win-core-wow64-l1-1-0.dll
 api-ms-win-core-wow64-l1-1-1.dll
 api-ms-win-core-winrt-string-l1-1-0.dll
 api-ms-win-core-stringansi-l1-1-0.dll
 api-ms-win-core-versionansi-l1-1-0.dll
 api-ms-win-core-psapi-l1-1-0.dll</p>
-<p data-line="624" class="code-line">ext-ms-win-core-winrt-remote-l1-1-0.dll
+<p data-line="625" class="code-line">ext-ms-win-core-winrt-remote-l1-1-0.dll
 ext-ms-win-com-suspendresiliency-l1-1-0.dll
 ext-ms-win-ro-typeresolution-l1-1-0.dll</p>
-<p data-line="628" class="code-line">HvsiFileTrust.dll
+<p data-line="629" class="code-line">HvsiFileTrust.dll
 IESHIMS.DLL</p>
-<p data-line="631" class="code-line">JAVA [STATUS: ON HOLD]
+<p data-line="632" class="code-line">JAVA [STATUS: ON HOLD]
 BUILD_JAVA = ON [2]
 BUILD_opencv_java = OFF
 BUILD_opencv_java_bindings_generator = OFF</p>
-<p data-line="636" class="code-line">HDF [STATUS: ON HOLD]</p>
-<p data-line="638" class="code-line">When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically. HDF support is through libhdf5 which will need to be installed by the user prior to the build.</p>
+<p data-line="637" class="code-line">HDF [STATUS: ON HOLD]</p>
+<p data-line="639" class="code-line">When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically. HDF support is through libhdf5 which will need to be installed by the user prior to the build.</p>
 <ul>
-<li data-line="640" class="code-line"><code>BUILD_opencv_hdf = OFF</code></li>
-<li data-line="641" class="code-line"><code>HDF5_C_LIBRARY = &quot;C:/HDF5/1.12.0/lib/libhdf5.lib&quot;</code></li>
-<li data-line="642" class="code-line"><code>HDF5_INCLUDE_DIRS = &quot;C:/HDF5/1.12.0/include&quot;</code></li>
+<li data-line="641" class="code-line"><code>BUILD_opencv_hdf = OFF</code></li>
+<li data-line="642" class="code-line"><code>HDF5_C_LIBRARY = &quot;C:/HDF5/1.12.0/lib/libhdf5.lib&quot;</code></li>
+<li data-line="643" class="code-line"><code>HDF5_INCLUDE_DIRS = &quot;C:/HDF5/1.12.0/include&quot;</code></li>
 </ul>
-<p data-line="644" class="code-line">Java [Status: ON HOLD]</p>
-<p data-line="646" class="code-line">If you need the java wrapper to be built, you should disable python3. Somehow python2, python3 and java wrappers dont get along in cmake and OpenCV and each one will need to be built separately.</p>
-<p data-line="648" class="code-line">JavaScript [STATUS: NOT WORKING]</p>
+<p data-line="645" class="code-line">Java [Status: ON HOLD]</p>
+<p data-line="647" class="code-line">If you need the java wrapper to be built, you should disable python3. Somehow python2, python3 and java wrappers dont get along in cmake and OpenCV and each one will need to be built separately.</p>
+<p data-line="649" class="code-line">JavaScript [STATUS: NOT WORKING]</p>
 <ul>
-<li data-line="650" class="code-line"><code>BUILD_opencv_js = OFF</code></li>
+<li data-line="651" class="code-line"><code>BUILD_opencv_js = OFF</code></li>
 </ul>
-<p data-line="652" class="code-line">EIGEN [Status: NOT WORKING]</p>
-<p data-line="654" class="code-line">When you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.</p>
+<p data-line="653" class="code-line">EIGEN [Status: NOT WORKING]</p>
+<p data-line="655" class="code-line">When you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.</p>
 <ul>
-<li data-line="655" class="code-line"><code>WITH_EIGEN = OFF</code>, its not compling for me</li>
-<li data-line="656" class="code-line"><code>EIGEN_INCLUDE_PATH = &quot;C:/opencv/opencv_dep/eigen/Eigen&quot;</code></li>
-<li data-line="657" class="code-line"><code>Eigen3_DIR</code> is not found</li>
+<li data-line="656" class="code-line"><code>WITH_EIGEN = OFF</code>, its not compling for me</li>
+<li data-line="657" class="code-line"><code>EIGEN_INCLUDE_PATH = &quot;C:/opencv/opencv_dep/eigen/Eigen&quot;</code></li>
+<li data-line="658" class="code-line"><code>Eigen3_DIR</code> is not found</li>
 </ul>
-<h3 id="build-15" data-line="659" class="code-line">Build</h3>
-<h3 id="test-15" data-line="661" class="code-line">Test</h3>
-<h4 id="gstreamer-camera-3" data-line="663" class="code-line">Gstreamer Camera</h4>
-<pre><code data-line="664" class="code-line"><code><div>gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
+<h3 id="build-3" data-line="660" class="code-line">Build</h3>
+<h3 id="test-3" data-line="662" class="code-line">Test</h3>
+<h4 id="gstreamer-camera" data-line="664" class="code-line">Gstreamer Camera</h4>
+<pre><code data-line="665" class="code-line"><code><div>gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
 gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
 </div></code></code></pre>
-<p data-line="668" class="code-line">Now check with test_rtsp_simplegstramer.py</p>
-<h2 id="optional-3" data-line="670" class="code-line">Optional</h2>
-<h3 id="build-againts-ffmpeg-3" data-line="672" class="code-line">Build Againts FFMPEG</h3>
-<p data-line="674" class="code-line">Build against FFMPEG and not the opencv FFMPEG wrapper
+<p data-line="669" class="code-line">Now check with test_rtsp_simplegstramer.py</p>
+<h2 id="optional" data-line="671" class="code-line">Optional</h2>
+<h3 id="build-againts-ffmpeg" data-line="673" class="code-line">Build Againts FFMPEG</h3>
+<p data-line="675" class="code-line">Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
 modules/videoio/cmake/detect_ffmpeg.cmake</p>
-<pre><code data-line="678" class="code-line"><code><div>if(FFMPEG_ROOT_DIR AND WIN32 AND NOT ARM)
+<pre><code data-line="679" class="code-line"><code><div>if(FFMPEG_ROOT_DIR AND WIN32 AND NOT ARM)
   find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h PATHS ${FFMPEG_ROOT_DIR}/include/)
   find_library(AVCODEC_LIBRARY lib/avcodec.lib PATHS ${FFMPEG_ROOT_DIR})
   set(FFMPEG_INCLUDE_DIRS ${AVCODEC_INCLUDE_DIR})
@@ -648,11 +649,11 @@ modules/videoio/cmake/detect_ffmpeg.cmake</p>
 endif()
 </div></code></code></pre>
 <ul>
-<li data-line="709" class="code-line">FFMPEG_ROOT_DIR=&quot;PATH_TO_FFMPEG_DEV&quot;</li>
+<li data-line="710" class="code-line">FFMPEG_ROOT_DIR=&quot;PATH_TO_FFMPEG_DEV&quot;</li>
 </ul>
-<h3 id="building-dependencies-from-source-3" data-line="711" class="code-line">Building Dependencies from Source</h3>
-<p data-line="713" class="code-line">It should not be necessary to build these dependencies</p>
-<pre><code data-line="715" class="code-line"><code><div>git clone https://github.com/oneapi-src/oneTBB.git
+<h3 id="building-dependencies-from-source" data-line="712" class="code-line">Building Dependencies from Source</h3>
+<p data-line="714" class="code-line">It should not be necessary to build these dependencies</p>
+<pre><code data-line="716" class="code-line"><code><div>git clone https://github.com/oneapi-src/oneTBB.git
 git clone https://github.com/AcademySoftwareFoundation/openexr.git
 git clone git://code.qt.io/qt/qt5.git
 cd qt5
@@ -660,9 +661,9 @@ git checkout 5.15.0
 https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 </div></code></code></pre>
-<h1 id="build-1-cmake-output-3" data-line="725" class="code-line">Build 1 CMAKE Output</h1>
-<p data-line="727" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
-<pre><code data-line="729" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
+<h1 id="build-1-cmake-output" data-line="726" class="code-line">Build 1 CMAKE Output</h1>
+<p data-line="728" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
+<pre><code data-line="730" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
 
   Extra modules:
@@ -772,9 +773,9 @@ https://structure.io/openni
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 </div></code></code></pre>
-<h1 id="build-2-cmake-output-3" data-line="841" class="code-line">Build 2 CMAKE Output</h1>
-<p data-line="843" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
-<pre><code data-line="845" class="code-line"><code><div>
+<h1 id="build-2-cmake-output" data-line="842" class="code-line">Build 2 CMAKE Output</h1>
+<p data-line="844" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
+<pre><code data-line="846" class="code-line"><code><div>
 General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
 
@@ -885,9 +886,9 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 </div></code></code></pre>
-<h1 id="build-3-cmake-output-3" data-line="959" class="code-line">Build 3 CMAKE Output</h1>
-<p data-line="961" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
-<pre><code data-line="963" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
+<h1 id="build-3-cmake-output" data-line="960" class="code-line">Build 3 CMAKE Output</h1>
+<p data-line="962" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
+<pre><code data-line="964" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
 
   Extra modules:
@@ -1003,5 +1004,11 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 </div></code></code></pre>
+<p data-line="1083" class="code-line">C:\opencv\opencv_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(177,15): error C2039: 'logic_error': is not a member of 'std' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(24): message : see declaration of 'std' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(174): message : while compiling class template member function 'void cvv::util::ObserverPtr<QVBoxLayout>::enforceNotNull(void) const' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(96): message : see reference to function template instantiation 'void cvv::util::ObserverPtr<QVBoxLayout>::enforceNotNull(void) const' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.hpp(134): message : see reference to class template instantiation 'cvv::util::ObserverPtr<QVBoxLayout>' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(177,1): error C2065: 'logic_error': undeclared identifier (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)</p>
 
 </body></html>

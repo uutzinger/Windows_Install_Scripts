@@ -4,9 +4,9 @@
   * [Motivation](#motivation)
   * [Approach](#approach)
   * [Background Reading](#background-reading)
-  * [Pre-Requisits](#pre-requisits)
+  * [Pre-Requisites](#pre-requisits)
   * [Obtaining OpenCV Source](#obtaining-opencv-source)
-  * [Unistalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
+  * [Uninstalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
   * [Debugging Missing Dependencies](#debugging-missing-dependencies)
 - [Building OpenCV](#building-opencv)
@@ -73,7 +73,7 @@ This explains algorithm optimizations by Intel for opencv https://www.slideshare
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
-## Pre-Requisits
+## Pre-Requisites
 
 Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location.
 
@@ -140,13 +140,14 @@ import os
 
 BINARIES_PATHS = [
     # 'C:/opencv/opencv/build/bin/Release'
-    os.path.join(os.getenv("CV_PATH",    "C:/opencv/opencv/build/install"), "x64/vc16/bin"),
-    os.path.join(os.getenv("INTEL_PATH", "C:/opencv"), "opencv_redist" ),    
-    os.path.join(os.getenv("VTK_PATH"  , "C:/VTK" ), "bin" ),
-    os.path.join(os.getenv("QT_PATH"   , "C:/Qt/5.12.8/msvc2017_64" ), "bin" ),
-    os.path.join(os.getenv("CUDA_PATH" , "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2" ), "bin") ,
-    os.path.join(os.getenv("GST_PATH"  , "C:/gstreamer/1.0"), "x86_64/bin" )
+    os.path.join(os.getenv("CV_PATH",    "C:/opencv"), "x64/vc16/bin"),
+    os.path.join(os.getenv("INTEL_PATH", "C:/Intel"), "bin"),    
+    os.path.join(os.getenv("VTK_PATH"  , "C:/VTK" ), "bin"),
+    os.path.join(os.getenv("QT_PATH"   , "C:/Qt/5.15.0/msvc2019_64"), "bin"),
+    os.path.join(os.getenv("CUDA_PATH" , "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2"), "bin"),
+    os.path.join(os.getenv("GST_PATH"  , "C:/gstreamer/1.0"), "x86_64/bin")
 ] + BINARIES_PATHS
+
 ```
 * Modify cv2/config-3.8.py
 ```
@@ -1078,3 +1079,11 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 ```
+
+
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(177,15): error C2039: 'logic_error': is not a member of 'std' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(24): message : see declaration of 'std' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(174): message : while compiling class template member function 'void cvv::util::ObserverPtr<QVBoxLayout>::enforceNotNull(void) const' (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(96): message : see reference to function template instantiation 'void cvv::util::ObserverPtr<QVBoxLayout>::enforceNotNull(void) const' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.hpp(134): message : see reference to class template instantiation 'cvv::util::ObserverPtr<QVBoxLayout>' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(177,1): error C2065: 'logic_error': undeclared identifier (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
