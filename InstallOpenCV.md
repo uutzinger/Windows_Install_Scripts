@@ -48,7 +48,7 @@ The main issue are the many temptations for enabling components that you dont ne
 
 In the builds descrobed here, I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support. I need architeture optimization because I will attempt using high frame rate cameras in my research.
 
-I need to eanble gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceeration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. 
+I need to eanble gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. 
 
 I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform. 
 
@@ -92,7 +92,7 @@ mkdir build
 
 ## Unistalling of Previous opencv Installtions
 
-To make sure python finds your build you will want to remove any other installations of opencv.
+To make sure python finds your build you will want to remove any other installation of opencv.
 ```
 pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
@@ -120,12 +120,11 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 
 **It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
 
-
 ## Debugging Missing Dependencies
 
 In general this should help finding missing dependencise: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-However the solution to the dll load failurse in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below. These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
+However the solution to the dll load failurse in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
 
 * Modify code in ```cd C:\opencv\opencv\build\python_loader\cv2```
 * Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
