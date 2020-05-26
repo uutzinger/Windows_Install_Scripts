@@ -46,9 +46,9 @@ Building OpenCV beyond its default settings is notoriously difficlut. The [pytho
 
 The main issue are the many temptations for enabling components that you dont need but break your build and that figuring out which options are needed and which ones not takes a long time. A build typically takes 10-30 minutes when CUDA is not enabled. Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. The documentation is sparse and googeling the build options does not produce quality links.
 
-In the builds descrobed here, I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support. I need architeture optimization because I will attempt using high frame rate cameras in my research.
+In the builds described here, I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support. I need architecture optimization because I will attempt using high frame rate cameras in my research.
 
-I need to eanble gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. 
+I need to enable gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic. 
 
 I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform. 
 
@@ -69,14 +69,13 @@ Many online posts have been consulted for this document.
 
 ## Background Reading
 
-This explains algorithm optimizations by Intel for opencv https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel pointing towards Halide and OpenCL
+This explains algorithm optimizations by Intel for opencv https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel pointing towards Halide and OpenCL.
 
 This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
 
 ## Pre-Requisits
 
-Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md
-I propose to work with dynamic link libraries and to copy all the relevant ones to a central location.
+Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location.
 
 ## Obtaining OpenCV Source
 Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times, it can be confusing on GitHub to identify the latest release version. You can check OpenCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
@@ -90,7 +89,7 @@ cd C:/opencv/opencv
 mkdir build
 ```
 
-## Unistalling of Previous opencv Installtions
+## Uninstalling of Previous opencv Installations
 
 To make sure python finds your build you will want to remove any other installation of opencv.
 ```
@@ -118,20 +117,20 @@ set "generator=Visual Studio 16 2019"
 
 When you execute some of the vcvars script twice in a row, it will throw an error the second time. You can ignore those.
 
-**It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninka before you start configuring your build.**
+**It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninja before you start configuring your build.**
 
 ## Debugging Missing Dependencies
 
-In general this should help finding missing dependencise: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
+In general this should help finding missing dependencies: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-However the solution to the dll load failurse in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
+However the solution to the dll load failures in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
 
 * Modify code in ```cd C:\opencv\opencv\build\python_loader\cv2```
 * Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
 * Modify setup.py so that lines 54-57 are:
 ```
         ],
-        # Additional Paramters
+        # Additional Parameters
         include_package_data=True,
         zip_safe=False,
 ```
@@ -162,7 +161,7 @@ PYTHON_EXTENSIONS_PATHS = [
 # Building OpenCV
 Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
 
-The first build is minimal. The second enables Intel Performance Libraries. The third build anables CUDA. The forth build includes QT and few additional device drivers.
+The first build is minimal. The second enables Intel Performance Libraries. The third build enables CUDA. The forth build includes QT and few additional device drivers.
 
 ## Build 1 [STATUS: Completed Successfully]
 
@@ -172,12 +171,12 @@ It is a light build with just the default settings, extra and non free modules a
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe"
 ```
-* Clear Build Cache. This will remove any revious configuration options.
+* Clear Build Cache. This will remove any previous configuration options.
 * Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.
 
 ### Configure Build
 
-The entries in RED need to be taken care off by running Configure again. But befoer that verify your settings with the ones below:
+The entries in RED need to be taken care off by running Configure again. But bef0roe that verify your settings with the ones below:
 
 Video
 
@@ -188,7 +187,7 @@ Video
 
 Math Acceleration
 
-* ```WITH_TBB = OFF```, Intel Threadbuilding Blocks
+* ```WITH_TBB = OFF```, Intel Thread building Blocks
 * ```WITH_EIGEN = OFF```
 
 Examples and Tests
@@ -210,7 +209,7 @@ Make sure this is ON or set:
 * ```BUILD_SHARED_LIBS = ON```, usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
 * ```BUILD_opencv_world = ON```, create single dll
 * ```OPENCV_PYTHON3_VERSION = ON```, not sure, it might have issue with cmake-gui
-* ```CPU_BASELINE```, should autopopulate to your CPU
+* ```CPU_BASELINE```, should auto populate to your CPU
 * ```BUILD_opencv_hdf = OFF```, HDF5 file format
 
 Modify or create the variable:
@@ -219,10 +218,10 @@ Modify or create the variable:
 * ```CMAKE_CONFIGURATION_TYPES = "Release"```
 
 ### Configure and Generate
-After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Dont delete the cache. Just rerun configure in the gui.
+After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Don't delete the cache. Just rerun configure in the gui.
 
-Run the Generate fucntion to create your build project.
-If generate shows errors and warnings but completes its processs, you can continue building OpenCV.
+Run the Generate function to create your build project.
+If generate shows errors and warnings but completes its process, you can continue building OpenCV.
 
 ### CMD Shell Equivalent
 
@@ -250,7 +249,7 @@ The equivalent command in the CMD window is listed below.
 ### Build
 And finally do first build using "Open_Project" in cmake-gui. Select build / batch build and enable INSTALL and then click on build. If there are previously compiled files in your build directory. you can clean them with the "clean" button.
 
-The command line quivalent is:
+The command line equivalent is:
 ```
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ```
@@ -282,7 +281,7 @@ Now lets enable more features:
 
 This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact your build. If something breaks, you can go back to build 1.
 
-In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultanously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.
+In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultaneously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.
 
 ### Configure Build
 
@@ -300,7 +299,7 @@ Features to be turned ON/OFF and variables to be set:
 * ```BUILD_SHARED_LIBS = ON```, [2], when on this will created DLLs, when off this will created static libraries (*.lib)
 * ```BUILD_opencv_world = ON```, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file 
 * ```BUILD_opencv_python3 = ON```
-* ```BUILD_opencv_python2 = OFF```, if you need python 2 module, build it separaterly, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
+* ```BUILD_opencv_python2 = OFF```, if you need python 2 module, build it separately, when building both, the python 2 version often works but pyton 3 import cv2 creates a dll error.
 * ```OPENCV_PYTHON3_VERSION = ON```, apparently cmake-gui confuses this variable [4], [2] recommends it ON
 * ```BUILD_opencv_hdf = OFF```, recommended by [1]
 * ```DBUILD_opencv_gapi = ON```, OFF is recommended by [1], but ON is default and works
@@ -312,10 +311,10 @@ Add Entry
 TBB [STATUS: WORKING]
 
 You either download the TBB source or the prebuilt binaries from Intel.
-The cmake configureation should list under Parallel framework: TBB (ver...)
+The cmake configuration should list under Parallel framework: TBB (ver...)
 [1] recommends the dlls from C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt which are statically linked to VC runtime. By default the vc14 versions are picked up by cmake. The default vc14 works for me.
 
-* ```BUILD_TBB = OFF```, you want to use the precompiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.
+* ```BUILD_TBB = OFF```, you want to use the pre-compiled files which we downloaded and installed earlier. BUILT TBB will create its own TBB binaries.
 * ```WITH_TBB = ON```, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
 
 The following TBB folders should be set automatically:
@@ -466,8 +465,7 @@ CUDA support doubles your build size and consumes much larger build time.
 
 Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
 https://en.wikipedia.org/wiki/CUDA#GPUs_supported
-My notebook computer has GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0
-For detailed coverage of CUDA_ARCH settings and GPU coverage refer to [1]
+My notebook computer has a GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0. For detailed coverage of CUDA_ARCH choices and GPU coverage refer to [1].
 
 CUDA [STATUS: Working]
 
