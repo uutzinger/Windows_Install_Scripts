@@ -55,7 +55,7 @@ I want to be able to use the same USB cameras on arm based single board computer
 ## Approach
 In this guide I propose to build opencv in several steps and with increasing complexity.
 
-It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake.
+It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component might not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake: ```where cmake``` and ```where cmake-gui```.
 
 Many online posts have been consulted for this document.
 * [1] [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) 

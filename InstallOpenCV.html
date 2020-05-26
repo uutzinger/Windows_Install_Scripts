@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://gitcdn.xyz/repo/goessner/mdmath/master/css/vscode-texmath.css">
 
 </head><body>
-<h1 id="compiling-opencv-on-windows-10-2" data-line="0" class="code-line">Compiling OpenCV on Windows 10</h1>
+<h1 id="compiling-opencv-on-windows-10-3" data-line="0" class="code-line">Compiling OpenCV on Windows 10</h1>
 <ul>
 <li data-line="2" class="code-line"><a href="#compiling-opencv-on-windows-10" data-href="#compiling-opencv-on-windows-10">Compiling OpenCV on Windows 10</a>
 <ul>
@@ -69,16 +69,16 @@
 <li data-line="36" class="code-line"><a href="#build-3-cmake-output" data-href="#build-3-cmake-output">Build 3 CMAKE Output</a></li>
 </ul>
 <p data-line="38" class="code-line"><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
-<h2 id="motivation-2" data-line="40" class="code-line">Motivation</h2>
+<h2 id="motivation-3" data-line="40" class="code-line">Motivation</h2>
 <p data-line="42" class="code-line">There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.</p>
 <p data-line="44" class="code-line">Building OpenCV beyond its default settings is notoriously difficlut. The <a href="https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/" data-href="https://www.pythonforengineers.com/installing-the-libraries-required-for-the-book/">python for engineers</a> oline book calls people compiling it &quot;masochists&quot; and &quot;If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot&quot;.</p>
 <p data-line="46" class="code-line">The main issue are the many temptations for enabling components that you dont need but break your build and that figuring out which options are needed and which ones not takes a long time. A build typically takes 10-30 minutes when CUDA is not enabled. Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. The documentation is sparse and googeling the build options does not produce quality links.</p>
 <p data-line="48" class="code-line">In the builds described here, I want to enable gstreamer and architecture specific accelerations. In particular Intel optimized libraries and CUDA support. I need architecture optimization because I will attempt using high frame rate cameras in my research.</p>
 <p data-line="50" class="code-line">I need to enable gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg. I would like to be able to read rtsp camera streams because I have applications that limit network traffic.</p>
 <p data-line="52" class="code-line">I want to be able to use the same USB cameras on arm based single board computers and my notebook computer. I also have projects that utilize the Intel RealSense platform.</p>
-<h2 id="approach-2" data-line="54" class="code-line">Approach</h2>
+<h2 id="approach-3" data-line="54" class="code-line">Approach</h2>
 <p data-line="55" class="code-line">In this guide I propose to build opencv in several steps and with increasing complexity.</p>
-<p data-line="57" class="code-line">It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component (e.g. gstreamer) can not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake.</p>
+<p data-line="57" class="code-line">It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component might not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake: <code>where cmake</code> and <code>where cmake-gui</code>.</p>
 <p data-line="59" class="code-line">Many online posts have been consulted for this document.</p>
 <ul>
 <li data-line="60" class="code-line">[1] <a href="https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd" data-href="https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd">James Bowley</a></li>
@@ -90,12 +90,12 @@
 <li data-line="66" class="code-line">[7] <a href="https://lightbuzz.com/opencv-cuda/" data-href="https://lightbuzz.com/opencv-cuda/">https://lightbuzz.com/opencv-cuda/</a></li>
 <li data-line="67" class="code-line">[8] <a href="https://pterneas.com/2018/11/02/opencv-cuda/" data-href="https://pterneas.com/2018/11/02/opencv-cuda/">https://pterneas.com/2018/11/02/opencv-cuda/</a></li>
 </ul>
-<h2 id="background-reading-2" data-line="69" class="code-line">Background Reading</h2>
+<h2 id="background-reading-3" data-line="69" class="code-line">Background Reading</h2>
 <p data-line="71" class="code-line">This explains algorithm optimizations by Intel for opencv <a href="https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel" data-href="https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel">https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel</a> pointing towards Halide and OpenCL.</p>
 <p data-line="73" class="code-line">This is excellent summary of the Halide algorithm development tools <a href="https://halide-lang.org/" data-href="https://halide-lang.org/">https://halide-lang.org/</a> It explains why some programs finish an image processing task much faster than others.</p>
-<h2 id="pre-requisits-2" data-line="75" class="code-line">Pre-Requisits</h2>
+<h2 id="pre-requisits-3" data-line="75" class="code-line">Pre-Requisits</h2>
 <p data-line="77" class="code-line">Prepare your system with <a href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md" data-href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md">https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md</a>. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location.</p>
-<h2 id="obtaining-opencv-source-2" data-line="79" class="code-line">Obtaining OpenCV Source</h2>
+<h2 id="obtaining-opencv-source-3" data-line="79" class="code-line">Obtaining OpenCV Source</h2>
 <p data-line="80" class="code-line">Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times, it can be confusing on GitHub to identify the latest release version. You can check OpenCV <a href="https://docs.opencv.org/" data-href="https://docs.opencv.org/">Documentation</a> and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha.</p>
 <pre><code data-line="82" class="code-line"><code><div>mkdir C:/opencv
 cd C:/opencv
@@ -104,12 +104,12 @@ git clone https://github.com/opencv/opencv_contrib.git --branch 4.3.0
 cd C:/opencv/opencv
 mkdir build
 </div></code></code></pre>
-<h2 id="uninstalling-of-previous-opencv-installations-2" data-line="91" class="code-line">Uninstalling of Previous opencv Installations</h2>
+<h2 id="uninstalling-of-previous-opencv-installations-3" data-line="91" class="code-line">Uninstalling of Previous opencv Installations</h2>
 <p data-line="93" class="code-line">To make sure python finds your build you will want to remove any other installation of opencv.</p>
 <pre><code data-line="94" class="code-line"><code><div>pip3 uninstall opencv-python
 pip3 uninstall opencv-contrib-python
 </div></code></code></pre>
-<h2 id="preparing-your-shell-build-environment-2" data-line="99" class="code-line">Preparing your Shell Build Environment</h2>
+<h2 id="preparing-your-shell-build-environment-3" data-line="99" class="code-line">Preparing your Shell Build Environment</h2>
 <p data-line="101" class="code-line">Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:</p>
 <pre><code data-line="103" class="code-line"><code><div>cd C:/opencv/opencv/build
 set &quot;openCvSource=C:\opencv\opencv&quot;
@@ -125,7 +125,7 @@ set &quot;generator=Visual Studio 16 2019&quot;
 </div></code></code></pre>
 <p data-line="117" class="code-line">When you execute some of the vcvars script twice in a row, it will throw an error the second time. You can ignore those.</p>
 <p data-line="119" class="code-line"><strong>It is critical to run this setup each time in the shell window that you will use make, cmake, cmake-gui or ninja before you start configuring your build.</strong></p>
-<h2 id="debugging-missing-dependencies-2" data-line="121" class="code-line">Debugging Missing Dependencies</h2>
+<h2 id="debugging-missing-dependencies-3" data-line="121" class="code-line">Debugging Missing Dependencies</h2>
 <p data-line="123" class="code-line">In general this should help finding missing dependencies: <a href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md" data-href="https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md">https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md</a></p>
 <p data-line="125" class="code-line">However the solution to the dll load failures in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.</p>
 <ul>
@@ -163,10 +163,10 @@ PYTHON_EXTENSIONS_PATHS = [
     os.path.join(os.path.dirname(os.path.abspath(__file__)), &quot;python-3.8&quot;)
 ] + PYTHON_EXTENSIONS_PATHS
 </div></code></code></pre>
-<h1 id="building-opencv-2" data-line="160" class="code-line">Building OpenCV</h1>
+<h1 id="building-opencv-3" data-line="160" class="code-line">Building OpenCV</h1>
 <p data-line="161" class="code-line">Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.</p>
 <p data-line="163" class="code-line">The first build is minimal. The second enables Intel Performance Libraries. The third build enables CUDA. The forth build includes QT and few additional device drivers.</p>
-<h2 id="build-1-status-completed-successfully-2" data-line="165" class="code-line">Build 1 [STATUS: Completed Successfully]</h2>
+<h2 id="build-1-status-completed-successfully-3" data-line="165" class="code-line">Build 1 [STATUS: Completed Successfully]</h2>
 <p data-line="167" class="code-line">With this first build, I will not use the command line option. We will start directly with cmake-gui.
 It is a light build with just the default settings, extra and non free modules and python.</p>
 <pre><code data-line="170" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake-gui.exe&quot;
@@ -175,7 +175,7 @@ It is a light build with just the default settings, extra and non free modules a
 <li data-line="173" class="code-line">Clear Build Cache. This will remove any previous configuration options.</li>
 <li data-line="174" class="code-line">Run configure. Select Visual Studio 16 2019 as your compiler environment. Select native compilers.</li>
 </ul>
-<h3 id="configure-build-8" data-line="176" class="code-line">Configure Build</h3>
+<h3 id="configure-build-12" data-line="176" class="code-line">Configure Build</h3>
 <p data-line="178" class="code-line">The entries in RED need to be taken care off by running Configure again. But bef0roe that verify your settings with the ones below:</p>
 <p data-line="180" class="code-line">Video</p>
 <ul>
@@ -216,11 +216,11 @@ It is a light build with just the default settings, extra and non free modules a
 <li data-line="216" class="code-line"><code>PYTHON_DEFAULT_EXECUTABLE = &quot;C:\Python38\python.exe&quot;</code></li>
 <li data-line="217" class="code-line"><code>CMAKE_CONFIGURATION_TYPES = &quot;Release&quot;</code></li>
 </ul>
-<h3 id="configure-and-generate-2" data-line="219" class="code-line">Configure and Generate</h3>
+<h3 id="configure-and-generate-3" data-line="219" class="code-line">Configure and Generate</h3>
 <p data-line="220" class="code-line">After successful configuration, CMAKE should have found python2 and python3 as well as your java environment. If python or java environment is not found you can attempt running the CMD line version below and then revisit it with cmake-gui as shown above. Don't delete the cache. Just rerun configure in the gui.</p>
 <p data-line="222" class="code-line">Run the Generate function to create your build project.
 If generate shows errors and warnings but completes its process, you can continue building OpenCV.</p>
-<h3 id="cmd-shell-equivalent-2" data-line="225" class="code-line">CMD Shell Equivalent</h3>
+<h3 id="cmd-shell-equivalent-3" data-line="225" class="code-line">CMD Shell Equivalent</h3>
 <p data-line="227" class="code-line">The equivalent command in the CMD window is listed below.</p>
 <pre><code data-line="229" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; ^
 -B&quot;%openCvBuild%/&quot; -H&quot;%openCvSource%/&quot; -G&quot;%generator%&quot; ^
@@ -239,12 +239,12 @@ If generate shows errors and warnings but completes its process, you can continu
 -DINSTALL_TESTS=OFF ^
 -DWITH_GSTREAMER=OFF
 </div></code></code></pre>
-<h3 id="build-8" data-line="248" class="code-line">Build</h3>
+<h3 id="build-12" data-line="248" class="code-line">Build</h3>
 <p data-line="249" class="code-line">And finally do first build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build. If there are previously compiled files in your build directory. you can clean them with the &quot;clean&quot; button.</p>
 <p data-line="251" class="code-line">The command line equivalent is:</p>
 <pre><code data-line="252" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
 </div></code></code></pre>
-<h3 id="test-8" data-line="256" class="code-line">Test</h3>
+<h3 id="test-12" data-line="256" class="code-line">Test</h3>
 <p data-line="258" class="code-line">In a command shell:</p>
 <pre><code data-line="260" class="code-line"><code><div>C:\opencv\opencv\build\install\setup_vars_opencv4.cmd
 
@@ -254,7 +254,7 @@ py -2 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 py -3 -c &quot;import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')&quot;
 py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 </div></code></code></pre>
-<h2 id="build-2-status-completed-successfully-2" data-line="270" class="code-line">Build 2 [STATUS: Completed Successfully]</h2>
+<h2 id="build-2-status-completed-successfully-3" data-line="270" class="code-line">Build 2 [STATUS: Completed Successfully]</h2>
 <p data-line="272" class="code-line">Now lets enable more features:</p>
 <ul>
 <li data-line="273" class="code-line">Intel optimizations
@@ -273,7 +273,7 @@ py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 </ul>
 <p data-line="281" class="code-line">This will activate many additional components. Each one having ability to break your build. It is difficult to ensure that installing anyone of them will not impact your build. If something breaks, you can go back to build 1.</p>
 <p data-line="283" class="code-line">In this build, we only build wrapper for python 3. Building wrapper for both python 2 and 3 simultaneously causes problems when loading the cv2  module. If you need python 2 support, build it with separate project.</p>
-<h3 id="configure-build-9" data-line="285" class="code-line">Configure Build</h3>
+<h3 id="configure-build-13" data-line="285" class="code-line">Configure Build</h3>
 <p data-line="287" class="code-line">Start cmake-gui in the CMD shell. Make sure the shell environment was configures as shown above.</p>
 <pre><code data-line="289" class="code-line"><code><div>cd C:\opencv\opencv\build
 cmake-gui ..\
@@ -380,7 +380,7 @@ The cmake configuration should list under Parallel framework: TBB (ver...)
 <li data-line="386" class="code-line"><code>WITH_EIGEN = OFF</code></li>
 <li data-line="387" class="code-line">```BUILD_opencv_js = OFF``</li>
 </ul>
-<h3 id="build-9" data-line="389" class="code-line">Build</h3>
+<h3 id="build-13" data-line="389" class="code-line">Build</h3>
 <p data-line="391" class="code-line">Build using &quot;Open_Project&quot; in cmake-gui. Select build / batch build and enable INSTALL and then click on build.</p>
 <p data-line="393" class="code-line">The Command Shell equivalent is: (incomplete)</p>
 <pre><code data-line="395" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; -B&quot;%openCvBuild%/&quot; -H&quot;%openCvSource%/&quot; -G&quot;%generator%&quot; ^
@@ -411,7 +411,7 @@ The cmake configuration should list under Parallel framework: TBB (ver...)
 -DLIBREALSENSE_LIBRARIES=&quot;C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib&quot; ^
 -DBUILD_opencv_hdf=OFF
 </div></code></code></pre>
-<h3 id="test-9" data-line="425" class="code-line">Test</h3>
+<h3 id="test-13" data-line="425" class="code-line">Test</h3>
 <p data-line="427" class="code-line">Run python 3 in command shell</p>
 <pre><code data-line="428" class="code-line"><code><div>py -3
 </div></code></code></pre>
@@ -430,11 +430,11 @@ C:\Python38\lib\site-packages
 py -3 -c &quot;import cv2; print(f'OpenCV: {cv2.__version__} for python installed and working')&quot;
 py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;
 </div></code></code></pre>
-<h2 id="build-3-status-completed-successfully-2" data-line="453" class="code-line">Build 3 [STATUS: Completed Successfully]</h2>
+<h2 id="build-3-status-completed-successfully-3" data-line="453" class="code-line">Build 3 [STATUS: Completed Successfully]</h2>
 <p data-line="455" class="code-line">Inlucde CUDA. This builds upon previous two builds and enables CUDA support. This is not useful if you dont have Nvidia GPU on your computer. The CUDA_Generation will need to match your GPU.</p>
 <pre><code data-line="457" class="code-line"><code><div>cmake-gui ..\
 </div></code></code></pre>
-<h3 id="configure-build-10" data-line="461" class="code-line">Configure BUILD</h3>
+<h3 id="configure-build-14" data-line="461" class="code-line">Configure BUILD</h3>
 <p data-line="463" class="code-line">CUDA support doubles your build size and consumes much larger build time.</p>
 <p data-line="465" class="code-line">Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
 <a href="https://en.wikipedia.org/wiki/CUDA#GPUs_supported" data-href="https://en.wikipedia.org/wiki/CUDA#GPUs_supported">https://en.wikipedia.org/wiki/CUDA#GPUs_supported</a>
@@ -472,12 +472,12 @@ My notebook computer has a GeForce 960M which is GENERATION Maxwell and Compute 
 You can ignore them.</p>
 <p data-line="502" class="code-line">Make sure the PATH includes <code>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\bin</code></p>
 <p data-line="504" class="code-line">You might want to rename build/install to build/install_noCUDA so you can preserve your non_cuda version.</p>
-<h3 id="build-10" data-line="506" class="code-line">Build</h3>
+<h3 id="build-14" data-line="506" class="code-line">Build</h3>
 <p data-line="508" class="code-line">If you build with Visual Studio C, open Build -&gt; Configuration Manager and enable INSTALL and click build.</p>
 <p data-line="510" class="code-line">The command line equievalent is:</p>
 <pre><code data-line="512" class="code-line"><code><div>&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build %openCvBuild% --target install
 </div></code></code></pre>
-<h3 id="test-10" data-line="516" class="code-line">Test</h3>
+<h3 id="test-14" data-line="516" class="code-line">Test</h3>
 <p data-line="518" class="code-line">You can test CUDA performance according [1]:</p>
 <pre><code data-line="519" class="code-line"><code><div>&quot;C:\opencv\opencv\build\install\x64\vc16\bin\opencv_perf_cudaarithm.exe&quot; --gtest_filter=Sz_Type_Flags_GEMM.GEMM/29
 </div></code></code></pre>
@@ -526,7 +526,7 @@ print('NumPy execution time is  : {}'.format((np_time-cpu_time)/20.0))
 #
 </div></code></code></pre>
 <p data-line="571" class="code-line">In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and the numpy routine 45ms. Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 500ms. Also compared to cuda performance test program, python implementation takes almost 3 times as long.</p>
-<h2 id="build-4-2" data-line="573" class="code-line">Build 4</h2>
+<h2 id="build-4-3" data-line="573" class="code-line">Build 4</h2>
 <p data-line="575" class="code-line">These are additions to build 3. Do not clear the cache or delete previous build files.</p>
 <ul>
 <li data-line="577" class="code-line">GUI features
@@ -542,7 +542,7 @@ print('NumPy execution time is  : {}'.format((np_time-cpu_time)/20.0))
 </ul>
 </li>
 </ul>
-<h3 id="configure-build-11" data-line="584" class="code-line">Configure Build</h3>
+<h3 id="configure-build-15" data-line="584" class="code-line">Configure Build</h3>
 <p data-line="586" class="code-line">QT [STATUS: IN PROGRESS]</p>
 <ul>
 <li data-line="588" class="code-line"><code>WITH_QT=ON</code></li>
@@ -606,15 +606,15 @@ BUILD_opencv_java_bindings_generator = OFF</p>
 <li data-line="656" class="code-line"><code>EIGEN_INCLUDE_PATH = &quot;C:/opencv/opencv_dep/eigen/Eigen&quot;</code></li>
 <li data-line="657" class="code-line"><code>Eigen3_DIR</code> is not found</li>
 </ul>
-<h3 id="build-11" data-line="659" class="code-line">Build</h3>
-<h3 id="test-11" data-line="661" class="code-line">Test</h3>
-<h4 id="gstreamer-camera-2" data-line="663" class="code-line">Gstreamer Camera</h4>
+<h3 id="build-15" data-line="659" class="code-line">Build</h3>
+<h3 id="test-15" data-line="661" class="code-line">Test</h3>
+<h4 id="gstreamer-camera-3" data-line="663" class="code-line">Gstreamer Camera</h4>
 <pre><code data-line="664" class="code-line"><code><div>gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
 gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
 </div></code></code></pre>
 <p data-line="668" class="code-line">Now check with test_rtsp_simplegstramer.py</p>
-<h2 id="optional-2" data-line="670" class="code-line">Optional</h2>
-<h3 id="build-againts-ffmpeg-2" data-line="672" class="code-line">Build Againts FFMPEG</h3>
+<h2 id="optional-3" data-line="670" class="code-line">Optional</h2>
+<h3 id="build-againts-ffmpeg-3" data-line="672" class="code-line">Build Againts FFMPEG</h3>
 <p data-line="674" class="code-line">Build against FFMPEG and not the opencv FFMPEG wrapper
 You need to add the text below to beginning of
 modules/videoio/cmake/detect_ffmpeg.cmake</p>
@@ -650,7 +650,7 @@ endif()
 <ul>
 <li data-line="709" class="code-line">FFMPEG_ROOT_DIR=&quot;PATH_TO_FFMPEG_DEV&quot;</li>
 </ul>
-<h3 id="building-dependencies-from-source-2" data-line="711" class="code-line">Building Dependencies from Source</h3>
+<h3 id="building-dependencies-from-source-3" data-line="711" class="code-line">Building Dependencies from Source</h3>
 <p data-line="713" class="code-line">It should not be necessary to build these dependencies</p>
 <pre><code data-line="715" class="code-line"><code><div>git clone https://github.com/oneapi-src/oneTBB.git
 git clone https://github.com/AcademySoftwareFoundation/openexr.git
@@ -660,7 +660,7 @@ git checkout 5.15.0
 https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
 https://structure.io/openni
 </div></code></code></pre>
-<h1 id="build-1-cmake-output-2" data-line="725" class="code-line">Build 1 CMAKE Output</h1>
+<h1 id="build-1-cmake-output-3" data-line="725" class="code-line">Build 1 CMAKE Output</h1>
 <p data-line="727" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
 <pre><code data-line="729" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
@@ -772,7 +772,7 @@ https://structure.io/openni
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 </div></code></code></pre>
-<h1 id="build-2-cmake-output-2" data-line="841" class="code-line">Build 2 CMAKE Output</h1>
+<h1 id="build-2-cmake-output-3" data-line="841" class="code-line">Build 2 CMAKE Output</h1>
 <p data-line="843" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
 <pre><code data-line="845" class="code-line"><code><div>
 General configuration for OpenCV 4.3.0-dev =====================================
@@ -885,7 +885,7 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 </div></code></code></pre>
-<h1 id="build-3-cmake-output-2" data-line="959" class="code-line">Build 3 CMAKE Output</h1>
+<h1 id="build-3-cmake-output-3" data-line="959" class="code-line">Build 3 CMAKE Output</h1>
 <p data-line="961" class="code-line">py -3 -c &quot;import cv2; print(cv2.getBuildInformation())&quot;</p>
 <pre><code data-line="963" class="code-line"><code><div>General configuration for OpenCV 4.3.0-dev =====================================
   Version control:               4.3.0-294-ge96a58f091
