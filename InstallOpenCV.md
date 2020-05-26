@@ -578,14 +578,28 @@ In my setup with python the CUDA routine takes 33ms, the cv2 routine 48ms and th
 
 These are additions to build 3. Do not clear the cache or delete previous build files.
 
-* Video features
-  * gstreamer 
-  * Intel Realsense
 * GUI features
   * QT
   * VTK
+* Video features
+  * gstreamer 
+  * Intel Realsense
 
 ### Configure Build
+
+QT [STATUS: IN PROGRESS]
+
+* ```WITH_QT=ON```
+* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
+* QT_OPENGL_SUPPORT=OFF
+
+With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
+
+VTK [STATUS: IN PROGRESS]
+This might need vtk-8.2 as it can not find config file for 9.0 version.
+You might need QT enabled.
+* VTK_DIR=C:/VTK/lib/cmake/vtk-9.0
+* WITH_VTK=OFF
 
 Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]
 
@@ -618,21 +632,7 @@ ext-ms-win-ro-typeresolution-l1-1-0.dll
 HvsiFileTrust.dll
 IESHIMS.DLL
 
-QT [STATUS: IN PROGRESS]
-
-* ```WITH_QT=ON```
-* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
-* QT_OPENGL_SUPPORT=OFF
-
-With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
-
-VTK [STATUS: IN PROGRESS]
-This might need vtk-8.2 as it can not find config file for 9.0 version.
-You might need QT enabled.
-* VTK_DIR=C:/VTK/lib/cmake/vtk-9.0
-* WITH_VTK=OFF
-
-JAVA [STATUS: IN PROGRESS]
+JAVA [STATUS: ON HOLD]
 BUILD_JAVA = ON [2]
 BUILD_opencv_java = OFF
 BUILD_opencv_java_bindings_generator = OFF
