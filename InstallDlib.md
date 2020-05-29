@@ -9,7 +9,6 @@
   * [Build Python Wrapper](#build-python-wrapper)
     + [Test](#test)
   * [Optional Build](#optional-build)
-    + [Build](#build)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -113,9 +112,6 @@ Check Build Variables
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe" ..\
 ```
-
-### Build
-
 The command line approach is:
 ```
 cd C:\dlib\dlib\build
