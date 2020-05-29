@@ -46,7 +46,7 @@ You can automate this approachby piping the output ofthe first command to file `
 
 ## procmon
 [Procmon](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) allows to monitor Windows file system activity.
-I start python and procmon and stop procmon from monitoring. I clear its output. Then I start monitoring and type ```import package```  in python. 
+I start python and procmon and stop procmon from monitoring. I clear its output. Then I start monitoring and type ```import package_of_interest```  in python. 
 As soon as the error appears I stop monitoring. Then I use find tool in procmon to locate python activity e.g. 
 Find python.exe. I attempt to find the last python activity and then step backwards by locating activity that did not result in 
 SUCCESS. There are many such activities. I can not say exactly how to navigate the FILE NOT FOUND or BUFFER OVERLOW activities 
@@ -59,7 +59,7 @@ In python run
 ```
 import sys
 sys.path
-sys.path.append('C:\\opencv\\opencv_redist')
+sys.path.append('C:\\Intel\\bin')
 sys.path.append('C:\\gstreamer\\1.0\\x86_64\\bin')
 sys.path.remove('C:\\Python38\\python38.zip')
 ```
@@ -70,16 +70,3 @@ You can also clean previous builds by deleting the content of the build director
 If you modify the build with cmake or cmake-gui, it appears that only the necessary modules are rebuilt. 
 If you can not complete an incremental build, start disabling features and when that does not help, 
 you might need to clear the cache or start from scratch by deleting the build folder.
-
-When you use
-```
-"C:\Program Files\CMake\bin\cmake.exe" --build C:\opencv\opencv\build --target install
-```
-
-the --target options of interest are 
-```
-install
-uninstall
-clean
-help
-```

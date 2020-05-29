@@ -4,9 +4,9 @@
   * [Motivation](#motivation)
   * [Approach](#approach)
   * [Background Reading](#background-reading)
-  * [Pre-Requisites](#pre-requisits)
+  * [Pre-Requisites](#pre-requisites)
   * [Obtaining OpenCV Source](#obtaining-opencv-source)
-  * [Uninstalling of Previous opencv Installtions](#unistalling-of-previous-opencv-installtions)
+  * [Uninstalling of Previous opencv Installations](#uninstalling-of-previous-opencv-installations)
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
   * [Debugging Missing Dependencies](#debugging-missing-dependencies)
 - [Building OpenCV](#building-opencv)
@@ -29,12 +29,10 @@
     + [Build](#build-3)
     + [Test](#test-3)
       - [Gstreamer Camera](#gstreamer-camera)
-  * [Optional](#optional)
-    + [Build Againts FFMPEG](#build-againts-ffmpeg)
-    + [Building Dependencies from Source](#building-dependencies-from-source)
 - [Build 1 CMAKE Output](#build-1-cmake-output)
 - [Build 2 CMAKE Output](#build-2-cmake-output)
 - [Build 3 CMAKE Output](#build-3-cmake-output)
+- [Build 4 CMAKE Output](#build-4-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -58,14 +56,13 @@ In this guide I propose to build opencv in several steps and with increasing com
 It is common that the activation of one component creates a set of issues that need to be solved. Also the activation of one component might not be reverted without clearing previous build cache and turning off the build option in cmake. It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake: ```where cmake``` and ```where cmake-gui```.
 
 Many online posts have been consulted for this document.
-* [1] [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) 
-* [2] https://dev.infohub.cc/build-opencv-410/ 
-* [3] https://dev.infohub.cc/build-opencv-430-with-cuda/
-* [4] https://geeks-world.github.io/articles/464015/index.html
-* [5] https://docs.opencv.org/4.3.0/d3/d52/tutorial_windows_install.html
-* [6] https://www.learnopencv.com/install-opencv-4-on-windows/
-* [7] https://lightbuzz.com/opencv-cuda/
-* [8] https://pterneas.com/2018/11/02/opencv-cuda/
+* [1] [James Bowley](https://jamesbowley.co.uk/accelerating-opencv-4-build-with-cuda-intel-mkl-tbb-and-python-bindings/#visual_studio_cmake_cmd) and [opencv4.3 update](https://jamesbowley.co.uk/accelerate-opencv-4-3-0-build-with-cuda-and-python-bindings/)
+* [2] https://dev.infohub.cc/build-opencv-410/ and [update](https://dev.infohub.cc/build-opencv-430-with-cuda/)
+* [3] https://geeks-world.github.io/articles/464015/index.html
+* [4] https://docs.opencv.org/4.3.0/d3/d52/tutorial_windows_install.html
+* [5] https://www.learnopencv.com/install-opencv-4-on-windows/
+* [6] https://lightbuzz.com/opencv-cuda/
+* [7] https://pterneas.com/2018/11/02/opencv-cuda/
 
 ## Background Reading
 
@@ -75,7 +72,7 @@ This is excellent summary of the Halide algorithm development tools https://hali
 
 ## Pre-Requisites
 
-Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location.
+Prepare your system with https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md. I propose to work with dynamic link libraries and to copy all Intel related dlls to a central location to limit extension of the PATH variable.
 
 ## Obtaining OpenCV Source
 Download the source files for both OpenCV and OpenCV contrib, available on GitHub. I place them in the root folder C:/opencv but they can go anywhere. I usually attempt installing release versions and not the latest version. At times, it can be confusing on GitHub to identify the latest release version. You can check OpenCV [Documentation](https://docs.opencv.org/) and when you select Doxygen HTML you will have a pull down menu and can identify the highest version number that is not -dev -beta or -alpha. 
@@ -112,7 +109,6 @@ set "generator=Visual Studio 16 2019"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
-set "generator=Visual Studio 16 2019"
 ```
 
 When you execute some of the vcvars script twice in a row, it will throw an error the second time. You can ignore those.
@@ -123,11 +119,11 @@ When you execute some of the vcvars script twice in a row, it will throw an erro
 
 In general this should help finding missing dependencies: https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-However the solution to the dll load failures in OpenCV 4.3 is described in [3] as a python problem. It requires the patches outlined below (from [3]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
+However the solution to the dll load failures in OpenCV 4.3 is described in [2] as a python problem. It requires the patches outlined below (from [2]). These can only be applied after you downloaded the OpenCV source and ran configure/generate in CMAKE.
 
 * Modify code in ```cd C:\opencv\opencv\build\python_loader\cv2```
-* Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
-* Modify setup.py so that lines 54-57 are:
+* Optional: Add MANIFEST.in ```echo graft cv2/python-3.8  > MANIFEST.in```
+* Optional: Modify setup.py so that lines 54-57 are:
 ```
         ],
         # Additional Parameters
@@ -147,17 +143,19 @@ BINARIES_PATHS = [
     os.path.join(os.getenv("CUDA_PATH" , "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V10.2"), "bin"),
     os.path.join(os.getenv("GST_PATH"  , "C:/gstreamer/1.0"), "x86_64/bin")
 ] + BINARIES_PATHS
-
 ```
+Change the folders to match your configuration. Adapted from [2]
+
 * Modify cv2/config-3.8.py
 ```
 import os
 
 PYTHON_EXTENSIONS_PATHS = [
-    'C:/opencv/opencv/build/lib/python3/Release'
+    # 'C:/opencv/opencv/build/lib/python3/Release'
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "python-3.8")
 ] + PYTHON_EXTENSIONS_PATHS
 ```
+From [2]
 
 # Building OpenCV
 Here are 4 builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
@@ -464,17 +462,16 @@ cmake-gui ..\
 
 CUDA support doubles your build size and consumes much larger build time. 
 
-Please make sure the selected CUDA_GENERATION matches the GPU you have installed:
-https://en.wikipedia.org/wiki/CUDA#GPUs_supported
-My notebook computer has a GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0. For detailed coverage of CUDA_ARCH choices and GPU coverage refer to [1].
+Please make sure the selected CUDA_GENERATION matches the GPU you have installed: 
+https://en.wikipedia.org/wiki/CUDA#GPUs_supported. My notebook computer has a GeForce 960M which is GENERATION Maxwell and Compute Capability 5.0. For detailed coverage of CUDA_ARCH choices and GPU coverage refer to [1].
 
 CUDA [STATUS: Working]
 
 * ```WITH_CUDA = ON```, enable CUDA
 * ```WITH_NVCUVID = ON```, [1] enable CUDA Video decodeing support
 * ```WITH_CUFFT = ON```
-* ```WITH_CUBLAS = ON``` [1,4,10]
-* ```CUDA_FAST_MATH = ON```, [3,4] 
+* ```WITH_CUBLAS = ON``` [1,3,7]
+* ```CUDA_FAST_MATH = ON```, [2,3] 
 * ```CUDA_ARCH_BIN = 5.0,5.2```, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure
 * ```CUDA_ARCH_PTX = 5.0```, entered to be the lowest of ARCH_BIN or leave empty
 * ```CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2"```
@@ -483,7 +480,7 @@ CUDA [STATUS: Working]
 * ```CUDA_GENERATION = "Maxwell"```, select from list
 * ```CUDA_HOST_COMPLIER = ```, autopopulated
 * ```CUDA_USE_STATIC_CUDA_RUNTIME = ON```, autopopulated
-* ```OPENCV_DNN_CUDA = ON```,[3] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.
+* ```OPENCV_DNN_CUDA = ON```,[2] Neural Network Classifiers on CUDA, per [1] its not necessary to downdload cuDNN from Nvidia and install it.
 * ```BUILD_CUDA_STUBS = OFF```
 * ```BUILD_opencv_cudev = ON```
 * ```BUILD_opencv_cuda* = ON```
@@ -582,24 +579,33 @@ These are additions to build 3. Do not clear the cache or delete previous build 
 * Video features
   * gstreamer 
   * Intel Realsense
+* CPU/HW feature optimization
 
 ### Configure Build
 
-QT [STATUS: IN PROGRESS]
+CPU/HW feature optimization
+
+Check with the CPU ID app if you have AVX2 and read on https://github.com/opencv/opencv/wiki/CPU-optimizations-build-options
+what baseline features you want to enable.
+
+* ```CPU_BASELINE=AVX2```
+
+QT [STATUS: WORKING]
 
 * ```WITH_QT=ON```
-* ```Qt5_DIR = C:/Qt/5.x.y/msvc2017_64/lib/cmake/Qt5```
-* QT_OPENGL_SUPPORT=OFF
+* ```Qt5_DIR = C:/Qt/5.x.y/msvc2019_64/lib/cmake/Qt5```
+* ```WITH_OPENGL=OFF```, rgpd does not compile with opengl.
+* ```BUILD_OPENCV_cvv=OFF ```, opencv_contrib\modules\cvv does not build nicely with VS 2019 and QT5.
 
-With x.y the QT version you downloaded and insgtall. Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
+With x.y the QT version you downloaded and insgtall (e.g. 5.15.0). Rerun configure and generate in cmake-gui once the Qt5_DIR is set.
 
 VTK [STATUS: IN PROGRESS]
-This might need vtk-8.2 as it can not find config file for 9.0 version.
-You might need QT enabled.
-* VTK_DIR=C:/VTK/lib/cmake/vtk-9.0
-* WITH_VTK=OFF
 
-Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]
+VTK 9.0 does not yet compile with opencv. 
+* ```VTK_DIR=C:/VTK/lib/cmake/vtk-9.0```
+* ```WITH_VTK=ON```
+
+Intel RealSense [STATUS: WORKING]
 
 * ```WITH_LIBREALSENSE = ON```
 * ```realsense2_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0"```
@@ -608,36 +614,21 @@ Intel RealSense [STATUS: DEBUGGING DEPENDENCY ISSUES]
 
 This breaks the build with "dll not found" error when importing cv2. At this time I dont know which dll is not found besides the ones provided by the SDK. Best appproach might be to build librealsense from source and check if building the librealsense python wrapper creates the necessary dlls.
 
-GSTREAMER [STATUS: DEBUGGING DEPENDENCY ISSUES]
+GSTREAMER [STATUS: WORKING]
 
 * ```WITH_GSTREAMER=ON```
 
 It automatically sets the path lib, include, glib, glib include, gobject, gstreamer library, gstreamer utils, riff library if GSTREAMER_DIR is set correcty.
 
-Using https://github.com/lucasg/Dependencies opencv_world430.dll I found the following missing dlls
-
-api-ms-win-core-wow64-l1-1-0.dll
-api-ms-win-core-wow64-l1-1-1.dll
-api-ms-win-core-winrt-string-l1-1-0.dll
-api-ms-win-core-stringansi-l1-1-0.dll
-api-ms-win-core-versionansi-l1-1-0.dll
-api-ms-win-core-psapi-l1-1-0.dll
-
-ext-ms-win-core-winrt-remote-l1-1-0.dll
-ext-ms-win-com-suspendresiliency-l1-1-0.dll
-ext-ms-win-ro-typeresolution-l1-1-0.dll
-
-HvsiFileTrust.dll
-IESHIMS.DLL
-
 JAVA [STATUS: ON HOLD]
-BUILD_JAVA = ON [2]
-BUILD_opencv_java = OFF
-BUILD_opencv_java_bindings_generator = OFF
+
+* ```BUILD_JAVA = ON [2]```
+* ```BUILD_opencv_java = OFF```
+* ```BUILD_opencv_java_bindings_generator = OFF```
 
 HDF [STATUS: ON HOLD]
 
-When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically. HDF support is through libhdf5 which will need to be installed by the user prior to the build.
+When the HDF5_DIR is set as environment variable it should find the directories and all the variables below should be set automatically. HDF support is through libhdf5 which will need to be installed by the user prior to the build. HDF5 is not et available for V16.
 
 * ```BUILD_opencv_hdf = OFF```
 * ```HDF5_C_LIBRARY = "C:/HDF5/1.12.0/lib/libhdf5.lib"```
@@ -645,7 +636,7 @@ When the HDF5_DIR is set as environment variable it should find the directories 
 
 Java [Status: ON HOLD]
 
-If you need the java wrapper to be built, you should disable python3. Somehow python2, python3 and java wrappers dont get along in cmake and OpenCV and each one will need to be built separately.
+If you need the java wrapper to be built, you might need to disable python3. Somehow python2, python3 and java wrappers dont get along in cmake and OpenCV and each one will need to be built separately.
 
 JavaScript [STATUS: NOT WORKING]
 
@@ -654,75 +645,34 @@ JavaScript [STATUS: NOT WORKING]
 EIGEN [Status: NOT WORKING]
 
 When you turn EIGEN ON, you will need to provide the source code, its not automatically downloaded.
+
 * ```WITH_EIGEN = OFF```, its not compling for me
 * ```EIGEN_INCLUDE_PATH = "C:/opencv/opencv_dep/eigen/Eigen"```
 * ```Eigen3_DIR``` is not found
 
 ### Build
+If you build with Visual Studio C, open Build -> Configuration Manager and enable INSTALL and click build.
 
 ### Test
 
 #### Gstreamer Camera
+
+Try to connect to rtsp stream initated on your local host for example with VLC Media Player:
+
+Media -> Stream, Select Capture Device, Show more Options and reduce cache size. 
+Stream -> Next, Add Destination Device
+RTSP Add, 8554, Activate Transcoding, Encapsulation=MPEG-TS, Video Codec = H-264, Audio off, Stream. 
+
 ```
 gst-launch-1.0 playbin uri=rtsp://localhost:8554/camera
+```
+
+Connect to a Xiaomi Dafang Hack camera (https://github.com/EliasKotlyar/Xiaomi-Dafang-Hacks):
+```
 gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
 ```
-Now check with test_rtsp_simplegstramer.py
 
-## Optional
-
-### Build Againts FFMPEG
-
-Build against FFMPEG and not the opencv FFMPEG wrapper
-You need to add the text below to beginning of
-modules/videoio/cmake/detect_ffmpeg.cmake
-
-```
-if(FFMPEG_ROOT_DIR AND WIN32 AND NOT ARM)
-  find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h PATHS ${FFMPEG_ROOT_DIR}/include/)
-  find_library(AVCODEC_LIBRARY lib/avcodec.lib PATHS ${FFMPEG_ROOT_DIR})
-  set(FFMPEG_INCLUDE_DIRS ${AVCODEC_INCLUDE_DIR})
-  set(FFMPEG_LIBRARIES ${AVCODEC_LIBRARY})
-
-  find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h PATHS ${FFMPEG_ROOT_DIR}/include/)
-  find_library(AVFORMAT_LIBRARY lib/avformat.lib PATHS ${FFMPEG_ROOT_DIR})
-  list(APPEND FFMPEG_INCLUDE_DIRS ${AVFORMAT_INCLUDE_DIR})
-  list(APPEND FFMPEG_LIBRARIES ${AVFORMAT_LIBRARY})
-
-  find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h PATHS ${FFMPEG_ROOT_DIR}/include/)
-  find_library(AVUTIL_LIBRARY lib/avutil.lib PATHS ${FFMPEG_ROOT_DIR})
-  list(APPEND FFMPEG_INCLUDE_DIRS ${AVUTIL_INCLUDE_DIR})
-  list(APPEND FFMPEG_LIBRARIES ${AVUTIL_LIBRARY})
-
-  find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h PATHS ${FFMPEG_ROOT_DIR}/include/)
-  find_library(AVDEVICE_LIBRARY lib/avdevice.lib PATHS ${FFMPEG_ROOT_DIR})
-  list(APPEND FFMPEG_INCLUDE_DIRS ${AVDEVICE_INCLUDE_DIR})
-  list(APPEND FFMPEG_LIBRARIES ${AVDEVICE_LIBRARY})
-
-  find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h PATHS ${FFMPEG_ROOT_DIR}/include/)
-  find_library(SWSCALE_LIBRARY lib/swscale.lib PATHS ${FFMPEG_ROOT_DIR})
-  list(APPEND FFMPEG_INCLUDE_DIRS ${SWSCALE_INCLUDE_DIR})
-  list(APPEND FFMPEG_LIBRARIES ${SWSCALE_LIBRARY})
-
-  set(HAVE_FFMPEG TRUE)
-endif()
-```
-
-* FFMPEG_ROOT_DIR="PATH_TO_FFMPEG_DEV"
-
-### Building Dependencies from Source
-
-It should not be necessary to build these dependencies
-
-```
-git clone https://github.com/oneapi-src/oneTBB.git
-git clone https://github.com/AcademySoftwareFoundation/openexr.git
-git clone git://code.qt.io/qt/qt5.git
-cd qt5
-git checkout 5.15.0
-https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code
-https://structure.io/openni
-```
+If the above with gstreamer binaries work, test it with pyton program: test_rtsp_simplegstramer.py
 
 # Build 1 CMAKE Output
 
@@ -1087,3 +1037,124 @@ C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(174): m
 C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(96): message : see reference to function template instantiation 'void cvv::util::ObserverPtr<QVBoxLayout>::enforceNotNull(void) const' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
 C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.hpp(134): message : see reference to class template instantiation 'cvv::util::ObserverPtr<QVBoxLayout>' being compiled (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
 C:\opencv\opencv_contrib\modules\cvv\src\qtutil\../util/observer_ptr.hpp(177,1): error C2065: 'logic_error': undeclared identifier (compiling source file C:\opencv\opencv_contrib\modules\cvv\src\qtutil\collapsable.cpp)
+
+
+
+# Build 4 CMAKE Output
+
+py -3 -c "import cv2; print(cv2.getBuildInformation())"
+
+```
+General configuration for OpenCV 4.3.0-dev =====================================
+  Version control:               4.3.0-321-g515a06cedf
+
+  Extra modules:
+    Location (extra):            C:/opencv/opencv_contrib/modules
+    Version control (extra):     4.3.0-57-g8fc6067b
+
+  Platform:
+    Timestamp:                   2020-05-21T22:35:07Z
+    Host:                        Windows 10.0.18362 AMD64
+    CMake:                       3.17.2
+    CMake generator:             Visual Studio 16 2019
+    CMake build tool:            C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe
+    MSVC:                        1926
+
+  CPU/HW features:
+    Baseline:                    SSE SSE2 SSE3
+      requested:                 SSE3
+
+  C/C++:
+    Built as dynamic libs?:      YES
+    C++ standard:                11
+    C++ Compiler:                C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.26.28801/bin/Hostx64/x64/cl.exe  (ver 19.26.28805.0)
+    C++ flags (Release):         /DWIN32 /D_WINDOWS /W4 /GR  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /EHa /wd4127 /wd4251 /wd4324 /wd4275 /wd4512 /wd4589 /MP  /MD /O2 /Ob2 /DNDEBUG
+    C++ flags (Debug):           /DWIN32 /D_WINDOWS /W4 /GR  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /EHa /wd4127 /wd4251 /wd4324 /wd4275 /wd4512 /wd4589 /MP  /MDd /Zi /Ob0 /Od /RTC1
+    C Compiler:                  C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.26.28801/bin/Hostx64/x64/cl.exe
+    C flags (Release):           /DWIN32 /D_WINDOWS /W3  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /MP   /MD /O2 /Ob2 /DNDEBUG
+    C flags (Debug):             /DWIN32 /D_WINDOWS /W3  /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /Gy /bigobj /Oi  /fp:precise     /MP /MDd /Zi /Ob0 /Od /RTC1
+    Linker flags (Release):      /machine:x64  /INCREMENTAL:NO
+    Linker flags (Debug):        /machine:x64  /debug /INCREMENTAL
+    ccache:                      NO
+    Precompiled headers:         NO
+    Extra dependencies:          cudart_static.lib nppc.lib nppial.lib nppicc.lib nppicom.lib nppidei.lib nppif.lib nppig.lib nppim.lib nppist.lib nppisu.lib nppitc.lib npps.lib cublas.lib cudnn.lib cufft.lib -LIBPATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib/x64
+    3rdparty dependencies:
+
+  OpenCV modules:
+    To be built:                 aruco bgsegm bioinspired calib3d ccalib core cudaarithm cudabgsegm cudacodec cudafeatures2d cudafilters cudaimgproc cudalegacy cudaobjdetect cudaoptflow cudastereo cudawarping cudev datasets dnn dnn_objdetect dnn_superres dpm features2d flann fuzzy gapi hfs highgui img_hash imgcodecs imgproc intensity_transform line_descriptor ml objdetect optflow phase_unwrapping plot python3 quality rapid reg rgbd saliency shape stereo stitching structured_light superres surface_matching text tracking ts video videoio world xfeatures2d ximgproc xobjdetect
+    Disabled:                    cvv hdf java_bindings_generator photo python2
+    Disabled by dependency:      face videostab xphoto
+    Unavailable:                 alphamat cnn_3dobj freetype java js matlab ovis sfm viz
+    Applications:                tests perf_tests apps
+    Documentation:               NO
+    Non-free algorithms:         YES
+
+  Windows RT support:            NO
+
+  GUI:
+    QT:                          YES (ver 5.15.0)
+      QT OpenGL support:         NO
+    Win32 UI:                    YES
+
+  Media I/O:
+    ZLib:                        build (ver 1.2.11)
+    JPEG:                        build-libjpeg-turbo (ver 2.0.4-62)
+    WEBP:                        build (ver encoder: 0x020f)
+    PNG:                         build (ver 1.6.37)
+    TIFF:                        build (ver 42 - 4.0.10)
+    JPEG 2000:                   build Jasper (ver 1.900.1)
+    OpenEXR:                     build (ver 2.3.0)
+    HDR:                         YES
+    SUNRASTER:                   YES
+    PXM:                         YES
+    PFM:                         YES
+
+  Video I/O:
+    DC1394:                      NO
+    FFMPEG:                      YES (prebuilt binaries)
+      avcodec:                   YES (58.54.100)
+      avformat:                  YES (58.29.100)
+      avutil:                    YES (56.31.100)
+      swscale:                   YES (5.5.100)
+      avresample:                YES (4.0.0)
+    GStreamer:                   YES (1.16.2)
+    DirectShow:                  YES
+    Media Foundation:            YES
+      DXVA:                      YES
+    Intel RealSense:             YES (2.33.1)
+    Intel Media SDK:             YES (C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2019 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib)
+
+  Parallel framework:            TBB (ver 2020.2 interface 11102)
+
+  Trace:                         YES (with Intel ITT)
+
+  Other third-party libraries:
+    Intel IPP:                   2020.0.0 Gold [2020.0.0]
+           at:                   C:/opencv/opencv/build/3rdparty/ippicv/ippicv_win/icv
+    Intel IPP IW:                sources (2020.0.0)
+              at:                C:/opencv/opencv/build/3rdparty/ippicv/ippicv_win/iw
+    Lapack:                      YES (C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_intel_lp64_dll.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64/mkl_tbb_thread_dll.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64/vc14/tbb.lib C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/mkl/lib/intel64_win/mkl_core_dll.lib)
+    Custom HAL:                  NO
+    Protobuf:                    build (3.5.1)
+
+  NVIDIA CUDA:                   YES (ver 10.2, CUFFT CUBLAS NVCUVID FAST_MATH)
+    NVIDIA GPU arch:             50 52
+    NVIDIA PTX archs:
+
+  cuDNN:                         YES (ver 7.6.5)
+
+  OpenCL:                        YES (SVM NVD3D11)
+    Include path:                C:/opencv/opencv/3rdparty/include/opencl/1.2
+    Link libraries:              Dynamic load
+
+  Python 3:
+    Interpreter:                 C:/Python38/python.exe (ver 3.8.3)
+    Libraries:                   C:/Python38/libs/python38.lib (ver 3.8.3)
+    numpy:                       C:/Python38/lib/site-packages/numpy/core/include (ver 1.18.4)
+    install path:                C:/Python38/Lib/site-packages/cv2/python-3.8
+
+  Python (for build):            C:/Python38/python.exe
+
+  Install to:                    C:/opencv
+-----------------------------------------------------------------
+```

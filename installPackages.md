@@ -170,7 +170,7 @@ https://github.com/davisking/dlib
 
 ## Packages not yet ready
 
-### HDF5 STATUS: does not compile.
+### HDF5 STATUS: does not compile with VS 2019
 If you are interested in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
 https://www.hdfgroup.org/downloads/hdf5/
 Make an account and obtain the vs14.zip version.
