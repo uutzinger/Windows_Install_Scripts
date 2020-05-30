@@ -148,6 +148,30 @@ Download the Video Codec SDK, extract and copy include and lib directories to
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x where xx.x is your installed version.
 [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
 
+## TensorFlow
+TensorFlow needs 
+* CUDA 10.1 which you need to get from https://developer.nvidia.com/cuda-toolkit-archive
+* cuDNN https://developer.nvidia.com/cudnn which needs to match version 10.1. Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1.
+
+Make sure these are on the PATH
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\extras\CUPTI\lib64```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include```
+Or copy following DLLs ...
+
+```
+pip3 install --upgrade tensorflow-gpu
+```
+
+
+Start python ```py -3```
+Enthere following commands on command prompt
+```
+import tensorflow as tf 
+tf.test.is_built_with_cuda()
+tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None)
+```
+
 ## QT
 Installing QT takes a very long time. Make sure you install only the components you need to avoid interfere with your current ninja and cmake setup.
 
