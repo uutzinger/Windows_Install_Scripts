@@ -65,7 +65,7 @@ cd tensorflow
 git checkout v2.2.0
 ```
 
-## Install bazel 
+## Install bazel
 
 Check _TF_MIN_BAZEL_VERSION in configure.py of TensorFlow. For tf 2.2.0 it is min version is 2.0.0.  
 
@@ -88,6 +88,9 @@ We will be using MSYS. CMD has issues with number of characters in commands.
 ```
 C:\msys64\msys2_shell.cmd
 ```
+```
+cd C:/tensorflow/tensorflow
+```
 
 In MSYS shell execute:
 
@@ -107,7 +110,6 @@ export PATH="/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/include:$P
 ## Configure tensorflow
 
 ```
-cd C:\tensorflow\tensorflow
 py -3 ./configure.py
 ```
 
@@ -123,12 +125,14 @@ default for rest
 ## Build tensorflow
 
 ```
-bazel build build --config=opt --config=mkl --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
+bazel build --config=opt --config=mkl --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
 ```
+
+bazel build --config = opt --config = cuda --define = no_tensorflow_py_deps = true --copt = -nvcc_options = disable-warnings // tensorflow / tools / pip_package: build_pip_package
 
 ./bazel build --output_base=output_dir build --config=opt --config=mkl --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
 
-The options listed are:
+The options listed after config are:
 ```
 Preconfigured Bazel build configs. You can use any of the below by adding "--config=<>" to your build command. See .bazelrc for more details.
 
@@ -148,11 +152,15 @@ Preconfigured Bazel build configs to DISABLE default on features:
 
 ## Build pip Package
 
-bazel-bin\tensorflow\tools\pip_package\build_pip_package C:\temp\path_to_save_wheelbazel-bin\tensorflow\tools\pip_package\build_pip_package 
+.\bazel-bin\tensorflow\tools\pip_package\build_pip_package C:\tensorflow\whl
+
+## Clean up
+%UserProfile%_bazel_%UserName%folder (for example C:\Users\Kurozumi_bazel_Kurozumi)
 
 ## Install the Package
 
 pip install C:\temp\path_to_save_wheel\<wheel_name.whl>
+pip install g:\tensorflow_pkg\tensorflow-2.2.0rc0-cp38-cp38-win_amd64.whl
 
 ## Test installation
 
@@ -163,3 +171,5 @@ print(tf.test.is_built_with_cuda())
 pprint(tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None))
 print(tf.pywrap_tensorflow.IsMklEnabled())
 ```
+python -c "import tensorflow as tf; print(tf.__version__); print(tf.keras.__version__)"
+python -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
