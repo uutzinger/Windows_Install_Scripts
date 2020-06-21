@@ -55,7 +55,7 @@ Tensorflow needs numpy, keras-applications, keras-preprocessing, pip, six, wheel
 python -m pip install --upgrade pip
 pip install six wheel mock
 pip install keras_applications==1.0.8 --no-deps
-pip install keras_preprocessing==1.1.0 --no-deps
+pip install keras_preprocessing==1.1.2 --no-deps
 ```
 
 ## Obtaining TensorFlow Source
@@ -66,10 +66,8 @@ cd C:/tensorflow
 git clone https://github.com/tensorflow/tensorflow.git
 mkdir output_dir
 cd tensorflow
-git checkout v2.2.0
+git checkout r2.2
 ```
-
-(or git checkout master)
 
 ## Install bazel
 
@@ -77,7 +75,7 @@ Check _TF_MIN_BAZEL_VERSION in configure.py of TensorFlow. For tf 2.2.0 it is mi
 
 * Download the min_version of bazel https://github.com/bazelbuild/bazel/releases/download/2.0.0/bazel-2.0.0-windows-x86_64.exe
 * Rename the downloaded version to bazel.exe. 
-* Copy it to C:\tensorflow\.
+* Copy it to C:\tensorflow\tensorflow
 
 ## Uninstalling of previous Installations
 
@@ -106,7 +104,7 @@ cd C:/tensorflow/tensorflow
 export MSYS_NO_PATHCONV=1
 export MSYS2_ARG_CONV_EXCL="*"
 export PATH="/c/tensorflow:$PATH" # where bazel is located
-export PATH="/c/Python36:$PATH"       # where python is located
+export PATH="/c/Python36:$PATH"   # where python is located
 export PATH="/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/bin:$PATH" # CUDA libraries are located
 export PATH="/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/extras/CUPTI/libx64:$PATH"
 export PATH="/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/include:$PATH"
@@ -127,22 +125,33 @@ py -3 ./configure.py
 accept default locations for python
 no ROCm support
 yes CUDA
-compute capabilities 5.0
+compute capabilities 3.5,5.0,5.2,7.0
 /arch:AVX2
 use default
 ```
 
 ## Build tensorflow
 
-CUDA Support Option
+The following is built in CMD shell.
 ```
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+```
+
+### CUDA Support Option
+
+```
+cd C:/tensorflow/tensorflow
 bazel build --config=opt --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
 ```
+
 When the build gets stuck about 98% through, you will need to reboot and execute the command above again. You will need to have simple_console_for_windows.zip in bazel-out\x64_windows-opt\bin\tensorflow\tools\pip_package. The script gets stuck usually slightly before that archive is built.
 
-MKL Support Option [not tested]
+### MKL Support Option [not tested]
 ```
-bazel build --config=mkl --config=opt //tensorflow/tools/pip_package:build_pip_package
+bazel --output_user_root=C:\tensorflow\output_dir build --config=mkl --config=opt //tensorflow/tools/pip_package:build_pip_package
 ```
 
 The options listed after config are:
@@ -167,12 +176,11 @@ Preconfigured Bazel build configs to DISABLE default on features:
 
 Build pip/whl package in MSYS shell.
 ```
-./bazel-bin/tensorflow/tools/pip_package/build_pip_package pip_package
+bazel-bin\tensorflow\tools\pip_package\build_pip_package pip_package
 ```
 
 ## Install the Package
 
-In regular CMD Window:
 ```
 cd pip_package
 pip3 install tensorflow-2.2.0-cp38-cp38-win_amd64.whl
@@ -190,11 +198,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 # 3 = INFO, WARNING, and ERROR messages are not printed
 import tensorflow as tf 
 print(tf.test.is_built_with_cuda())
-print(tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None))
+print(tf.config.list_physical_devices('GPU'))
 print(tf.__version__)
 print(tf.keras.__version__)
 print(tf.reduce_sum(tf.random.normal([1000, 1000])))
-# print(tf.pywrap_tensorflow.IsMklEnabled()) #this was renamed 
 ```
 
 Also check out
@@ -206,7 +213,7 @@ py -3 C:/tensorflow/tensorflow/tensorflow/python/framework/test_util_tests.py
 After installing the package you might want to clear the output directories.
 
 ```
-bazel clean
+bazel --output_user_root=C:\tensorflow\output_dir clean
 ```
 
 This removes bazel_out, bazel_bin and frees about 17GB of data.

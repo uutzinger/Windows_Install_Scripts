@@ -7,11 +7,45 @@ This write up prepares your Windows 10 computer for
 * Intel Media SDK
 * Intel RealSense
 * GStreamer
-* CUDA
+* CUDA 10.2 (11 is not yet working)
 * QT
 * VTK
 
 and attempts to provide the binaries, dlls and libs at a central location.
+
+#  Table of Contents
+
+- [Installing Software Development Tools on Windows 10](#installing-software-development-tools-on-windows-10)
+- [Table of Contents](#table-of-contents)
+  * [Install Python](#install-python)
+  * [Install Visual Studio](#install-visual-studio)
+  * [Windows SDK](#windows-sdk)
+  * [CMake](#cmake)
+  * [Ninja](#ninja)
+    + [Python Packages](#python-packages)
+  * [Intel TBB, MKL, MPI, IPP, DAAL](#intel-tbb--mkl--mpi--ipp--daal)
+  * [LAPACK, BLAS](#lapack--blas)
+  * [Intel Media SDK](#intel-media-sdk)
+  * [Intel RealSense](#intel-realsense)
+  * [Gstreamer & FFMPEG](#gstreamer---ffmpeg)
+    + [Gstreamer](#gstreamer)
+    + [FFMPEG](#ffmpeg)
+  * [CUDA](#cuda)
+  * [cuDNN](#cudnn)
+  * [NVIDIA Video Codec SDK](#nvidia-video-codec-sdk)
+  * [TensorFlow prebuilt](#tensorflow-prebuilt)
+  * [QT](#qt)
+  * [VTK](#vtk)
+  * [DLIB](#dlib)
+  * [Packages not yet ready](#packages-not-yet-ready)
+    + [HD5](#hd5)
+    + [JavaScript](#javascript)
+    + [EIGEN STATUS](#eigen-status)
+  * [Environment Variables](#environment-variables)
+  * [Collecting dll and libs](#collecting-dll-and-libs)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## Install Python
 Install [python](https://www.python.org/downloads/windows/) Choose 64bit version if you run 64bit OS.
@@ -36,12 +70,7 @@ where cmake.exe```. You would like it at the same location where cmake-gui is in
 NINJA can be faster than Visual Studio in building your projects.
 You will still use the Microsoft C compiler from Visual Studio but ninja will manage it. Using ninja can introduce additional issues and your build might not complete.
 
-
-Install either through [Chocolatey](https://chocolatey.org/) then install Ninja with
-```
-choco install ninja
-```
-or directly from https://github.com/ninja-build/ninja/releases.
+Download from https://github.com/ninja-build/ninja/releases and copy to C:\pool\bin
 
 ### Python Packages
 Download get-pip.py from https://bootstrap.pypa.io/
@@ -85,6 +114,16 @@ in my python installation.
 To accelerate operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. 
 [Intel libraries](https://software.seek.intel.com/performance-libraries). 
 The chrome browser seems to have have issues with selecting the downloads unfortunately.
+
+For openCV 4.3.0 the intel libraries should be:
+* mkl 2019 Update 5 2019.5.281
+* tbb 2019 Update 8 2019.8.281
+* mpi 2019 Update 5 2019.5.281
+* ipp 2019 Update 5 2019.5.281
+* daal 2019 Update 5 2019.5.281
+This will link libraries to 2019 folder.
+If you want 2020 version you need to download the latest version of these packages. MPI 2019 update 6 and higher are 2020 version. This the versions are important because the folder C:\Program Files (x86)\IntelSWTools\compilers_and_libraries is a link the the installed liraries and it can not link simultanously to 2019 and 2020 libraries.
+
 
 ## LAPACK, BLAS
 BLAS is part of the Intel Performance libraries which we installed above.
@@ -139,30 +178,31 @@ If you have a previously installed version, and want to upgrade, make sure to un
 * CUDA Documentation
 * CUDA Development
 
+For OpenCV 4.3 you need QT 10.2.
+
 ## cuDNN
 Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
-Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x where xx.x is your installed version.
+Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
 
 ## NVIDIA Video Codec SDK
 Download the Video Codec SDK, extract and copy include and lib directories to 
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\vxx.x where xx.x is your installed version.
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
 [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
 
-## TensorFlow
+## TensorFlow prebuilt
 TensorFlow needs 
-* CUDA 10.1 which you need to get from https://developer.nvidia.com/cuda-toolkit-archive
-* cuDNN https://developer.nvidia.com/cudnn which needs to match version 10.1. Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1.
+* CUDA 10.2 which you need to get from https://developer.nvidia.com/cuda-toolkit-archive
+* cuDNN https://developer.nvidia.com/cudnn which needs to match version 10.2. 
+Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
 
 Make sure these are on the PATH
-* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin```
-* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\extras\CUPTI\lib64```
-* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include```
-Or copy following DLLs ...
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\extras\CUPTI\lib64```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include```
 
 ```
 pip3 install --upgrade tensorflow-gpu
 ```
-
 
 Start python ```py -3```
 Enthere following commands on command prompt
@@ -173,9 +213,9 @@ tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None)
 ```
 
 ## QT
-Installing QT takes a very long time. Make sure you install only the components you need to avoid interfere with your current ninja and cmake setup.
+Installing QT takes a very long time. Make sure you install only the components you need to avoid interference with your current ninja and cmake setup.
 
-To install QT download it from https://www.qt.io/download-open-source. At the bottom is the installer link in green. Login with your QT account. Once you have QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume about 3GB of storage.
+Install QT from https://www.qt.io/download-open-source. At the bottom is the installer link in green. Login with your QT account. Once you have QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume about 3GB of storage.
 
 I installed:
 * MSVC 32/64bit
@@ -184,29 +224,40 @@ I installed:
 * QT Creator
 * QT Debugging Tools for Windows
 
+For OpenCV you will need qt5.14.2. You can have both 5.14 and 5.15 installed.
+
 ## VTK
 For Visualization Tool Kit follow description here:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
+
+OpenCV 4.3.0 needs VTK8.2
 
 ## DLIB
 Machine learning
 https://github.com/davisking/dlib
 
-## Packages not yet ready
-
-### HDF5 STATUS: does not compile with VS 2019
+### HD5 [Optional]
 If you are interested in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
-https://www.hdfgroup.org/downloads/hdf5/
-Make an account and obtain the vs14.zip version.
-I installed into C:/HDF5.
-lib and include folders are in C:/HDF5/x.yy.z/lib/ and include folders.
-OpenCV provides a wrapper for the libhdf5 library. If HDF5_DIR is set as environment variable it will find cmake files.
 
-### JavaScript STATUS: does not compile
+```
+cd C:\hdf5
+git clone https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
+cd hdf5
+git checkout hdf5_1_12
+mkdir build
+cd build
+cmake-gui ..\
+```
+* CMAKE_INSTALL_PREFIX = C:/hdf5/1.12.1
+
+Config->Generate->Open Project
+Compile with BatchBuild and enable 64bit Release of INSTALL. When HDF5 build completes configure opencv for HDF5.
+
+### JavaScript [Optional]
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
 WARNING: This will install a python and java interpreter. On my installation cmake picked up this Python 3 instead of the system wide one.
 ```
-cd C:/opencv/oppencv_dep
+cd C:/opencv/
 git clone https://github.com/emscripten-core/emsdk.git
 cd emsdk
 emsdk install latest
@@ -214,7 +265,7 @@ emsdk activate latest
 ```
 You will need to run 
 ```
-C:/opencv/oppencv_dep/emsdk/emsdk_env.bat
+C:/opencv/emsdk/emsdk_env.bat
 ``` 
 in each shell/cmd window to activate the components.
 This script set JAVA_HOME to a new location.
@@ -223,10 +274,12 @@ You can set it back with:
 set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 ```
 
-### EIGEN STATUS: does not compile.
+### EIGEN [Optional]
 To active the EIGEN library you need to download it
 ```
+cd C:\
 git clone https://gitlab.com/libeigen/eigen.git
+git checkout 3.3
 ```
 
 ## Environment Variables
@@ -244,6 +297,7 @@ Environment Variables
 * HDF5_DIR              = C:\HDF5\1.12.0\cmake
 * QT_PLUGIN_PATH        = C:\Qt\5.x.y\msvc2017_64\plugins
 * JAVA_HOME             = C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\
+* DXSDK_DIR             = might be already set
 
 PATH
 
@@ -257,42 +311,50 @@ PATH
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
 
 This is the location where I copied all dlls and binaries. It will need to be added to the PATH:
-* C:\Intel\bin
+* C:\pool\bin
 
 ## Collecting dll and libs
 We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes.
 When you build shared libs, dll files are needed, otherwise libraries (*.lib)
 ```
 REM   Intel MPI ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\Intel\bin /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mpi\intel64\lib\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\pool\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\lib\*" C:\pool\lib  /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\include\*" C:\pool\include  /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\etc\*" C:\pool\etc  /s/h/i/e/y
 
 REM   INTEL TBB ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc_mt\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc14\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\tbb\lib\intel64\vc_mt\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\lib\*" C:\pool\lib /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\include\*" C:\pool\include /s/h/i/e/y
 
 REM   INTEL MKL ========
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\Intel\bin /s/h/i/e/y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\mkl\lib\intel64\*" C:\Intel\bin /y
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\lib\*" C:\pool\lib /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include\*" C:\pool\include /s/h/i/e/y
+
 REM   INTEL IPP ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\Intel\bin /y
-REM xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\ipp\lib\intel64_win" C:\Intel\bin /s/h/i/e/y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\pool\bin /y
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\lib\*" C:\pool\lib /s/h/i/e/y
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\include\*" C:\pool\include /s/h/i/e/y
 
 REM   INTEL DAAL =======
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\daal\lib\intel64\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\lib\*" C:\pool\lib /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\include\*" C:\pool\include /s/h/i/e/y
+
 REM   INTEL compiler ===
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2020.1.216\windows\compiler\lib\intel64\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\compiler\lib\*" C:\pool\lib  /s/h/i/e/y
 
 REM   INTEL Media SDK ===
-copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\x64\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\*" C:\pool\lib /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\include\*" C:\pool\include /s/h/i/e/y
 
 REM   INTEL RealSense ==
-copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\Intel\bin /y
-REM copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64\*" C:\Intel\bin /y
+copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\pool\bin /y
+xcopy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\*" C:\pool\lib  /s/h/i/e/y
+xcopy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\include\*" C:\pool\include  /s/h/i/e/y
 ```

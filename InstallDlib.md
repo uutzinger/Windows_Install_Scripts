@@ -54,7 +54,6 @@ set "generator=Visual Studio 16 2019"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
-"C:\opencv\setup_vars_opencv4.cmd"
 ```
 
 The last command is only applicable when you already built opencv.
