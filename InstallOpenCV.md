@@ -8,8 +8,8 @@
   * [Obtaining OpenCV Source](#obtaining-opencv-source)
   * [Uninstalling of Previous opencv Installations](#uninstalling-of-previous-opencv-installations)
   * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
-  * [Debugging Missing Dependencies](#debugging-missing-dependencies)
 - [Building OpenCV](#building-opencv)
+  * [Debugging Missing Dependencies](#debugging-missing-dependencies)
   * [Build 1 [STATUS: Completed Successfully]](#build-1--status--completed-successfully-)
     + [Configure Build](#configure-build)
     + [Configure and Generate](#configure-and-generate)
@@ -20,21 +20,24 @@
     + [Configure Build](#configure-build-1)
     + [Build](#build-1)
     + [Test](#test-1)
-  * [Build 3 [STATUS: Completed Successfully]](#build-3--status--completed-successfully-)
-    + [Configure BUILD](#configure-build)
+  * [Build 3](#build-3)
+    + [Configure Build](#configure-build-2)
     + [Build](#build-2)
     + [Test](#test-2)
+      - [Gstreamer Camera](#gstreamer-camera)
   * [Build 4](#build-4)
-    + [Configure Build](#configure-build-2)
+  * [Build 5 [STATUS: Completed Successfully]](#build-5--status--completed-successfully-)
+    + [Configure BUILD](#configure-build)
     + [Build](#build-3)
     + [Test](#test-3)
-      - [Gstreamer Camera](#gstreamer-camera)
+  * [Build 6](#build-6)
 - [Build 1 CMAKE Output](#build-1-cmake-output)
 - [Build 2 CMAKE Output](#build-2-cmake-output)
 - [Build 3 CMAKE Output](#build-3-cmake-output)
 - [Build 4 CMAKE Output](#build-4-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 
 ## Motivation
@@ -1176,29 +1179,6 @@ General configuration for OpenCV 4.3.0-dev =====================================
   Install to:                    C:/opencv/opencv/build/install
 -----------------------------------------------------------------
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(177,15):
-error C2039: 'logic_error': is not a member of 'std' (compiling source file
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp) C:\Program
-Files (x86)\Microsoft Visual
-Studio\\2019\Community\VC\Tools\MSVC\\14.26.28801\include\memory(24): message :
-see declaration of 'std' (compiling source file
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp)
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(174):
-message : while compiling class template member function 'void
-cvv::util::ObserverPtr::enforceNotNull(void) const' (compiling source file
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp)
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(96):
-message : see reference to function template instantiation 'void
-cvv::util::ObserverPtr::enforceNotNull(void) const' being compiled (compiling
-source file C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp)
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.hpp(134): message :
-see reference to class template instantiation 'cvv::util::ObserverPtr' being
-compiled (compiling source file
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp)
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil../util/observer_ptr.hpp(177,1):
-error C2065: 'logic_error': undeclared identifier (compiling source file
-C:\opencv\opencv\_contrib\modules\cvv\src\qtutil\collapsable.cpp)
 
 Build 4 CMAKE Output
 ====================
