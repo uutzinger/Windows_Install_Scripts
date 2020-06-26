@@ -49,13 +49,16 @@ pacman -S git patch unzip
 exit
 ```
 
+If your windows username has a space in it, then you need to fix username issue: https://sourceforge.net/p/msys2/discussion/general/thread/76612760/
+
+
 Tensorflow needs numpy, keras-applications, keras-preprocessing, pip, six, wheel, mock. Numpy should already be installed. I use the version built with Intel mkl.
 
 ```
-python -m pip install --upgrade pip
-pip install six wheel mock
-pip install keras_applications==1.0.8 --no-deps
-pip install keras_preprocessing==1.1.2 --no-deps
+pip3 install --upgrade pip
+pip3 install six wheel mock
+pip3 install keras_applications==1.0.8 --no-deps
+pip3 install keras_preprocessing==1.1.2 --no-deps
 ```
 
 ## Obtaining TensorFlow Source
@@ -135,23 +138,30 @@ use default
 The following is built in CMD shell.
 ```
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\bin\daalvars.bat" intel64
+
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\mpivars.bat"
+
+"C:\opencv\4.3.0\setup_vars_opencv4.cmd"
 ```
 
 ### CUDA Support Option
 
 ```
 cd C:/tensorflow/tensorflow
-bazel build --config=opt --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
+
+bazel --output_user_root=C:\tensorflow\2.2 build --config=opt --config=cuda --define=no_tensorflow_py_deps=true --copt=-nvcc_options=disable-warnings //tensorflow/tools/pip_package:build_pip_package
 ```
 
 When the build gets stuck about 98% through, you will need to reboot and execute the command above again. You will need to have simple_console_for_windows.zip in bazel-out\x64_windows-opt\bin\tensorflow\tools\pip_package. The script gets stuck usually slightly before that archive is built.
 
 ### MKL Support Option [not tested]
 ```
-bazel --output_user_root=C:\tensorflow\output_dir build --config=mkl --config=opt //tensorflow/tools/pip_package:build_pip_package
+bazel --output_user_root=C:\tensorflow\2.2 build --config=mkl --config=opt //tensorflow/tools/pip_package:build_pip_package
 ```
 
 The options listed after config are:
@@ -206,14 +216,14 @@ print(tf.reduce_sum(tf.random.normal([1000, 1000])))
 
 Also check out
 ```
-py -3 C:/tensorflow/tensorflow/tensorflow/python/framework/test_util_tests.py
+py -3 C:\tensorflow\tensorflow\tensorflow\python\framework\tensor_util_test.py
 ```
 
 ## Cleanup
 After installing the package you might want to clear the output directories.
 
 ```
-bazel --output_user_root=C:\tensorflow\output_dir clean
+bazel --output_user_root=C:\tensorflow\2.2 clean
 ```
 
 This removes bazel_out, bazel_bin and frees about 17GB of data.
