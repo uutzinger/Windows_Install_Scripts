@@ -54,10 +54,9 @@ OpenCV still supports python 2.7 but compilation fails at the final stages of th
 ## Install Visual Studio
 Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.com/downloads/) and install the the option for Desktop Development with C++.
 
-I also enable:
-* Azure
-* .Net
-* Universal Windows Platform development
+I will try without these: Azure, .Net, Universal Windows Platform development
+
+If you already installed Visual Studio and want to update run the Visual Studio Installer.
 
 ## Windows SDK 
 When you install Visual Studio Compiler you can select Windows 10 SDK in the Installer. Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to include Windows SDK and other components that are not yet installed. You can also download directly: [SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/).
@@ -79,24 +78,25 @@ Open a command shell and cd to the location of get-pip.py and execute following:
 py -3 get-pip.py
 py -3 -m pip install pip --upgrade
 ```
-Make sure you have the latest  Microsoft C++ 2015-2019 redistributable:
-https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
-and the 2008 redistributale installed
-https://www.microsoft.com/en-us/download/details.aspx?id=15336
+Make sure you have the latest  Microsoft C++ 2015-2019 redistributable:  
+https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads  
+and the 2008 redistributale installed  
+https://www.microsoft.com/en-us/download/details.aspx?id=15336  
 
-I recommend the following python packages rom https://www.lfd.uci.edu/~gohlke/pythonlibs download
-* numpy‑1.18.4+mkl‑cp38‑cp38‑win_amd64.whl
-* numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
-* yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
+I recommend the following python packages from  
+https://www.lfd.uci.edu/~gohlke/pythonlibs  
+
+* numpy‑*+mkl‑cp38‑cp38‑win_amd64.whl
+* yappi‑*‑cp38‑cp38‑win_amd64.whl
 
 ```
-py -3 -m pip install numpy‑1.18.3+mkl‑cp38‑cp38‑win_amd64.whl
-py -2 -m pip install numpy‑1.16.6+mkl‑cp27‑cp27m‑win_amd64.whl
+dir *.whl
+py -3 -m pip install numpy...+mkl‑cp38‑cp38‑win_amd64.whl
 py -3 -m pip install pylint --upgrade
 py -3 -m pip install flake8 --upgrade
-py -3 -m pip install yappi‑1.2.5‑cp38‑cp38‑win_amd64.whl
+py -3 -m pip install yappi*‑cp38‑cp38‑win_amd64.whl
 ```
-I usually also have 
+I usually also use
 * cython
 * scipy
 * pillow
@@ -108,64 +108,81 @@ I usually also have
 * imutils 
 * itk
 
-in my python installation.
-
 ## Intel TBB, MKL, MPI, IPP, DAAL
 To accelerate operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. 
-[Intel libraries](https://software.seek.intel.com/performance-libraries). 
-The chrome browser seems to have have issues with selecting the downloads unfortunately.
 
-For openCV 4.3.0 the intel libraries should be:
+[Intel libraries](https://registrationcenter.intel.com/en/products/). Although it lists the 2021 libraries you can still get the 2019 libraries when you select the individual items.
+
+OpenCV 4.3.0 and 4.5 the intel libraries should be:
 * mkl 2019 Update 5 2019.5.281
 * tbb 2019 Update 8 2019.8.281
-* mpi 2019 Update 5 2019.5.281
-* ipp 2019 Update 5 2019.5.281
-* daal 2019 Update 5 2019.5.281
-This will link libraries to 2019 folder.
-If you want 2020 version you need to download the latest version of these packages. MPI 2019 update 6 and higher are 2020 version. This the versions are important because the folder C:\Program Files (x86)\IntelSWTools\compilers_and_libraries is a link the the installed liraries and it can not link simultanously to 2019 and 2020 libraries.
+* mpi 2019 Update 5 2019.5.281 not needed for opencv
+* ipp 2019 Update 5 2019.5.281 not needed for opencv
+* daal 2019 Update 5 2019.5.281 not needed for opencv
 
+There are issues with newer version and OpenCV https://github.com/opencv/opencv/issues/17870.
+
+You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake to figure out if there are newer version of TBB supported now. 
+
+Its important that MKL is installed before the TBB updated.
+If files are missing check here:
+- https://github.com/oneapi-src/oneTBB/releases
+
+The MKL and TBB dynamic link librarires will need to be accessible to the programs you create with them. I collect the redistribution files into central location with the instructions at the end of this document or by:  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\pool\bin /s/h/i/e/y
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+and then add C:\pool\bin to the Windows PATH   
 
 ## LAPACK, BLAS
 BLAS is part of the Intel Performance libraries which we installed above.
 You don't need to build it. 
-LA stands for linear algebra and is the backbone of computer vision and scientific computing.
+LA stands for linear algebra and is the backbone of computer vision and scientific computing.  
+
 If you want to build it you can download the source [LAPACK] (http://www.netlib.org/lapack/) and build it but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. 
 You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
 
 ## Intel Media SDK
-To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/en-us/media-sdk)
+To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/content/www/us/en/develop/tools/media-sdk/choose-download/client.html)  
 
 ## Intel RealSense
 If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense](https://www.intelrealsense.com/developers/). 
 
 ## Gstreamer & FFMPEG
 FFMPEG or gstreamer are needed to receive, decode and encode compressed video streams. 
-For example the rtsp web cam streams.
-OpenCV comes with a wrapper for FFMPEG and distributes the necessary libraries and dlls.
+For example the rtsp web cam streams.  
+OpenCV comes with a wrapper for FFMPEG and distributes the necessary libraries and dlls.  
 If you use a Jetson single board computer, at the time of tis writting, FFMPEG is not GPU accelerated and you likely will want to 
-become familiar with gstreamer which is supported by NVIDIA.
+become familiar with gstreamer which is supported by NVIDIA.  
 
 ### Gstreamer
-For Windows: https://gstreamer.freedesktop.org/download/ or https://gstreamer.freedesktop.org/data/pkg/windows/
+For Windows:  
+https://gstreamer.freedesktop.org/download/   
+or  
+https://gstreamer.freedesktop.org/data/pkg/windows/  
+
 Install both
 * msvc
 * devel msvc
 
 The gst-python bindings are not available on Windows, unfortunately. 
-If they were available we could access gstreamer pipelines directly in python. 
-For now we can use opencv.
-WARNING: Including gstreamer in a python builds can create many issues as there are numerous dlls that need to be accessible.
+If they were available, we could access gstreamer pipelines directly in python. 
+
+You will need to add `C:\gstreamer\1.0\msvc_x86_64\bin` to your Windows PATH.  
+WARNING: Including gstreamer in a python builds can create issues as there are numerous dlls that need to be accessible.
+
 
 ### FFMPEG
 FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPEG installation. 
 There is a suggestion further below how to bypass the wrapper. 
 I have not completed the bypass approach and can not recommend it at thist time.
-You can obtain your ffmpeg binary and development files here:
-From https://ffmpeg.zeranoe.com/builds/ download
-Version:latest stable
-Architecture: Windows 64 bit
-Linking: Shared and Dev
-Unzip and install in your ffmpeg folder 
+You can obtain your ffmpeg binary and development files here:  
+https://ffmpeg.zeranoe.com/builds/ download  
+Version:latest stable  
+Architecture: Windows 64 bit  
+Linking: Shared and Dev  
+Unzip and install in your ffmpeg folder  
 
 ## CUDA
 Install CUDA Tookit from [NVIDIA](https://developer.nvidia.com/cuda-downloads)
@@ -178,16 +195,17 @@ If you have a previously installed version, and want to upgrade, make sure to un
 * CUDA Documentation
 * CUDA Development
 
-For OpenCV 4.3 you need QT 10.2.
+For OpenCV 4.3 you need Cuda 10.2.  
+For OpenCV 4.5 you need Cuda 11.1.  
+For OpenCV 4.5.1 you need Cuda 11.2?
 
 ## cuDNN
 Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
-Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
+Open the archive and copy its content to e.g.   
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.
 
 ## NVIDIA Video Codec SDK
-Download the Video Codec SDK, extract and copy include and lib directories to 
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
-[VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download)
+Download the Video Codec SDK [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download), extract and copy include and lib directories to   ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.```
 
 ## TensorFlow prebuilt
 TensorFlow needs 
@@ -224,13 +242,16 @@ I installed:
 * QT Creator
 * QT Debugging Tools for Windows
 
-For OpenCV you will need qt5.14.2. You can have both 5.14 and 5.15 installed.
+For OpenCV 4.3.0 you will need qt5.14.2. You can have both 5.14 and 5.15 installed.
 
 ## VTK
+
 For Visualization Tool Kit follow description here:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
 
-OpenCV 4.3.0 needs VTK8.2
+VTK works by itself and does not need opencv.
+OpenCV 4.3.0 vtk interface works with VTK8.2  
+OpenCV 4.5.1 vtk interface works with VTK8.2
 
 ## DLIB
 Machine learning
@@ -289,15 +310,14 @@ I added gstreamer to path. For other components I created a redistribution folde
 
 If you don't know how to do modify the PATH, Rapid Environment Editor is a tool that finds errors and can also help you deal with the PATH when it exceeds the size limit. There are two PATH variables. The global one and the one associated with your account. The one for your account is an addition to the global one.
 
-Environment Variables
+Environment Variables (Rapid Environment Editor is useful)
 
-* INTELMEDIASDKROOT     = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit
-* GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\x86_64
-* GSTREAMER_DIR         = C:\gstreamer\1.0\x86_64
-* HDF5_DIR              = C:\HDF5\1.12.0\cmake
-* QT_PLUGIN_PATH        = C:\Qt\5.x.y\msvc2017_64\plugins
-* JAVA_HOME             = C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\
-* DXSDK_DIR             = might be already set
+* INTELMEDIASDKROOT     = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit
+* GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\msvc_x86_64
+* GSTREAMER_DIR         = C:\gstreamer\1.0\msvc_x86_64
+* HDF5_DIR              = C:\HDF5\1.12.1\cmake
+* QT_PLUGIN_PATH        = C:\Qt\5.14.2\msvc2017_64\plugins
+* JAVA_HOME             = C:\Program Files\AdoptOpenJDK\jdk-11.0.8.10-hotspot\
 
 PATH
 
@@ -307,54 +327,43 @@ PATH
 * C:\Program Files (x86)\Windows Kits\8.1\bin\x64
 * C:\gstreamer\1.0\x86_64\bin
 * C:\Qt\5.12.8\msvc2017_64\bin
-* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
-* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\libnvvp
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\libnvvp
 
 This is the location where I copied all dlls and binaries. It will need to be added to the PATH:
+
 * C:\pool\bin
 
 ## Collecting dll and libs
+
 We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes.
 When you build shared libs, dll files are needed, otherwise libraries (*.lib)
 ```
-REM   Intel MPI ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\pool\bin /y
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\lib\*" C:\pool\lib  /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\include\*" C:\pool\include  /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\etc\*" C:\pool\etc  /s/h/i/e/y
-
-REM   INTEL TBB ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\lib\*" C:\pool\lib /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\include\*" C:\pool\include /s/h/i/e/y
-
-REM   INTEL MKL ========
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\lib\*" C:\pool\lib /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include\*" C:\pool\include /s/h/i/e/y
-
-REM   INTEL IPP ========
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\pool\bin /y
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\lib\*" C:\pool\lib /s/h/i/e/y
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\include\*" C:\pool\include /s/h/i/e/y
-
-REM   INTEL DAAL =======
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\lib\*" C:\pool\lib /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\include\*" C:\pool\include /s/h/i/e/y
-
-REM   INTEL compiler ===
-copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\compiler\lib\*" C:\pool\lib  /s/h/i/e/y
-
 REM   INTEL Media SDK ===
-copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\bin\x64\*" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\lib\*" C:\pool\lib /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2019 R1\Software Development Kit\include\*" C:\pool\include /s/h/i/e/y
+copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit\bin\x64\*" C:\pool\bin /y
 
 REM   INTEL RealSense ==
 copy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\pool\bin /y
-xcopy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\*" C:\pool\lib  /s/h/i/e/y
-xcopy  "C:\Program Files (x86)\Intel RealSense SDK 2.0\include\*" C:\pool\include  /s/h/i/e/y
+
+REM   INTEL MKL ========
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
+
+REM   INTEL TBB ========
+xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\*" C:\pool\bin /s/h/i/e/y
+
+REM   INTEL compiler ===
+copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\compiler\*" C:\pool\bin /y
+
+REM   Intel MPI ========
+REM copy   "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\*" C:\pool\bin /y
+REM copy   "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\release\*" C:\pool\bin /y
+REM xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\etc\*" C:\pool\etc  /s/h/i/e/y
+
+REM   INTEL IPP ========
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\ipp\*" C:\pool\bin /y
+
+REM   INTEL DAAL =======
+REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\pool\bin /y
+
+
 ```
