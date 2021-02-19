@@ -34,11 +34,12 @@
     + [DLL Fix](#dll-fix-2)
     + [Test](#test-3)
   * [Build 6](#build-6)
-  * [Create Wheel Install Package](#create-wheel-install-package)
+    + [Create Wheel Install Package](#create-wheel-install-package)
 - [Fix DDL Summary](#fix-ddl-summary)
 - [Build CMAKE Output](#build-cmake-output)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## Motivation
 
@@ -49,29 +50,28 @@ Building OpenCV beyond its default settings is notoriously difficlut. The
 oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
 
 The main issues are the many temptations for enabling components that you don’t need but break your build. 
-There is to my knowledge no list which version of for example Intel Mathliraries and CUDA, compile with latest release version of OpenCV on Visual Studio. 
+There is to my knowledge no list which version of dependencies, compile with latest release version of OpenCV on Visual Studio. 
 
-A build typically takes 10-30 minutes when CUDA is not enabled. Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. The documentation is sparse and google the build options does not produce quality links.
+A build typically takes 10-30 minutes when CUDA is not enabled, taking time to debug which option is not supported on your environment.
+Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. 
+The documentation for building opencv beyond the default setting is sparse and google for the build options does not produce quality links.
 
-In the builds described here, I want to enable **gstreamer** and architecture
-specific accelerations. In particular **Intel optimized libraries** and **CUDA** support. 
+Once you enable external libraries, you will need to have the corresponding dlls accessible. It is difficult to track which dlls are missing in your PATH or installation directory.
+
+In the builds described here, I want to enable **gstreamer** and architecture specific accelerations. 
+In particular **Intel optimized libraries** and **CUDA** support. 
 I want architecture optimization because I will attempt using high frame rate cameras in my research.
-I want to enable gstreamer because I want to develop python code for Jetson
-single board computers on my notebook computer. Nividia supports gstreamer with
-hardware acceleration on Jetson architecture. It does not support ffmpeg the default interface in OpenCV. 
+I want to enable gstreamer because I want to develop python code for Jetson single board computers on my notebook computer. Nividia supports gstreamer with hardware acceleration on Jetson architecture. It does not support ffmpeg the default interface in OpenCV. 
 
 ## Approach
 
 In this guide I propose to build OpenCV in several steps and with increasing complexity.
 
-It is common that the activation of one component creates a set of issues that
-need to be solved. Also the activation of one component might not be reverted
-without clearing previous build cache and cleaning the build directory. It is
-also possible that the cmake and cmake-gui do not create the same build
-configuration. Make sure the cmake-gui version used in your command shell is
-from the same folder as cmake: `where cmake` and `where cmake-gui`.
+It is common that the activation of one component creates a set of issues that need to be solved. 
+Also the activation of one component might not be reverted without clearing previous build cache and cleaning the build directory. 
+It is also possible that the cmake and cmake-gui do not create the same build configuration. Make sure the cmake-gui version used in your command shell is from the same folder as cmake: `where cmake` and `where cmake-gui`.
 
-Many online posts have been consulted for this document. 
+Many online posts have been consulted for this document:
 
 * [1] [James Bowley] (https://jamesbowley.co.uk/accelerate-opencv-4-5-0-on-windows-build-with-cuda-and-python-bindings/)
 * [2] [dev.infohub.cc](https://dev.infohub.cc/build-opencv-430-with-cuda/) 
@@ -83,23 +83,25 @@ Many online posts have been consulted for this document.
 * [8] https://haroonshakeel.medium.com/build-opencv-4-5-1-with-gpu-cuda-support-on-windows-10-without-tears-cf0e55dc47f9
 
 ## Background Reading
-The following article explains algorithm optimizations by Intel for opencv https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel pointing towards Halide and OpenCL.
+The following article explains algorithm optimizations by Intel for opencv 
+https://www.slideshare.net/embeddedvision/making-opencv-code-run-fast-a-presentation-from-intel 
+pointing towards Halide and OpenCL.
 
-This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ It explains why some programs finish an image processing task much faster than others.
+This is excellent summary of the Halide algorithm development tools https://halide-lang.org/ 
+It explains why some programs finish an image processing task much faster than others.
 
 ## Pre-Requisites
 
-Prepare your system with
+Prepare your system with 
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md.
-I propose to work with dynamic link libraries and to copy all required dlls
-to a central location to limit extension of the PATH variable and to keep "parts together".
+I propose to work with dynamic link libraries and to copy all required dlls to a central  location to limit extension of the PATH variable and to keep "files together".
 
 ## Obtaining OpenCV Source
-Download the source files for both OpenCV and OpenCV contrib, available on
-GitHub. I place them in the root folder C:/opencv but they can go anywhere. 
-Its difficult to figure out which version works with your QT, VTK, and CUDA
-installation. Often the latest master branch solves compiling problems.
-However for the dependencies often one version before the current release is likely to work.
+Download the source files for both OpenCV and OpenCV contrib, available on GitHub. 
+I place them in the root folder C:/opencv but they can go anywhere. 
+Its difficult to figure out which version works with your QT, VTK, and CUDA installation. 
+Often the latest master branch solves build problems.
+However for the dependencies, often the latest version is likely not yet supported in OpenCV.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 mkdir C:/opencv
@@ -160,17 +162,23 @@ When you execute some of the vars script twice, it will throw an error the secon
 **It is critical to run this setup each time in the shell window that you will use to start make, cmake, cmake-gui or ninja before you start configuring your build.**
 
 # Building OpenCV
-Here are several builds, each with increasing complexity. Its not a good idea to enable all settings at once and then to struggle through the errors. Its better to start with a smaller build and then expand.
+Here are several builds, each with increasing complexity. 
+Its not a good idea to enable all settings at once and then to struggle through the errors. 
+Its better to start with a smaller build and then expand.
 
 ## Debugging Missing Dependencies
 In general this should help finding missing dependencies:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
-However the solution to the dll load failures in OpenCV 4.3 is described in [2] as a python problem. It requires the patches outlined at the end before the python package is built [2].  If you already installed OpenCV and dont plan to create a pip install package you will need to apply the changes in `C:\Python38\Lib\site-packages` as listed after all built scenarios towards the end of this document.
+However the solution to the dll load failures in OpenCV 4.3 is described in [2] as a python problem. 
+It requires the patches outlined at the end before the python package is built [2].  
+If you already installed OpenCV and dont plan to create a pip install package you will need to apply the changes 
+in `C:\Python38\Lib\site-packages` as listed after all built scenarios towards the end of this document.
 
 ## Build 1 [STATUS: Completed Successfully]
 
-With this first build, I will use cmake-gui. It is a light build with just the default settings, extra and non free modules and python.
+With this first build, I will use cmake-gui. 
+It is a light build with just the default settings, extra and non free modules and python.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "C:\Program Files\CMake\bin\cmake-gui.exe"
@@ -181,7 +189,8 @@ With this first build, I will use cmake-gui. It is a light build with just the d
 
 ### Configure Build
 
-The entries in RED need to be taken care off by running Configure again. But befor that verify your settings with the ones below:
+The entries in RED need to be taken care off by running Configure again. 
+But befor that, verify your settings with the ones below:
 
 Video
 
@@ -209,8 +218,8 @@ Make sure this is ON or set:
 -   `OPENCV_PYTHON3_VERSION = ON`, apparently cmake-gui confuses this variable [4], [2] recommends it ON
 -   `OPENCV_EXTRA_MODULES_PATH = "C:/opencv/opencv_contrib/modules"`
 -   `OPENCV_ENABLE_NONFREE = ON`
--   `BUILD_SHARED_LIBS = ON`, [2], when on this will created DLLs, when off this will created static libraries (\*.lib), usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this off
--   `BUILD_opencv_world = ON`, [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file
+-   `BUILD_SHARED_LIBS = ON`, [2], when ON this will created DLLs, when OFF this will created static libraries (\*.lib), usually dlls are more memory and space efficient, but if you run into dll missing errors you might want this OFF
+-   `BUILD_opencv_world = OFF`, ON [1,2,4], this will create single dll (SHARED_LIBS ON) or lib (SHARED_LIBS OFF) file, opencv_viz does not build with world.
 -   `CPU_BASELINE`, should auto populate to your CPU
 -   `BUILD_opencv_hdf = OFF`, HDF5 fileformat, recommended by [1]
 -   `ENABLE_FAST_MATH = OFF`, recommended by cmake
@@ -221,6 +230,11 @@ Install location
 Modify or create the variable:
 -   `PYTHON_DEFAULT_EXECUTABLE = "C:\Python38\python.exe"` This makes sure it does not use python2 to configure and build
 -   `CMAKE_CONFIGURATION_TYPES = "Release"`
+
+If you have GLOG and GFLAGS on your system
+-   `Glog_DIR = C:/glog/0.4`
+-   `Glog_LIBS = C:/glog/0.4/lib/glog.lib`
+-   `Gflags_DIR = C:/gflags/2.2/lib/cmake/gflags`
 
 ### Configure and Generate
 
@@ -265,6 +279,8 @@ The command line equivalent is:
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Build Time: 31 minutes
+
 ### Test
 In a command shell:
 
@@ -280,7 +296,7 @@ You will need to complete Build 1 before you sart Build 2.
 
 Now lets enable more features: 
 * Intel optimizations 
-  *  Math Kernel Library 
+  * Math Kernel Library 
   * Thread Building Blocks 
 * Video features
   * Intel Media SDK
@@ -315,18 +331,20 @@ Download the TBB source or the prebuilt binaries from Intel. The cmake configura
 The dlls from C:\Program Files(x86)\IntelSWTools\compilers\_and_libraries\windows\redist\intel64_win\tbb\vc\_mt
 are recommended in [1]  and linked to VC runtime. By default the vc14 versions are picked up by cmake and works for me.
 
--   `BUILD_TBB = OFF`, you want to use the pre-compiled files which we downloaded and installed earlier. BUILD TBB will create its own TBB binaries and I did not want that.
--   `WITH_TBB = ON`, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
+- `BUILD_TBB = OFF`, you want to use the pre-compiled files which we downloaded and installed earlier. BUILD TBB will create its own TBB binaries and I did not want that.
+- `WITH_TBB = ON`, needed if you want to use TBB for thread acceleration, either with external libraries (preferred) or build when comppiling OpenCV
 
 The following TBB folders should be set automatically: 
 - `TBB_DIR` is not found, even if you set the folder to "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/tbb/" it will revert to not found
-- `TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/tbb/include` \* 
-- `TBB_ENV_LIB = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/tbb/lib/intel64_win/vc14/tbb.lib`
-- `TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/tbb/lib/intel64_win/vc14/tbb_debug.lib`
-- `TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019.5.281/windows/tbb/include/tbb/tbb_stddef.h`
+- `TBB_ENV_INCLUDE   = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include`
+- `TBB_ENV_LIB       = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64_win/vc14/tbb.lib`
+- `TBB_ENV_LIB_DEBUG = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/lib/intel64_win/vc14/tbb_debug.lib`
+- `TBB_VER_FILE      = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/tbb/include/tbb/tbb_stddef.h`
 
-Opencv_gapi does not seem to compile with tbb. Its a new feature and actively developed. You can turn it off with
-- `BUILD_opencv_gapi = OFF`
+//Opencv_gapi does not seem to compile with tbb and world=on. Its a new feature and actively developed. You can turn it off with
+//- `BUILD_opencv_gapi = OFF`
+//or
+//- `BUILD_opencv_world = OFF`, checking if it works with world=off
 
 **MKL** [STATUS: WORKING]        
 
@@ -337,7 +355,7 @@ Opencv_gapi does not seem to compile with tbb. Its a new feature and actively de
 
 When executing the setup script it should configure automatically: 
 - `MKL_INCLUDE_DRIS = C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/include` 
-- `MKL_LIBRARIES **   =` see below for the following 3 libraries
+- `MKL_LIBRARIES ** =` see below for the following 3 libraries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64/mkl_core.lib  
 C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64/mkl_intel_lp64.lib  
@@ -359,7 +377,7 @@ C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib
 -   `WITH_MSMF = ON`
 -   `WITH_MSMF_DXVA = ON`
 
-Please check: 
+Please check (you will need to rerun Configure first): 
 - `MFX_LIBRARY = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib` 
 - `MFX_INCLUDE = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit/include`
 
@@ -387,60 +405,29 @@ This should be set automatically. Please check:
 ### Build
 Build using "Open_Project" in cmake-gui. Select build / batch build and enable INSTALL and then click on build.
 
-The Command Shell equivalent is: (incomplete, need to update)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"C:\Program Files\CMake\bin\cmake.exe" -B"%openCvBuild%/" -H"%openCvSource%/" -G"%generator%" ^
--DCMAKE_BUILD_TYPE=%buildType% ^
--DOPENCV_EXTRA_MODULES_PATH="%openCVExtraModules%/" ^
--DOPENCV_ENABLE_NONFREE=ON ^
--DBUILD_SHARED_LIBS=ON ^
--DBUILD_opencv_python3=ON ^
--DBUILD_EXAMPLES=OFF ^
--DBUILD_DOCS=OFF ^
--DBUILD_TESTS=OFF ^
--DBUILD_PERF_TESTS=OFF ^
--DINSTALL_PYTHON_EXAMPLES=OFF ^
--DINSTALL_C_EXAMPLES=OFF ^
--DINSTALL_TESTS=OFF ^
--DBUILD_opencv_world=OFF ^
--DWITH_GSTREAMER=ON ^
--DWITH_MFX=ON ^
--DWITH_MKL=ON ^
--DMKL_USE_MULTITHREAD=ON ^
--DMKL_WITH_TBB=ON ^
--DWITH_TBB=ON ^
--DWITH_EIGEN=OFF ^
--DBUILD_opencv_hdf=OFF
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Build time: couple fo minutes
 
 ### DLL Fix
-Your installation now will dend on additional DLLs.
-I recommend creating a directory in C:\Python38\Lib\site-packages\cv2\python-3.8\dlls and copying the dlls there.
-These are the DLLs you need:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-copy "C:\opencv\4.5.1\x64\vc16\bin\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\tbb.dll"       C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\tbbmalloc.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Your installation now will depend on additional DLLs.
 
-- Modify `C:\Python38\Lib\site-packages\cv2\config.py`   
-Make sure the directory names are updated.  
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-   Modify `C:\Python38\Lib\site-packages\cv2\config.py`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
 
 BINARIES_PATHS = [
-    os.path.join('C:/Python38\Lib/site-packages/cv2', 'python-3.8/dlls')
-]  + BINARIES_PATHS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- Modify `C:\Python38\Lib\site-packages\cv2\config-3.8.py`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-import os
-PYTHON_EXTENSIONS_PATHS = [
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "python-3.8")
-] + PYTHON_EXTENSIONS_PATHS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    os.path.join('C:/opencv/4.5.1', 'x64/vc16/bin'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2'), 'bin'),
+    os.path.join(os.getenv('TBB_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/tbb/vc14'),
+    os.path.join(os.getenv('MKL_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/mkl'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V11.2'), 'bin'),
+    os.path.join(os.getenv('GST_PATH' ,       'C:/gstreamer/1.0'), 'msvc_x86_64/bin'),
+    os.path.join(os.getenv('HDF5_PATH',       'C:/hdf5/1.12.1'), 'bin'),
+    os.path.join(os.getenv('REALSENSE_PATH',  'C:/Program Files (x86)/Intel RealSense SDK 2.0'), 'bin/x64'),
+    os.path.join(os.getenv('INTELMEDIA_PATH', 'C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit'), 'bin/x64'),
+    os.path.join(os.getenv('VTK_PATH',        'C:/vtk/9.0'), 'bin'),
+    os.path.join(os.getenv('QT_PATH',         'C:/Qt/5.14.2/msvc2017_64'), 'bin')
+] + BINARIES_PATHS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Test
 Run python 3 in command shell
@@ -504,21 +491,23 @@ git checkout 3.3
 Then I configured:
 -   `WITH_EIGEN = ON`
 -   `EIGEN_INCLUDE_PATH = "C:/eigen"`, make sure to select the directory that is one level above Eigen. for examplpe I have `C:\eigen\Eigen\src` and the include path is `C:/eigen`.
--   `Eigen3_DIR` is not found
+-   `Eigen3_DIR` is not found which is ok
 
 **Intel RealSense** [STATUS: WORKING]
 
 -   `WITH_LIBREALSENSE = ON`
+You will need to rerun configure then:  
 -   `realsense2_DIR = "C:/Program Files (x86)/Intel RealSense SDK 2.0"`
 -   `LIBREALSENSE_INCLUDE_DIR = C:/Program Files (x86)/Intel RealSense SDK 2.0/include`
 -   `LIBREALSENSE_LIBRARIES = C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib`
 
-**VTK** [STATUS: WORKING, but just import VTK python wrapper instead]
+**VTK** [STATUS: WORKING, but you can also use VTK python wrapper instead]
 
-- `VTK_DIR=C:/vtk/8.2/lib/cmake/vtk-8.2`
-- `WITH_VTK=ON` 
+- `VTK_DIR = C:\vtk\9.0\lib\cmake\vtk-9.0`
+- `WITH_VTK = ON` 
+- `BUILD_opencv_world = OFF`, cmake does not complete with world on, it fails configuring the viz module
 
-**HDF** [STATUS: WORKING, but just import HDF5 python wrapper instead]
+**HDF** [STATUS: WORKING, but you can also use  HDF5 python wrapper instead]
 
 To include HDF5 support it is advised to build HDF5 on your computer first.
 ```
@@ -537,36 +526,39 @@ Compile with BatchBuild and enable 64bit Release of INSTALL. When HDF5 build com
 
 Set:
 
-* `BUILD_opencv_hdf = ON`
 * `hdf5_c_library = C:/hdf5/1.12.1/lib/hdf5.lib`
 * `hdf5_include_dirs =  C:/hdf5/1.12.1/include`
-
 `libhdf5lib.lib` is for static build and `hdf5.lib` is for shared build.
+Configure again and you should have following option
+* `BUILD_opencv_hdf = ON`
+
 
 ### Build
 If you build with Visual Studio C, open Build -\> Configuration Manager and enable INSTALL and click build.
 
-### DLL Fix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# OpenCV dlls
-copy "C:\opencv\4.5.1\x64\vc16\bin\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-# TBB dlls
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\tbb.dll"       C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\tbbmalloc.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-# gstreamer DLLs
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\gst*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\glib*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\gobject*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\intl*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\gmodule*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\ffi*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\orc*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\gstreamer\1.0\msvc_x86_64\bin\z*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-# Realsense dlls
-copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Build Time: 13 Minutes  (without VTK)
+Build Time: an other 17 minutes for VTK
 
-and the same as in BUILD 3.
+### DLL Fix
+
+-   Modify cv2/config.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import os
+
+BINARIES_PATHS = [
+    os.path.join('C:/opencv/4.5.1', 'x64/vc16/bin'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2'), 'bin'),
+    os.path.join(os.getenv('TBB_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/tbb/vc14'),
+    os.path.join(os.getenv('MKL_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/mkl'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V11.2'), 'bin'),
+    os.path.join(os.getenv('GST_PATH' ,       'C:/gstreamer/1.0'), 'msvc_x86_64/bin'),
+    os.path.join(os.getenv('HDF5_PATH',       'C:/hdf5/1.12.1'), 'bin'),
+    os.path.join(os.getenv('REALSENSE_PATH',  'C:/Program Files (x86)/Intel RealSense SDK 2.0'), 'bin/x64'),
+    os.path.join(os.getenv('INTELMEDIA_PATH', 'C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit'), 'bin/x64'),
+    os.path.join(os.getenv('VTK_PATH',        'C:/vtk/9.0'), 'bin'),
+    os.path.join(os.getenv('QT_PATH',         'C:/Qt/5.14.2/msvc2017_64'), 'bin')
+] + BINARIES_PATHS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Test
 
@@ -635,6 +627,7 @@ at the end of
 OPENGL [STATUS: NOT WORKING ]
 -   `WITH_OPENGL=OFF`, rgpd does not compile with opengl.
 
+
 ## Build 5 [STATUS: Completed Successfully]
 
 Finally inlucde CUDA. This builds upon previous builds and enables CUDA support.
@@ -659,11 +652,13 @@ You can keep default setting which builds support for all CUDA architectures.
 
 **CUDA** [STATUS: Working]
 -   `WITH_CUDA = ON`, enable CUDA
+Run configure again, then the following should be available:    
 -   `WITH_NVCUVID = ON`, [1] enable CUDA Video decodeing support
 -   `WITH_CUFFT = ON`
+-   `WITH_CUDNN = ON`
 -   `WITH_CUBLAS = ON` [1,3,7]
 -   `CUDA_FAST_MATH = ON`, [2,3]
--   `CUDA_ARCH_BIN = 5.0,5.2`, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure
+-   `CUDA_ARCH_BIN = 5.0,5.2`, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure (3.5;3.7;5.0;5.2;6.0;6.1;7.0;7.5;8.0;8.6)
 -   `CUDA_ARCH_PTX = 5.0`, leave empty as is default or enter to the lowest of ARCH_BIN
 -   `CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2"`
 -   `CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2`
@@ -693,31 +688,27 @@ The command line equievalent is:
 "C:\Program Files\CMake\bin\cmake.exe" --build %openCvBuild% --target install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-### DLL Fix
-Now you will need to copy the CUDA dlls to the dll repository. With CUDA and gstreamer there are now a lot of dlls.
+Build Time: Many hours if all CUDA_ARCH_BINs are selected.
 
+### DLL Fix
+
+-   Modify cv2/config.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# CUDA DLLs
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppc*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppia*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppicc*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppide*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppif*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppig*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppim*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppist*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppitc*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublas*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cufft*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudart*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudnn*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cuinj*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\curand*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cusolver*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cusparse*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nvblas*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nvjpeg*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nvrtc*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+import os
+
+BINARIES_PATHS = [
+    os.path.join('C:/opencv/4.5.1', 'x64/vc16/bin'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2'), 'bin'),
+    os.path.join(os.getenv('TBB_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/tbb/vc14'),
+    os.path.join(os.getenv('MKL_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/mkl'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V11.2'), 'bin'),
+    os.path.join(os.getenv('GST_PATH' ,       'C:/gstreamer/1.0'), 'msvc_x86_64/bin'),
+    os.path.join(os.getenv('HDF5_PATH',       'C:/hdf5/1.12.1'), 'bin'),
+    os.path.join(os.getenv('REALSENSE_PATH',  'C:/Program Files (x86)/Intel RealSense SDK 2.0'), 'bin/x64'),
+    os.path.join(os.getenv('INTELMEDIA_PATH', 'C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit'), 'bin/x64'),
+    os.path.join(os.getenv('VTK_PATH',        'C:/vtk/9.0'), 'bin'),
+    os.path.join(os.getenv('QT_PATH',         'C:/Qt/5.14.2/msvc2017_64'), 'bin')
+] + BINARIES_PATHS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Test
@@ -753,6 +744,7 @@ cuMat2 = cv2.cuda_GpuMat()
 cuMat1.upload(npMat1)
 cuMat2.upload(npMat2)
 
+jit_time = time.time()
 _ = cv2.cuda.gemm(cuMat1, cuMat2,1,None,0,None,1)
 current_time = time.time()
 
@@ -770,26 +762,31 @@ for i in range(100):
    _ = npMat3 @ npMat4
 
 np_time = time.time()
+
+# CUDA jit compilation
+print('CUDA compilation time is   : {}'.format((current_time-jit_time)))
+
 # CUDA time
 print('CUDA execution time is   : {}'.format((cuda_time-current_time)/100.0))
+
 # OpenCV Mat Pultiplication
 print('OpenCV execution time is : {}'.format((cpu_time-cuda_time)/100.0))
+
 # NumPy Mat Multiplication
 print('NumPy execution time is  : {}'.format((np_time-cpu_time)/100.0))
-#
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In my setup with python the   
-CUDA execution time is 10-29ms,  
-CV2 execution time is 100-106ms,  
-Numpy execution tims is 42ms  
+CUDA execution time is 9-29ms,  
+CV2 execution time is 95-106ms,  
+Numpy execution tims is 38-44ms  
 
-Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 500ms. 
-Also compared to cuda performance test program, python implementation unfortunately takes much longer.
+Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 800ms. 
+Also compared to cuda performance test program, python implementation can take up to twice the time.
 
 ## Build 6
 
-## Create Wheel Install Package
+### Create Wheel Install Package
 
 -   Modify code in `cd C:\opencv\opencv\build\python_loader\`
 -   `xcopy "..\lib\python3\Release\*.pyd" .\cv2\python-3.8 /i`
@@ -813,13 +810,17 @@ Adapted from [2]
 import os
 
 BINARIES_PATHS = [
-    os.path.join(os.getenv("CV_PATH",    "C:/opencv/4.5.1"), "x64/vc16/bin"),
-    os.path.join(os.getenv("INTEL_PATH", "C:/pool"), "bin"),    
-    os.path.join(os.getenv("VTK_PATH"  , "C:/VTK/8.2" ), "bin"),
-    os.path.join(os.getenv("QT_PATH"   , "C:/Qt/5.14.2/msvc2017_64"), "bin"),
-    os.path.join(os.getenv("CUDA_PATH" , "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V11.2"), "bin"),
-    os.path.join(os.getenv("GST_PATH"  , "C:/gstreamer/1.0"), "x86_64/bin"),
-    os.path.join(os.getenv("HDF5_PATH" , "C:/hdf5/1.12.1"), "bin")
+    os.path.join('C:/opencv/4.5.1', 'x64/vc16/bin'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2'), 'bin'),
+    os.path.join(os.getenv('TBB_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/tbb/vc14'),
+    os.path.join(os.getenv('MKL_PATH',        'C:/Program Files (x86)/IntelSWTools/compilers_and_libraries/windows/redist'), 'intel64/mkl'),
+    os.path.join(os.getenv('CUDA_PATH',       'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/V11.2'), 'bin'),
+    os.path.join(os.getenv('GST_PATH' ,       'C:/gstreamer/1.0'), 'msvc_x86_64/bin'),
+    os.path.join(os.getenv('HDF5_PATH',       'C:/hdf5/1.12.1'), 'bin'),
+    os.path.join(os.getenv('REALSENSE_PATH',  'C:/Program Files (x86)/Intel RealSense SDK 2.0'), 'bin/x64'),
+    os.path.join(os.getenv('INTELMEDIA_PATH', 'C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit'), 'bin/x64'),
+    os.path.join(os.getenv('VTK_PATH',        'C:/vtk/9.0'), 'bin'),
+    os.path.join(os.getenv('QT_PATH',         'C:/Qt/5.14.2/msvc2017_64'), 'bin')
 ] + BINARIES_PATHS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -837,7 +838,7 @@ PYTHON_EXTENSIONS_PATHS = [
 Your whl package is in `.\dist\*.whl` 
 You can insall it with `pip3 install nameofthewheel.whl`
 
-Fix DDL Summary
+DDL Summary
 ===============
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -849,20 +850,25 @@ copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist
 copy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64\tbb\vc14\tbbmalloc.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 
 # MKL DLLs
-# xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\redist\intel64_win\mkl\*"        C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /s/h/i/e/y
+xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\redist\intel64_win\mkl\*"        C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /s/h/i/e/y
+
+#  VTK DLLs
+copy "C:\vtk\9.0\bin\*.dll"  C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 
 # CUDA DLLs
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppc*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppia*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppicc*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppide*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppif*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppig*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppc64_*.dll"     C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppial64_*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppicc64_*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppidei64*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppif64*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppig64*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppim*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppist*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppitc*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublas*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cufft*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppist64*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\nppitc64*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublas64*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublasLt64*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cufft64*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+
 copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudart*.dll"   C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudnn*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cuinj*.dll"    C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
@@ -887,13 +893,16 @@ copy "C:\gstreamer\1.0\msvc_x86_64\bin\z*.dll"     C:\Python38\Lib\site-packages
 copy "C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x64\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
 
 # Media
-# copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit\bin\x64\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+copy "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit\bin\x64\*.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+
+# HDF5
+copy "C:\hdf5\1.12.1\bin\hdf5.dll" C:\Python38\Lib\site-packages\cv2\python-3.8\dlls /y
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -   Modify cv2/config.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
-
 BINARIES_PATHS = [
     os.path.join('C:/Python38\Lib/site-packages/cv2', 'python-3.8/dlls')
 ]  + BINARIES_PATHS

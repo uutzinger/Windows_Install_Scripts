@@ -9,7 +9,7 @@ Latest version of
 * CMAKE-gui https://cmake.org/
 
 ## Download
-Obtain the source. Although VTK 9.0 is available only 8.2 version works with opencv. Lets attempt building both. We can use 9.0 python interface and 8.2 to compile opencv.
+Obtain the source. VTK 9.0 now works with OpenCV. Below we still create 9.0 and 8.2 but you can skip 8.2 build.
 
 ```
 mkdir C:\vtk
@@ -35,7 +35,7 @@ Select Visual Studio Compiler for x64 application.
 
 Enable
 * ```CMAKE_CXX_MP_FLAG = ON```
-* ```CMAKE_CXX_MP_NUM_PROCESSORS8 = 8```
+* ```CMAKE_CXX_MP_NUM_PROCESSORS = 8```
 * ```VTK_WRAP_PYTHON = ON```
 * ```VTK_PYTHON_VERSION = 3```
 * ```CMAKE_INSTALL_PREFIX = C:\vtk\9.0```
@@ -51,17 +51,8 @@ Enable
 For the CUDA architectures, check https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html and search for Virtual Architecture Feature List. Alternatively Maxwell might work also. 
 
 Open the project by clicking approriate button in cmake gui.
-In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build.
+In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build after selecting Release x64.
 It will take about 30 minutes.
-
-For python 3.8 you will need to download the patch mentioned in: https://gitlab.kitware.com/vtk/vtk/-/issues/17670
-If you dont have patch you can use Msys or patch for gitbash "C:\Program Files\Git\usr\bin\patch.exe".
-
-```
-cd C:\vtk\VTK-8.2.0
-patch -p 1 -i 0001-Compatibility-for-Python-3.8.patch
-```
-```-p 1 ``` removes the first directory which in this patch is "a/"
 
 ```
 cd C:\vtk\VTK-8.2.0\build
@@ -72,7 +63,7 @@ Select Visual Studio Compiler for x64 application.
 
 Enable
 * ```CMAKE_CXX_MP_FLAG = On```
-* ```CMAKE_CXX_MP_NUM_PROCESSORS8 = 8```
+* ```CMAKE_CXX_MP_NUM_PROCESSORS = 8```
 * ```VTK_WRAP_PYTHON = Off```, creates errors with VS2019
 * ```VTK_PYTHON_VERSION = 3```
 * ```CMAKE_INSTALL_PREFIX = C:\vtk\8.2```
@@ -81,17 +72,17 @@ Enable
 * ```VTK_Group_Standalone=On```
 * ```VTK_Group_Rendering=On```
 * ```VTK_Group_Imaging=Off```
+* ```VTK_ANDROID_BUILD=Off```
 * ```VTK_USE_SYSTEM_HDF = Off```, creates errors
 * ```BUILD_TESTING= Off```
 
 Generate and Open Project. (There is implicit '8' to STRING conversion warning)
-In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build.
-It will take about 30 minutes. 8:27
+In Visual Studio open Build / Batch Build and make sure INSTALL is enabled and click Build after slecting Release x64. It will take about 30 minutes.
 
 ## Copying files for python
 ```
-xcopy C:\vtk\VTK-latest\build\bin\Lib\site-packages C:\Python38\Lib\site-packages /s/h/i/e/y
-copy C:\vtk\VTK-latest\build\bin\Release\* C:\Python38\Lib\site-packages\vtkmodules /y
+xcopy C:\vtk\9.0\bin\Lib\site-packages C:\Python38\Lib\site-packages /s/h/i/e/y
+copy  C:\vtk\9.0\bin\* C:\Python38\Lib\site-packages\vtkmodules /y
 ```
 
 ## Testing

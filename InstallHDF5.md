@@ -26,8 +26,8 @@ mkdir build
 cd build
 cmake-gui ..\
 ```
-Where to build binaries is C:/hdf5/CMake-hdf5-1.12.0/build
-Where is the source code is: C:/hdf5/CMake-hdf5-1.12.0/hdf5-1.12.0
+Where to build binaries is C:/hdf5/CMake-hdf5-1.12.0/build  
+Where is the source code is: C:/hdf5/CMake-hdf5-1.12.0/hdf5-1.12.0  
 
 Optioinal change
 ```
@@ -44,10 +44,10 @@ When Perl is found there should be no errors when you run config as well as Gene
 
 ## Build
 
-Make sure HDF5 from HDF_GROUP is not already installed in C:/Program Files/HDF_Group/. Unintstall of necessary.
+Make sure HDF5 from HDF_GROUP is not already installed in C:/Program Files/HDF_Group/. Unintstall of necessary.  
 
-Visual Studio-> Batch Build: enable "Install Release 64" and then select build.
-The build will take about 20 minutes.
+Visual Studio-> Batch Build: enable "Install Release 64" and then select build.  
+The build will take about 20 minutes.  
 
 ## Environment Variable
 Set HDF5_DIR as environment variable to the directory you selected as INSTALL_PREFIX.

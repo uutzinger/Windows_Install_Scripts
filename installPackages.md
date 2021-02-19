@@ -22,7 +22,7 @@ and attempts to provide the binaries, dlls and libs at a central location.
   * [Windows SDK](#windows-sdk)
   * [CMake](#cmake)
   * [Ninja](#ninja)
-    + [Python Packages](#python-packages)
+  * [Python Packages](#python-packages)
   * [Intel TBB, MKL, MPI, IPP, DAAL](#intel-tbb--mkl--mpi--ipp--daal)
   * [LAPACK, BLAS](#lapack--blas)
   * [Intel Media SDK](#intel-media-sdk)
@@ -36,16 +36,16 @@ and attempts to provide the binaries, dlls and libs at a central location.
   * [TensorFlow prebuilt](#tensorflow-prebuilt)
   * [QT](#qt)
   * [VTK](#vtk)
+  * [GFLAGS](#gflags)
+  * [GLOG Google Logging](#glog-google-logging)
   * [DLIB](#dlib)
-  * [Packages not yet ready](#packages-not-yet-ready)
-    + [HD5](#hd5)
-    + [JavaScript](#javascript)
-    + [EIGEN STATUS](#eigen-status)
+  * [HD5](#hd5)
+  * [JavaScript [Optional]](#javascript--optional-)
+  * [EIGEN](#eigen)
   * [Environment Variables](#environment-variables)
   * [Collecting dll and libs](#collecting-dll-and-libs)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 
 ## Install Python
 Install [python](https://www.python.org/downloads/windows/) Choose 64bit version if you run 64bit OS.
@@ -57,6 +57,10 @@ Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.
 I will try without these: Azure, .Net, Universal Windows Platform development
 
 If you already installed Visual Studio and want to update run the Visual Studio Installer.
+
+Make sure Microsoft Visual C++ 2019 Redistributable is installed in Control Planel/Programs and Features
+
+After completing the Visual Studio installation, download and install the Microsoft Build Tools 2019 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019 
 
 ## Windows SDK 
 When you install Visual Studio Compiler you can select Windows 10 SDK in the Installer. Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to include Windows SDK and other components that are not yet installed. You can also download directly: [SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/).
@@ -71,7 +75,7 @@ You will still use the Microsoft C compiler from Visual Studio but ninja will ma
 
 Download from https://github.com/ninja-build/ninja/releases and copy to C:\pool\bin
 
-### Python Packages
+## Python Packages
 Download get-pip.py from https://bootstrap.pypa.io/
 Open a command shell and cd to the location of get-pip.py and execute following:
 ```
@@ -120,11 +124,11 @@ OpenCV 4.3.0 and 4.5 the intel libraries should be:
 * ipp 2019 Update 5 2019.5.281 not needed for opencv
 * daal 2019 Update 5 2019.5.281 not needed for opencv
 
-There are issues with newer version and OpenCV https://github.com/opencv/opencv/issues/17870.
+There are issues with newer versions and OpenCV https://github.com/opencv/opencv/issues/17870.
 
-You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake to figure out if there are newer version of TBB supported now. 
+You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake to figure out if there are newer version of TBB supported now.  
 
-Its important that MKL is installed before the TBB updated.
+Its important that MKL is installed before the TBB isntall/update is executed.
 If files are missing check here:
 - https://github.com/oneapi-src/oneTBB/releases
 
@@ -251,13 +255,55 @@ https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
 
 VTK works by itself and does not need opencv.
 OpenCV 4.3.0 vtk interface works with VTK8.2  
-OpenCV 4.5.1 vtk interface works with VTK8.2
+OpenCV 4.5.1 vtk interface works with VTK9.0.1 but world needs to be off
+
+## GFLAGS
+Download gfalgs
+```
+cd C:\
+mkdir gflags
+cd gflags
+git clone https://github.com/gflags/gflags
+```
+```
+mv BUILD BUILD.back
+mkdir build
+cd build
+cmake-gui ..\
+```
+* `CMAKE_INSTALL_PREFIX = C:\gflags\2.2`  
+In Visual Studio:  
+BUILD All  
+BUILD INSTALL
+
+## GLOG Google Logging
+
+Download glog
+```
+cd C:\
+mkdir glog
+cd glog
+mkdir 0.4
+git clone https://github.com/google/glog
+```
+
+```
+cd glog
+mv BUILD BUILD.back
+mkdir build
+cd build
+cmake-gui ..\
+```
+* `CMAKE_INSTALL_PREFIX = C:\glog\0.4`  
+In Visual Studio:   
+Build ALL_BUILD  
+Build INSTALL  
 
 ## DLIB
 Machine learning
 https://github.com/davisking/dlib
 
-### HD5 [Optional]
+## HD5
 If you are interested in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
 
 ```
@@ -274,7 +320,7 @@ cmake-gui ..\
 Config->Generate->Open Project
 Compile with BatchBuild and enable 64bit Release of INSTALL. When HDF5 build completes configure opencv for HDF5.
 
-### JavaScript [Optional]
+## JavaScript [Optional]
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
 WARNING: This will install a python and java interpreter. On my installation cmake picked up this Python 3 instead of the system wide one.
 ```
@@ -295,7 +341,7 @@ You can set it back with:
 set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 ```
 
-### EIGEN [Optional]
+## EIGEN
 To active the EIGEN library you need to download it
 ```
 cd C:\
@@ -330,14 +376,20 @@ PATH
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\libnvvp
 
+
+## Collecting dll and libs
+
+When building new software packages, one can attempt storing libraries and dlls at central location or to include them with the packages. 
+When storing them at central location, each time a library (e.g. CUDA) is updated one needs to rebuild the packages depending on them.
+If you copy the necessary libraries to the pacakge execution directory you will end up with many copies and need more storage space.
+
+For the case of a central repository:  
+
 This is the location where I copied all dlls and binaries. It will need to be added to the PATH:
 
 * C:\pool\bin
 
-## Collecting dll and libs
-
-We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes.
-When you build shared libs, dll files are needed, otherwise libraries (*.lib)
+We will copy the dlls needed for our package to the "redist" folder. This needs about 3.5 GBytes. When you build shared libs, dll files are needed, otherwise libraries (*.lib)
 ```
 REM   INTEL Media SDK ===
 copy  "C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit\bin\x64\*" C:\pool\bin /y
@@ -364,6 +416,4 @@ REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\r
 
 REM   INTEL DAAL =======
 REM copy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\daal\*" C:\pool\bin /y
-
-
 ```

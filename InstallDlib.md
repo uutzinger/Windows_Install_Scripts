@@ -66,11 +66,11 @@ py -3 setup.py install
 Fix dll not found errors
 
 ```
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\cublas64_10.dll" "C:\Python38\Lib\site-packages\dlib-19.19.99-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublas64_11.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
 
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\cudnn64_7.dll" "C:\Python38\Lib\site-packages\dlib-19.19.99-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudnn64_8.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
 
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin\cublasLt64_10.dll" "C:\Python38\Lib\site-packages\dlib-19.19.99-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublasLt64_11.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
 ```
 
 ### Test
@@ -79,7 +79,6 @@ In a command shell:
 
 ```
 py -3 -c "import dlib; print(f'Dlib: {dlib.__version__} for python installed and working')"
-py -3 -c "import dlib; print(dlib.getBuildInformation())"
 ```
 
 ## Optional Build 
