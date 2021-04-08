@@ -50,13 +50,13 @@ Building OpenCV beyond its default settings is notoriously difficlut. The
 oline book calls people compiling it "masochists" and "If you get stuck, you will need to ask Stackoverflow, whereupon they will call you an idiot".
 
 The main issues are the many temptations for enabling components that you don’t need but break your build. 
-There is to my knowledge no list which version of dependencies, compile with latest release version of OpenCV on Visual Studio. 
+There is to my knowledge no list which version of dependencies compile with latest release version of OpenCV on Visual Studio. 
 
-A build typically takes 10-30 minutes when CUDA is not enabled, taking time to debug which option is not supported on your environment.
+A build typically takes 10-30 minutes when CUDA is not enabled, taking time when you debug which option is not supported in your environment.
 Some build options create a wrapper for external libraries which you need to download prior to the build, and others will download the modules for you. 
 The documentation for building opencv beyond the default setting is sparse and google for the build options does not produce quality links.
 
-Once you enable external libraries, you will need to have the corresponding dlls accessible. It is difficult to track which dlls are missing in your PATH or installation directory.
+Once you enable external libraries, you will need to have the corresponding dlls accessible. It is difficult to track which dlls are needed in your PATH or installation directory.
 
 In the builds described here, I want to enable **gstreamer** and architecture specific accelerations. 
 In particular **Intel optimized libraries** and **CUDA** support. 
@@ -94,7 +94,7 @@ It explains why some programs finish an image processing task much faster than o
 
 Prepare your system with 
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md.
-I propose to work with dynamic link libraries and to copy all required dlls to a central  location to limit extension of the PATH variable and to keep "files together".
+I propose to work with dynamic link libraries and to copy some required dlls to a central location.
 
 ## Obtaining OpenCV Source
 Download the source files for both OpenCV and OpenCV contrib, available on GitHub. 
@@ -147,14 +147,14 @@ set "generator=Visual Studio 16 2019"
 
 We dont need Intel daal, mpi and ipp for hardware optimization. OpenCV handles IPP automatically.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019  
-# "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\bin\daalvars.bat" intel64  
-# "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\mpivars.bat"  
+REM "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019  
+REM "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\daal\bin\daalvars.bat" intel64  
+REM "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mpi\intel64\bin\mpivars.bat"  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Also intel libraries version 2021 do not work with opencv 4.5.1:  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
+REM "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When you execute some of the vars script twice, it will throw an error the second time. You can ignore those.
@@ -171,9 +171,9 @@ In general this should help finding missing dependencies:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/debugMissingDLL.md
 
 However the solution to the dll load failures in OpenCV 4.3 is described in [2] as a python problem. 
-It requires the patches outlined at the end before the python package is built [2].  
+It requires the patches outlined at the end before the python wheel is built [2].  
 If you already installed OpenCV and dont plan to create a pip install package you will need to apply the changes 
-in `C:\Python38\Lib\site-packages` as listed after all built scenarios towards the end of this document.
+to `C:\Python38\Lib\site-packages` as listed after the build scenarios towards the end of this document.
 
 ## Build 1 [STATUS: Completed Successfully]
 
@@ -377,7 +377,7 @@ C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib
 -   `WITH_MSMF = ON`
 -   `WITH_MSMF_DXVA = ON`
 
-Please check (you will need to rerun Configure first): 
+Please check (you will need to rerun Configure in cmake first): 
 - `MFX_LIBRARY = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit/lib/x64/libmfx_vs2015.lib` 
 - `MFX_INCLUDE = C:/Program Files (x86)/IntelSWTools/Intel(R) Media SDK 2020 R1/Software Development Kit/include`
 
@@ -582,7 +582,7 @@ You can also connect to a Xiaomi Dafang Hack camera (https://github.com/EliasKot
 gst-launch-1.0 rtspsrc location=rtsp://192.168.11.26:1181/camera latency=10 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the above with gstreamer binaries work, test it with pyton program: test_rtsp_simplegstreamer.py
+If the above with the gstreamer binaries work, test it with pyton program: test_rtsp_simplegstreamer.py
 
 ## Build 4 [STATUS: OPTONAL]
 
@@ -659,7 +659,7 @@ Run configure again, then the following should be available:
 -   `WITH_CUBLAS = ON` [1,3,7]
 -   `CUDA_FAST_MATH = ON`, [2,3]
 -   `CUDA_ARCH_BIN = 5.0,5.2`, selected from all options, for shorter compile time, select only the one you need, for compatibility, use the default list produced by configure (3.5;3.7;5.0;5.2;6.0;6.1;7.0;7.5;8.0;8.6)
--   `CUDA_ARCH_PTX = 5.0`, leave empty as is default or enter to the lowest of ARCH_BIN
+-   `CUDA_ARCH_PTX = 5.0`, leave empty as is default or enter the lowest of ARCH_BIN
 -   `CUDA_TOOLKIT_ROOT_DIR = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2"`
 -   `CUDA_SDK_ROOT_DIR = C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2`
 -   `CUDA_BUILD_EMULATION = OFF`, autopopulated
@@ -728,7 +728,7 @@ My outpput is:
 [----------] 1 test from Sz_Type_Flags_GEMM (1308 ms total)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can test CUDA performance in pyton with:
+You can test CUDA performance in python with:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import numpy as np
 import cv2 as cv
@@ -782,7 +782,7 @@ CV2 execution time is 95-106ms,
 Numpy execution tims is 38-44ms  
 
 Please note, that the first time the CUDA routine is called it undergoes jit compilation which takes more than 800ms. 
-Also compared to cuda performance test program, python implementation can take up to twice the time.
+Also compared to compiled cuda performance test program, python implementation can take up to twice the time.
 
 ## Build 6
 
@@ -840,6 +840,7 @@ You can insall it with `pip3 install nameofthewheel.whl`
 
 DDL Summary
 ===============
+If you plan to select all dlls and copy them to single location you can try to following. This is not necessary with above modified cv2/config.py
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Opencv DLLs

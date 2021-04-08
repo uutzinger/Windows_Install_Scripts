@@ -52,15 +52,13 @@ Install [python](https://www.python.org/downloads/windows/) Choose 64bit version
 OpenCV still supports python 2.7 but compilation fails at the final stages of the build if one version is 32bit and the other 64bit. 
 
 ## Install Visual Studio
-Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.com/downloads/) and install the the option for Desktop Development with C++.
-
-I will try without these: Azure, .Net, Universal Windows Platform development
+Install Visual Studio Community from [Microsoft](https://visualstudio.microsoft.com/downloads/) and install the the option for Desktop Development with C++. Make sure Windows 10 SDK and MSVC v142 is included in your selection.
 
 If you already installed Visual Studio and want to update run the Visual Studio Installer.
 
 Make sure Microsoft Visual C++ 2019 Redistributable is installed in Control Planel/Programs and Features
 
-After completing the Visual Studio installation, download and install the Microsoft Build Tools 2019 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019 
+After completing the Visual Studio installation, download and install the Microsoft Build Tools 2019 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019 Include C++ Windows Desktop Build Tools in installer selection.
 
 ## Windows SDK 
 When you install Visual Studio Compiler you can select Windows 10 SDK in the Installer. Windows SDK includes DirectX SDK. When you rerun the Visual Studio installer you might want to add options to include Windows SDK and other components that are not yet installed. You can also download directly: [SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/).
@@ -115,29 +113,33 @@ I usually also use
 ## Intel TBB, MKL, MPI, IPP, DAAL
 To accelerate operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. 
 
-[Intel libraries](https://registrationcenter.intel.com/en/products/). Although it lists the 2021 libraries you can still get the 2019 libraries when you select the individual items.
+[Intel libraries](https://registrationcenter.intel.com/en/products/). 
+Although it lists the 2021 libraries you can still get the 2019 libraries when you select the individual items.
 
-OpenCV 4.3.0 and 4.5 the intel libraries should be:
-* mkl 2019 Update 5 2019.5.281
-* tbb 2019 Update 8 2019.8.281
+The numpy-mkl build at https://www.lfd.uci.edu/~gohlke/pythonlibs/ are built with 2020 version, however for OpenCV 4.3.0 and 4.5 the intel libraries should be:
+
+* mkl 2019 Update 5 2019.5.281  
+* tbb 2019 Update 8 2019.8.281   
+Corresponding mpi, ipp and daal would be
 * mpi 2019 Update 5 2019.5.281 not needed for opencv
 * ipp 2019 Update 5 2019.5.281 not needed for opencv
 * daal 2019 Update 5 2019.5.281 not needed for opencv
 
 There are issues with newer versions and OpenCV https://github.com/opencv/opencv/issues/17870.
 
-You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake to figure out if there are newer version of TBB supported now.  
+You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake and https://github.com/opencv/opencv/blob/master/cmake/OpenCVFindMKL.cmake to figure out if there are newer version of TBB supported now.  
 
-Its important that MKL is installed before the TBB isntall/update is executed.
+Its important that MKL is installed before the TBB install/update is executed.
 If files are missing check here:
 - https://github.com/oneapi-src/oneTBB/releases
 
-The MKL and TBB dynamic link librarires will need to be accessible to the programs you create with them. I collect the redistribution files into central location with the instructions at the end of this document or by:  
+The MKL and TBB dynamic link librarires will need to be accessible to the programs you create with them. You can collect the redistribution files into central location by:  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\pool\bin /s/h/i/e/y
 xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 and then add C:\pool\bin to the Windows PATH   
+You calso add the folder to the system path.
 
 ## LAPACK, BLAS
 BLAS is part of the Intel Performance libraries which we installed above.
@@ -149,6 +151,8 @@ You might also be able to use pre built libraries from https://icl.cs.utk.edu/la
 
 ## Intel Media SDK
 To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/content/www/us/en/develop/tools/media-sdk/choose-download/client.html)  
+
+2020R1
 
 ## Intel RealSense
 If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense](https://www.intelrealsense.com/developers/). 
@@ -175,7 +179,6 @@ If they were available, we could access gstreamer pipelines directly in python.
 
 You will need to add `C:\gstreamer\1.0\msvc_x86_64\bin` to your Windows PATH.  
 WARNING: Including gstreamer in a python builds can create issues as there are numerous dlls that need to be accessible.
-
 
 ### FFMPEG
 FFMPEG is auto downloaded with opencv and it builds a wrapper and does not build againts your own FFMPEG installation. 
@@ -209,18 +212,21 @@ Open the archive and copy its content to e.g.
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.
 
 ## NVIDIA Video Codec SDK
-Download the Video Codec SDK [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download), extract and copy include and lib directories to   ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.```
+Download the Video Codec SDK [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download), extract and copy include and lib directories to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.```
 
 ## TensorFlow prebuilt
 TensorFlow needs 
-* CUDA 10.2 which you need to get from https://developer.nvidia.com/cuda-toolkit-archive
-* cuDNN https://developer.nvidia.com/cudnn which needs to match version 10.2. 
-Open the archive and copy its content to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2.
+* CUDA which you need to get from https://developer.nvidia.com/cuda-toolkit-archive
+  * I recommend to get both lates CUDA 10 as well as
+  * CUDA 11
+* cuDNN https://developer.nvidia.com/cudnn which needs to match the versions
+Open the corresponding archive and copy its content to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2``` and ``C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2```
 
 Make sure these are on the PATH
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\extras\CUPTI\lib64```
+* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\include```
 * ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin```
-* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\extras\CUPTI\lib64```
-* ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include```
 
 ```
 pip3 install --upgrade tensorflow-gpu
@@ -375,16 +381,18 @@ PATH
 * C:\Qt\5.12.8\msvc2017_64\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin
 * C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\libnvvp
-
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\extras\CUPTI\lib64
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\include
+* C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\bin
 
 ## Collecting dll and libs
 
-When building new software packages, one can attempt storing libraries and dlls at central location or to include them with the packages. 
-When storing them at central location, each time a library (e.g. CUDA) is updated one needs to rebuild the packages depending on them.
-If you copy the necessary libraries to the pacakge execution directory you will end up with many copies and need more storage space.
+When building new software packages, one can attempt a) storing libraries and dlls at central location, b) include them with the packages or c) add the location of the dlls to the package path. 
+A) When storing them at central location, each time a library (e.g. CUDA) is updated one needs to rebuild the packages depending on them.  
+B) If you copy the necessary libraries to the pacakge execution directory you will end up with many copies and need more storage space.
+C) In OpenCV there is updated startup file where one can include any directory on the search path. This eliminates the need to "collect" the dlls, but if the original installation files are removed, the package will no longer work.  
 
 For the case of a central repository:  
-
 This is the location where I copied all dlls and binaries. It will need to be added to the PATH:
 
 * C:\pool\bin

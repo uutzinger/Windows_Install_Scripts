@@ -35,23 +35,28 @@ pip3 install keras_preprocessing==1.1.2
 pip3 install Flask --upgrade
 pip3 install mtcnn --upgrade
 
-
 ### Build Yourself
-#### opencv  
-#### dlib  
-#### tensorflow  
+- opencv  
+- dlib  
+- tensorflow  
 
 #### LightGBM
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\mkl\bin\mklvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\tbb\bin\tbbvars.bat" intel64 vs2019  
-##### Install MPI
 Download from https://www.microsoft.com/en-us/download/details.aspx?id=100593  
 * `msmpisetup.exe`
 * `msmpisdk.msi`
-##### Build LightGBM
+
+Prepare the CMD shell for building:
+```
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\mkl\bin\mklvars.bat" intel64 vs2019
+"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\tbb\bin\tbbvars.bat" intel64 vs2019  
+```
+
+Build LightGBM:
+```
 git clone --recursive https://github.com/microsoft/LightGBM
 cd LightGBM
+```
 Open windows/LightGBM.sln in Visual Studio
 Select Release_mpi configuration
 Build Solution
@@ -60,4 +65,4 @@ Build Solution
 ## Install
 pip3 install deepface
 
-it wants to oeverwrite cuda. Need to fix python install script
+It wants to overwrite cuda support. Need to fix python install script
