@@ -19,7 +19,7 @@ mtcnn>=0.1.0
 lightgbm>=2.3.1
 dlib>=19.20.0
 
-### Compiled Libraries
+### Pre-Compiled Libraries
 https://www.lfd.uci.edu/~gohlke/pythonlibs/  
 
 pip3 install numpy‑1.19.5+mkl‑cp38‑cp38‑win_amd64.whl
@@ -34,8 +34,9 @@ pip3 install keras_applications==1.0.8
 pip3 install keras_preprocessing==1.1.2 
 pip3 install Flask --upgrade
 pip3 install mtcnn --upgrade
+pip3 install retina-face --upgrade
 
-### Build Yourself
+### Build Yourself, might improve performance
 - opencv  
 - dlib  
 - tensorflow  

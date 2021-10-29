@@ -10,6 +10,7 @@ This write up prepares your Windows 10 computer for
 * CUDA 10.2 (11 is not yet working)
 * QT
 * VTK
+* MSYS2
 
 and attempts to provide the binaries, dlls and libs at a central location.
 
@@ -113,46 +114,24 @@ I usually also use
 ## Intel TBB, MKL, MPI, IPP, DAAL
 To accelerate operations install both the Intel MKL and TBB by registering for community licensing, and downloading for free. 
 
-[Intel libraries](https://registrationcenter.intel.com/en/products/). 
-Although it lists the 2021 libraries you can still get the 2019 libraries when you select the individual items.
+Download the [Intel oneAPI Base Toolkit](https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit/download.html)
 
-The numpy-mkl build at https://www.lfd.uci.edu/~gohlke/pythonlibs/ are built with 2020 version, however for OpenCV 4.3.0 and 4.5 the intel libraries should be:
+The numpy-mkl build at https://www.lfd.uci.edu/~gohlke/pythonlibs/ uses its own copy in the DLL folder inside site-packages/numpy.  
 
-* mkl 2019 Update 5 2019.5.281  
-* tbb 2019 Update 8 2019.8.281   
-Corresponding mpi, ipp and daal would be
-* mpi 2019 Update 5 2019.5.281 not needed for opencv
-* ipp 2019 Update 5 2019.5.281 not needed for opencv
-* daal 2019 Update 5 2019.5.281 not needed for opencv
+You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake and https://github.com/opencv/opencv/blob/master/cmake/OpenCVFindMKL.cmake to figure out if the newest version of TBB supported now.  
 
-There are issues with newer versions and OpenCV https://github.com/opencv/opencv/issues/17870.
-
-You can check https://github.com/opencv/opencv/blob/master/cmake/OpenCVDetectTBB.cmake and https://github.com/opencv/opencv/blob/master/cmake/OpenCVFindMKL.cmake to figure out if there are newer version of TBB supported now.  
-
-Its important that MKL is installed before the TBB install/update is executed.
-If files are missing check here:
-- https://github.com/oneapi-src/oneTBB/releases
-
-The MKL and TBB dynamic link librarires will need to be accessible to the programs you create with them. You can collect the redistribution files into central location by:  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-xcopy  "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\tbb\vc14\*" C:\pool\bin /s/h/i/e/y
-xcopy "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\redist\intel64_win\mkl\*" C:\pool\bin /s/h/i/e/y
+"C:\Program Files (x86)\Intel\oneAPI\mkl\latest\redist\intel64\*" "C:\Program Files (x86)\Intel\oneAPI\tbb\latest\redist\intel64\vc14\*"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-and then add C:\pool\bin to the Windows PATH   
-You calso add the folder to the system path.
 
 ## LAPACK, BLAS
 BLAS is part of the Intel Performance libraries which we installed above.
+
 You don't need to build it. 
 LA stands for linear algebra and is the backbone of computer vision and scientific computing.  
 
-If you want to build it you can download the source [LAPACK] (http://www.netlib.org/lapack/) and build it but you need a FORTRAN compiler (see Build Instructions for LAPACK 3.5.0 for Windows with Visual Studio in http://icl.cs.utk.edu/lapack-for-windows/lapack. 
-You might also be able to use pre built libraries from https://icl.cs.utk.edu/lapack-for-windows/lapack/ using http://icl.cs.utk.edu/lapack-for-windows/lapack/LAPACKE_examples.zip.
-
 ## Intel Media SDK
-To accelerate video decoding on Intel CPU’s, register, download and install [Intel Media SDK](https://software.intel.com/content/www/us/en/develop/tools/media-sdk/choose-download/client.html)  
-
-2020R1
+To accelerate video decoding on Intel Graphics, register, download and install [Intel Media SDK](https://software.intel.com/content/www/us/en/develop/tools/media-sdk/choose-download/client.html)  
 
 ## Intel RealSense
 If you want to use an Intel Realsense cameras (3D or Tracking camera) you might want to install [Intel Realsense](https://www.intelrealsense.com/developers/). 
@@ -161,7 +140,7 @@ If you want to use an Intel Realsense cameras (3D or Tracking camera) you might 
 FFMPEG or gstreamer are needed to receive, decode and encode compressed video streams. 
 For example the rtsp web cam streams.  
 OpenCV comes with a wrapper for FFMPEG and distributes the necessary libraries and dlls.  
-If you use a Jetson single board computer, at the time of tis writting, FFMPEG is not GPU accelerated and you likely will want to 
+If you use a Jetson single board computer, at the time of this writting, FFMPEG is not GPU accelerated and you likely will want to 
 become familiar with gstreamer which is supported by NVIDIA.  
 
 ### Gstreamer
@@ -204,15 +183,15 @@ If you have a previously installed version, and want to upgrade, make sure to un
 
 For OpenCV 4.3 you need Cuda 10.2.  
 For OpenCV 4.5 you need Cuda 11.1.  
-For OpenCV 4.5.1 you need Cuda 11.2?
+For OpenCV 4.5.1 you can use Cuda 11.4
 
 ## cuDNN
 Login to your NVIDIA account and download [cudnn](https://developer.nvidia.com/rdp/cudnn-download)
 Open the archive and copy its content to e.g.   
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.
+```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4.```
 
 ## NVIDIA Video Codec SDK
-Download the Video Codec SDK [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download), extract and copy include and lib directories to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1.```
+Download the Video Codec SDK [VideoSDK](https://developer.nvidia.com/nvidia-video-codec-sdk/download), extract and copy include and lib directories to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4.```
 
 ## TensorFlow prebuilt
 TensorFlow needs 
@@ -220,7 +199,7 @@ TensorFlow needs
   * I recommend to get both lates CUDA 10 as well as
   * CUDA 11
 * cuDNN https://developer.nvidia.com/cudnn which needs to match the versions
-Open the corresponding archive and copy its content to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2``` and ``C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2```
+Open the corresponding archive and copy its content to ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2``` and ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4```
 
 Make sure these are on the PATH
 * ```C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin```
@@ -240,7 +219,7 @@ tf.test.is_built_with_cuda()
 tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None)
 ```
 
-## QT
+## QT [OPTIONAL]
 Installing QT takes a very long time. Make sure you install only the components you need to avoid interference with your current ninja and cmake setup.
 
 Install QT from https://www.qt.io/download-open-source. At the bottom is the installer link in green. Login with your QT account. Once you have QT installed use the MaintenanceTool application in the QT folder to make sure you have a valid QT version installed. This can take a long time and might consume about 3GB of storage.
@@ -254,7 +233,7 @@ I installed:
 
 For OpenCV 4.3.0 you will need qt5.14.2. You can have both 5.14 and 5.15 installed.
 
-## VTK
+## VTK [OPTIONAL]
 
 For Visualization Tool Kit follow description here:
 https://github.com/uutzinger/Windows_Install_Scripts/blob/master/InstallVTK.md
@@ -266,7 +245,7 @@ OpenCV 4.5.1 vtk interface works with VTK9.0.1 but world needs to be off
 ## GFLAGS
 Download gfalgs
 ```
-cd C:\
+cd C:\apps\
 mkdir gflags
 cd gflags
 git clone https://github.com/gflags/gflags
@@ -277,7 +256,7 @@ mkdir build
 cd build
 cmake-gui ..\
 ```
-* `CMAKE_INSTALL_PREFIX = C:\gflags\2.2`  
+* `CMAKE_INSTALL_PREFIX = C:\apps\gflags\`  
 In Visual Studio:  
 BUILD All  
 BUILD INSTALL
@@ -286,10 +265,8 @@ BUILD INSTALL
 
 Download glog
 ```
-cd C:\
+cd C:\apps
 mkdir glog
-cd glog
-mkdir 0.4
 git clone https://github.com/google/glog
 ```
 
@@ -300,7 +277,7 @@ mkdir build
 cd build
 cmake-gui ..\
 ```
-* `CMAKE_INSTALL_PREFIX = C:\glog\0.4`  
+* `CMAKE_INSTALL_PREFIX = C:\apps\glog\`  
 In Visual Studio:   
 Build ALL_BUILD  
 Build INSTALL  
@@ -308,23 +285,33 @@ Build INSTALL
 ## DLIB
 Machine learning
 https://github.com/davisking/dlib
+There is sepaarate document on hopw to install dlib.
+You should be able to ```pip3 install dlib``` and the build occurs in the background.
 
 ## HD5
 If you are interested in large datasets you might want to install the HDF library from HDF group. Often researchers use TIFF standard to create large image files, however for very large datasets hdf5 should be considered, especially when the data sets exceed the RAM capacity.
 
 ```
-cd C:\hdf5
+cd C:\apps\
 git clone https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
 cd hdf5
-git checkout hdf5_1_12
 mkdir build
 cd build
 cmake-gui ..\
 ```
-* CMAKE_INSTALL_PREFIX = C:/hdf5/1.12.1
+* CMAKE_INSTALL_PREFIX = C:/apps/hdf5/
 
 Config->Generate->Open Project
 Compile with BatchBuild and enable 64bit Release of INSTALL. When HDF5 build completes configure opencv for HDF5.
+
+## JAVA and ANT
+Obtain JDK from https://adoptium.net/
+
+Set JAVA_HOME=C:\Program Files\Eclipse Foundation\jdk-17.0.0.35-hotspot
+
+Follow https://ant.apache.org/manual/install.html#getBinary and download ANT from https://ant.apache.org/bindownload.cgi
+
+Set ANT_HOME=C:\apps\ant
 
 ## JavaScript [Optional]
 OpenCV provides access to JavaScript. For BUILD_opencv_js=ON you need EMscripten.
@@ -350,10 +337,40 @@ set "JAVE_HOME=C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\"
 ## EIGEN
 To active the EIGEN library you need to download it
 ```
-cd C:\
+cd C:\apps
 git clone https://gitlab.com/libeigen/eigen.git
-git checkout 3.3
+git checkout 3.4
 ```
+## Windows Tools
+
+### MSYS2
+Download MSYS2. https://www.msys2.org/ 
+Follow the installation instructions on the msys2 website. 
+
+To make the Unix commands available in Power Shell and CMD, in start Windows Power Shell and enter:
+```$Env:PATH > path_backup.txt```  This will backup your current path
+```Start-Process powershell -Verb runAs```  This will open another powershell with administrator priviledge.  
+```setx /M PATH "$ENV:PATH;C:\msys64\usr\bin"``` This will add the msys binaries to your path.
+
+You might want to update and install more commands:  
+```pacman -Syu``` updates installation  
+```pacman -Su``` updates insytalled packages  
+```pacman -S git``` installs git  
+
+### Rapid Environment Editor
+To better manage your system path and environmnet variables you might want to install Rapid Environment Editor: https://www.rapidee.com/en/download
+
+### Dependencies
+Download the distribution files from https://github.com/lucasg/Dependencies and load the dlls, e.g. opencv_worldxxx.dll and examine the dependencies.
+
+Apparently the following dlls dependency errors can be ignroed:
+* API-MS-WIN-*.dll
+* EXT-MS-WIN-*.dll
+* IESHIMS.dll
+* EMCLIENT.dll
+* DEVICELOCKHELPERS.dll
+* EFSCORE.DLL
+* WPAXHOLDER.DLL
 
 ## Environment Variables
 
@@ -365,11 +382,12 @@ If you don't know how to do modify the PATH, Rapid Environment Editor is a tool 
 Environment Variables (Rapid Environment Editor is useful)
 
 * INTELMEDIASDKROOT     = C:\Program Files (x86)\IntelSWTools\Intel(R) Media SDK 2020 R1\Software Development Kit
-* GSTREAMER_ROOT_X86_64 = C:\gstreamer\1.0\msvc_x86_64
-* GSTREAMER_DIR         = C:\gstreamer\1.0\msvc_x86_64
-* HDF5_DIR              = C:\HDF5\1.12.1\cmake
+* GSTREAMER_ROOT_X86_64 = C:\apps\gstreamer\1.0\msvc_x86_64
+* GSTREAMER_DIR         = C:\apps\gstreamer\1.0\msvc_x86_64
+* HDF5_DIR              = C:\apps\HDF5\1.12.1\cmake
 * QT_PLUGIN_PATH        = C:\Qt\5.14.2\msvc2017_64\plugins
 * JAVA_HOME             = C:\Program Files\AdoptOpenJDK\jdk-11.0.8.10-hotspot\
+* OpenBLAS_HOME = C:\apps\openBLAS
 
 PATH
 

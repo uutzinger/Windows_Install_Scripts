@@ -2,7 +2,7 @@
 # Expand this with tensorflow matrix multiplication
 #
 import numpy as np
-import cv2 as cv
+import cv2
 import time
 
 npTmp = np.random.random((1024, 1024)).astype(np.float32)

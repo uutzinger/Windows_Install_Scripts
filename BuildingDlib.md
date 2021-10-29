@@ -13,19 +13,25 @@
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Approach
-Dlib is easy to install. Once the source is downloaded, the python setup.py is the only file that you need to execute and it will find all the optimizations for your computer.
+Dlib is easy to install:
+
+```pip install dlib```
+
+If you want to build it in separate folder, obtain source from github, then 
+
+```py -3 setup.py install```
+
+It will find all the optimizations for your computer.
 
 Some online posts have been consulted for this document.
 * [1] http://dlib.net/compile.html
 * [2] https://www.learnopencv.com/install-dlib-on-windows/
 
 ## Background Reading
-An interview with Davis King.
-
+An interview with Davis King: 
 https://www.pyimagesearch.com/2017/03/13/an-interview-with-davis-king-creator-of-the-dlib-toolkit/
 
 ## Obtaining Dlib Source
-
 ```
 mkdir C:/dlib
 cd C:/dlib
@@ -35,14 +41,12 @@ cd C:/dlib/dlib
 ```
 
 ## Uninstalling of Previous Installations
-
 To make sure python finds your build you will want to remove any other installation of opencv.
 ```
 pip3 uninstall dlib
 ```
 
 ## Preparing your Shell Build Environment
-
 Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:
 
 ```
@@ -56,8 +60,6 @@ set "generator=Visual Studio 16 2019"
 "C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
 ```
 
-The last command is only applicable when you already built opencv.
-
 ## Build Python Wrapper
 ```
 py -3 setup.py install
@@ -66,11 +68,9 @@ py -3 setup.py install
 Fix dll not found errors
 
 ```
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublas64_11.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
-
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cudnn64_8.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
-
-copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\cublasLt64_11.dll" "C:\Python38\Lib\site-packages\dlib-19.21.0-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4\bin\cublas64_11.dll" "C:\python38\lib\site-packages\dlib-19.22.99-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4\bin\cudnn64_8.dll" "C:\python38\lib\site-packages\dlib-19.22.99-py3.8-win-amd64.egg"
+copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4\bin\cublasLt64_11.dll" "C:\python38\lib\site-packages\dlib-19.22.99-py3.8-win-amd64.egg"
 ```
 
 ### Test
@@ -84,32 +84,30 @@ py -3 -c "import dlib; print(f'Dlib: {dlib.__version__} for python installed and
 ## Optional Build 
 
 ```
-cd C:\dlib\dlib\build
-"C:\Program Files\CMake\bin\cmake.exe" -B"%DlibBuild%/" ^
--H"%DlibSource%/" -G"%generator%" -T host=x64 ^
+set "DlibSource=C:\apps\dlib\dlib"
+set "DlibBuild=%DlibSource%\build"
+set "buildType=Release"
+set "generator=Visual Studio 16 2019"
+cd C:\apps\dlib\build
+cmake -H"%DlibSource%/" -G"%generator%" -T host=x64 ^
 -DCMAKE_BUILD_TYPE=%buildType% ^
--DCMAKE_INSTALL_PREFIX="C:/dlib" ^
--DLIB_USE_MKL_WITH_TBB=ON ^
+-DCMAKE_INSTALL_PREFIX="C:/apps/dlib" ^
 -DUSE_AVX_INSTRUCTIONS=ON ^
 -DUSE_SSE2_INSTRUCTIONS=ON ^
 -DUSE_SSE4_INSTRUCTIONS=ON ^
 -DDLIB_JPEG_SUPPORT=ON ^
 -DDLIB_PNG_SUPPORT=ON ^
--DDLIB_GIF_SUPPORT=ON ^
--DJPEG_INCLUDE_DIR=C:\dlib\dlib\dlib\external\libjpeg ^
--DJPEG_LIBRARY=C:\dlib\dlib\dlib\external\libjpeg ^
--DPNG_PNG_INCLUDE_DIR=C:\dlib\dlib\dlib\external\libpng ^
--DPNG_LIBRARY_RELEASE=C:\dlib\dlib\dlib\external\libpng ^
--DZLIB_INCLUDE_DIR=C:\dlib\dlib\dlib\external\zlib ^
--DZLIB_LIBRARY_RELEASE=C:\dlib\dlib\dlib\external\zlib
+-DDLIB_GIF_SUPPORT=ON
 ```
 
 This should find Intel MKL/BLAS, CUDA, cuDNN. 
 
 Check Build Variables
+
 ```
 "C:\Program Files\CMake\bin\cmake-gui.exe" ..\
 ```
+
 The command line approach is:
 ```
 cd C:\dlib\dlib\build

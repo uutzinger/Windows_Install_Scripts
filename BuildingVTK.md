@@ -3,7 +3,7 @@
 This script follows closely the description on infohub-Development [https://dev.infohub.cc/build-vtk-820]
 
 ## Pre-Requisits
-Latest version of
+Latest version of  
 * Windows OS 10
 * Microsoft Visual Studio Community 2019 https://visualstudio.microsoft.com/downloads/
 * CMAKE-gui https://cmake.org/
