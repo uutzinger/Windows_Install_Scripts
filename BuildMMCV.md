@@ -1,13 +1,15 @@
 # Installing apckages from open-mmlab
 
-MMCV require to be insgtalled inside **Windows Powershell**
+## Pre Requisites
 
-## Build
+MMCV require to be insgtalled inside **Windows Powershell**   
+**opencv**  
+**PyTorch**  
 
 ## Dependencies
 
 ```
-pip3 install addict pyyaml yapf
+pip3 install addict pyyaml yapf psutils
 pip3 install regex;sys_platform=='win32'
 ```
 
@@ -17,13 +19,7 @@ Obtain source
 cd C:\apps
 git clone https://github.com/open-mmlab/mmcv.git mmcv
 cd mmcv
-```
-Build
-```
 pip install -e .
-```
-Python wheel
-```
 py -3 setup.py bdist_wheel
 pip3 install .\distr\mmcv...
 ```
@@ -40,18 +36,47 @@ pip install -v -e .
 py -3 setup.py bdist_wheel
 pip3 install .\dist\mmd...
 
-# for instaboost
-pip install instaboostfast
-# for panoptic segmentation
-pip install git+https://github.com/cocodataset/panopticapi.git
-# for LVIS dataset
-pip install git+https://github.com/lvis-dataset/lvis-api.git
-# for albumentations
-pip install albumentations>=0.3.2 --no-binary imgaug,albumentations
+#### for instaboost
+`pip install instaboostfast`
+#### for panoptic segmentation
+`pip install git+https://github.com/cocodataset/panopticapi.git`
+#### for LVIS dataset
+`pip install git+https://github.com/lvis-dataset/lvis-api.git`
+#### for albumentations
+`pip install albumentations>=0.3.2 --no-binary imgaug,albumentations`
 
-MMSegementation
-MMClassification
-MMTracking
-MMPose
-MMOcr
-MMdetection3d
+### MMSegementation, MMClassification, MMTracking
+Obtain source
+```
+cd C:\apps
+git clone https://github.com/open-mmlab/mmdetection.git mmdetection
+git clone https://github.com/open-mmlab/mmclassification.git mmclassification
+git clone https://github.com/open-mmlab/mmtracking.git mmtracking
+git clone https://github.com/open-mmlab/mmocr.git mmocr
+git clone https://github.com/open-mmlab/mmpose.git mmpose
+git clone https://github.com/open-mmlab/mmdetection3d.git mmdetection3d
+git clone https://github.com/jin-s13/xtcocoapi.git
+
+cd xtcocoapi
+pip3 install -e .
+
+cd C:\apps\mmdetection
+pip3 install -e .
+cd C:\apps\mmclassification
+pip3 install -e .
+cd C:\apps\mmtracking
+pip3 install -e .
+cd C:\apps\mmocr
+pip3 install -e .
+cd C:\apps\mmpose
+pip3 install -e .
+# cd C:\apps\mmdetection3d this fails because it wants old versions
+# pip3 install -e .
+```
+
+
+
+set "buildType=Release"
+set "generator=Visual Studio 16 2019"
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019

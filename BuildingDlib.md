@@ -33,11 +33,10 @@ https://www.pyimagesearch.com/2017/03/13/an-interview-with-davis-king-creator-of
 
 ## Obtaining Dlib Source
 ```
-mkdir C:/dlib
-cd C:/dlib
-git clone https://github.com/davisking/dlib.git
-git clone https://github.com/davisking/dlib-models.git
-cd C:/dlib/dlib
+cd C:/apps
+git clone https://github.com/davisking/dlib.git dlib
+git clone https://github.com/davisking/dlib-models.git dlib-models
+cd dlib
 ```
 
 ## Uninstalling of Previous Installations
@@ -50,14 +49,12 @@ pip3 uninstall dlib
 Open a command prompt (CMD) and enter the following commands with directories pointing to your installations:
 
 ```
-set "DlibSource=C:\dlib\dlib"
+set "DlibSource=C:\apps\dlib"
 set "DlibBuild=%DlibSource%\build"
 set "buildType=Release"
 set "generator=Visual Studio 16 2019"
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\bin\tbbvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\bin\mklvars.bat" intel64 vs2019
-"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\ipp\bin\ippvars.bat" intel64 vs2019
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019
 ```
 
 ## Build Python Wrapper

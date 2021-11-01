@@ -1,16 +1,30 @@
+# Building or Installing PyTorch
 
-# Installing PyTorch
+- [Building or Installing PyTorch](#building-or-installing-pytorch)
+- [Easy](#easy)
+- [Build](#build)
+  * [References](#references)
+  * [Dependencies](#dependencies)
+  * [Pytorch](#pytorch)
+  * [Setup Build Environment](#setup-build-environment)
+  * [Build](#build-1)
+  * [Pytorch Vision](#pytorch-vision)
+  * [Pytorch Audio, this failed on windows](#pytorch-audio--this-failed-on-windows)
+  * [Pytorch Text](#pytorch-text)
+  * [Test](#test)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 # Easy
 pip3 install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio===0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
-## Build
+# Build
 
-### References
+## References
 [1] https://dev.infohub.cc/build-torch15-cuda102-win10/
 
 
-### Dependencies
+## Dependencies
 
 **TensorRt**
 
@@ -29,11 +43,13 @@ cd C:\apps\temsorrt\8.2.0.6\uff
 pip3 install uff*.whl
 ```
 
-**Visual Studio Build Tools**
+**Visual Studio Build Tools**  
+Obtain the Visual Studio Build Tools from https://visualstudio.microsoft.com/downloads/ under `Tools for Visual Studio 2019` listed as `Build Tools for Visual Studio 2019`
 
-**libuv**
+**libuv**  
 This should install libuv to "C:\Program Files (x86)\libuv"
 libuv is asynch input/output library.
+
 The following approach is not yet working with regular python install script.
 
 ```
@@ -52,7 +68,7 @@ cmake --install build
 ```
 you need to add the folder where uv.dll is stored to your path
 
-Install **python packages**
+Install **python packages**  
 
 Check the available python packages
 ```
@@ -77,7 +93,7 @@ where cl*
 where mkl*
 ```
 
-### Pytorch
+## Pytorch
 
 ```
 cd C:\apps
@@ -88,7 +104,7 @@ git submodule sync
 git submodule update --init --recursive --jobs 0
 ```
 
-### Setup Build Environment
+## Setup Build Environment
 ```
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 "C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019
@@ -96,7 +112,7 @@ set USE_DISTRIBUTED=0
 set DISTUTILS_USE_SDK=1
 ```
 
-### Build
+## Build
 
 ```
 cd C:\apps\pytorch
@@ -117,7 +133,7 @@ install wheel
 pip3 install "C:\apps\pytorch\dist\torch ...
 ```
 
-### Pytorch Vision, completed
+## Pytorch Vision
 ```
 cd C:\apps
 git clone https://github.com/pytorch/vision torchvision
@@ -136,7 +152,7 @@ py -3 setup.py bdist_wheel
 pip3 install "C:\apps\vision\dist\torchvision...
 ```
 
-### Pytorch Audio, failed
+## Pytorch Audio, this failed on windows
 
 ```
 cd C:\apps
@@ -159,7 +175,7 @@ py -3 setup.py bdist_wheel
 pip3 install "C:\apps\audio\dist\torchaudio...
 ```
 
-### Pytorch Text, completed
+## Pytorch Text
 
 ```
 cd C:\apps
@@ -178,7 +194,7 @@ py -3 setup.py bdist_wheel
 pip3 install "C:\apps\torchtext\dist\torchtext...
 ```
 
-### Test
+## Test
 ```
 py -3 -c "import torch; print(torch.__version__)"
 ```
