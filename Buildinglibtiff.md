@@ -1,0 +1,52 @@
+# Compiling libtiff
+
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
+## Motivation
+
+There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.
+
+## Approach
+
+
+## Pre-Requisites
+
+Prepare your system with 
+https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md.
+I propose to work with dynamic link libraries and to copy some required dlls to a central location.
+
+## Obtaining OpenCV Source
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cd C:/apps/
+git clone https://gitlab.com/libtiff/libtiff.git libtiff
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Preparing your Shell Build Environment
+Open a command prompt (CMD) and enter the following commands with directories
+pointing to your installations:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cd C:/apps/libtiff/build
+set "libtiffSource=C:\apps\libtiff"
+set "libtiffBuild=%libtiffSource%\build"
+set "buildType=Release"
+set "CMAKE_BUILD_TYPE=Release"
+set "generator=Visual Studio 16 2019"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Building libtiff
+In CMD windows with administrative priviledges:
+```
+cd C:/apps/libtiff/build
+cmake-gui ..\
+"C:\Program Files\CMake\bin\cmake.exe" --build %libtiffBuild% --target install
+```
+
+Add `C:\Program Files (x86)\tiff\bin` to PATH

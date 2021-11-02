@@ -13,12 +13,33 @@ pip3 install addict pyyaml yapf psutils
 pip3 install regex;sys_platform=='win32'
 ```
 
+## MIM installation tool
+```
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019
+````
+
+```
+cd C:\apps
+git clone https://github.com/open-mmlab/mim.git mim
+cd mim
+pip install -e .
+```
+
 ### MMCV
-Obtain source
+Obtain source  
+In powershell:  
+
 ```
 cd C:\apps
 git clone https://github.com/open-mmlab/mmcv.git mmcv
 cd mmcv
+set TORCH_CUDA_ARCH_LIST="8.0 8.6"
+set MMCV_WITH_OPS = 1
+set MAX_JOBS = 8
+python setup.py build_ext
+python setup.py develop
+
 pip install -e .
 py -3 setup.py bdist_wheel
 pip3 install .\distr\mmcv...
