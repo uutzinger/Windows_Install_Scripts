@@ -1,24 +1,18 @@
 # Compiling libtiff
 
+- [Compiling libtiff](#compiling-libtiff)
+  * [Prerequisites](#prerequisites)
+  * [Obtaining libtiff Source](#obtaining-libtiff-source)
+  * [Preparing your Shell Build Environment](#preparing-your-shell-build-environment)
+- [Building libtiff](#building-libtiff)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
+## Prerequisites
+* Visual Studio C Compiler from https://visualstudio.microsoft.com/downloads/
+* cmake from https://cmake.org/download/
 
-## Motivation
-
-There are many reasons to build your own OpenCV binaries; for example to enable hardware acceleration or gstreamer.
-
-## Approach
-
-
-## Pre-Requisites
-
-Prepare your system with 
-https://github.com/uutzinger/Windows_Install_Scripts/blob/master/installPackages.md.
-I propose to work with dynamic link libraries and to copy some required dlls to a central location.
-
-## Obtaining OpenCV Source
-
+## Obtaining libtiff Source
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cd C:/apps/
 git clone https://gitlab.com/libtiff/libtiff.git libtiff
@@ -36,6 +30,7 @@ set "CMAKE_BUILD_TYPE=Release"
 set "generator=Visual Studio 16 2019"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+IntelMath / oneAPI libraries might not be needed.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 "C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2019
@@ -43,10 +38,11 @@ set "generator=Visual Studio 16 2019"
 
 # Building libtiff
 In CMD windows with administrative priviledges:
+
 ```
 cd C:/apps/libtiff/build
 cmake-gui ..\
 "C:\Program Files\CMake\bin\cmake.exe" --build %libtiffBuild% --target install
 ```
 
-Add `C:\Program Files (x86)\tiff\bin` to PATH
+Add `C:\Program Files (x86)\tiff\bin` to PATH (e.g. with Rapid Environment Editor or in System Properties/Environment Variables)
